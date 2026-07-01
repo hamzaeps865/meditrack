@@ -1,9 +1,11 @@
 'use server';
 
 import { db } from '@/server/db';
-import { patients } from '@/server/db/schema';
+import { patients, auditLogs } from '@/server/db/schema';
 import { requireRole } from '@/server/auth/rbac';
 import { createPatientSchema, updatePatientSchema, patientIdSchema } from '@/lib/validators/patient';
+import { withAudit, auditRead, getIpFromHeaders } from '@/lib/audit-wrapper';
+import { headers } from 'next/headers';
 import { eq, isNull, or, ilike } from 'drizzle-orm';
 
 // ─── Get All Patients ─────────────────────────────────────────────────────────
@@ -46,7 +48,8 @@ export async function searchPatients(query: string) {
 // Patients viewing their own record is handled separately via assertPatientOwnsResource.
 
 export async function getPatientById(id: string) {
-  await requireRole(['admin', 'receptionist', 'doctor']);
+  const session = await requireRole(['admin', 'receptionist', 'doctor']);
+  const ip = getIpFromHeaders(await headers());
 
   const { id: patientId } = patientIdSchema.parse({ id });
 
@@ -59,7 +62,11 @@ export async function getPatientById(id: string) {
     throw new Error('Patient not found.');
   }
 
-  return patient;
+  // Log the read access after confirming the record exists
+  return auditRead(
+    { userId: session.user.id, tableName: 'patients', recordId: patientId, ipAddress: ip },
+    patient,
+  );
 }
 
 // ─── Create Patient ───────────────────────────────────────────────────────────
@@ -67,20 +74,32 @@ export async function getPatientById(id: string) {
 
 export async function createPatient(input: unknown) {
   const session = await requireRole(['admin', 'receptionist']);
+  const ip = getIpFromHeaders(await headers());
 
   const data = createPatientSchema.parse(input);
 
-  const [newPatient] = await db
-    .insert(patients)
-    .values({
-      ...data,
-      // Normalize empty string emails to null
-      email: data.email || null,
-      createdBy: session.user.id,
-    })
-    .returning();
+  // Insert + audit in one transaction. We insert first to get the new ID,
+  // then write the audit log row in the same transaction.
+  return db.transaction(async (tx) => {
+    const [newPatient] = await tx
+      .insert(patients)
+      .values({
+        ...data,
+        email: data.email || null,
+        createdBy: session.user.id,
+      })
+      .returning();
 
-  return newPatient;
+    await tx.insert(auditLogs).values({
+      userId: session.user.id,
+      action: 'create',
+      tableName: 'patients',
+      recordId: newPatient.id,
+      ipAddress: ip ?? null,
+    });
+
+    return newPatient;
+  });
 }
 
 // ─── Update Patient ───────────────────────────────────────────────────────────
@@ -88,12 +107,12 @@ export async function createPatient(input: unknown) {
 // Accessible by: admin, receptionist
 
 export async function updatePatient(id: string, input: unknown) {
-  await requireRole(['admin', 'receptionist']);
+  const session = await requireRole(['admin', 'receptionist']);
+  const ip = getIpFromHeaders(await headers());
 
   const { id: patientId } = patientIdSchema.parse({ id });
   const data = updatePatientSchema.parse(input);
 
-  // Guard: ensure patient exists and is not deleted before updating
   const [existing] = await db
     .select({ id: patients.id })
     .from(patients)
@@ -103,16 +122,17 @@ export async function updatePatient(id: string, input: unknown) {
     throw new Error('Patient not found.');
   }
 
-  const [updated] = await db
-    .update(patients)
-    .set({
-      ...data,
-      email: data.email || null,
-    })
-    .where(eq(patients.id, patientId))
-    .returning();
-
-  return updated;
+  return withAudit(
+    { userId: session.user.id, action: 'update', tableName: 'patients', recordId: patientId, ipAddress: ip },
+    async () => {
+      const [updated] = await db
+        .update(patients)
+        .set({ ...data, email: data.email || null })
+        .where(eq(patients.id, patientId))
+        .returning();
+      return updated;
+    },
+  );
 }
 
 // ─── Soft Delete Patient ──────────────────────────────────────────────────────
@@ -121,7 +141,8 @@ export async function updatePatient(id: string, input: unknown) {
 // Accessible by: admin only
 
 export async function softDeletePatient(id: string) {
-  await requireRole(['admin']);
+  const session = await requireRole(['admin']);
+  const ip = getIpFromHeaders(await headers());
 
   const { id: patientId } = patientIdSchema.parse({ id });
 
@@ -138,11 +159,15 @@ export async function softDeletePatient(id: string) {
     throw new Error('Patient is already deleted.');
   }
 
-  const [deleted] = await db
-    .update(patients)
-    .set({ deletedAt: new Date() })
-    .where(eq(patients.id, patientId))
-    .returning();
-
-  return deleted;
+  return withAudit(
+    { userId: session.user.id, action: 'delete', tableName: 'patients', recordId: patientId, ipAddress: ip },
+    async () => {
+      const [deleted] = await db
+        .update(patients)
+        .set({ deletedAt: new Date() })
+        .where(eq(patients.id, patientId))
+        .returning();
+      return deleted;
+    },
+  );
 }

@@ -1,8 +1,10 @@
 'use server';
 
 import { db } from '@/server/db';
-import { prescriptions, prescriptionItems, visits, doctors } from '@/server/db/schema';
+import { prescriptions, prescriptionItems, visits, doctors, auditLogs } from '@/server/db/schema';
 import { requireRole, assertDoctorOwnsResource } from '@/server/auth/rbac';
+import { auditRead, getIpFromHeaders } from '@/lib/audit-wrapper';
+import { headers } from 'next/headers';
 import {
   createPrescriptionSchema,
   prescriptionIdSchema,
@@ -41,13 +43,13 @@ async function assertDoctorOwnsVisit(visitId: string, sessionRole: string) {
 
 export async function createPrescription(input: unknown) {
   const session = await requireRole(['admin', 'doctor']);
+  const ip = getIpFromHeaders(await headers());
 
   const data = createPrescriptionSchema.parse(input);
 
-  // Verify visit exists and the doctor owns it
   await assertDoctorOwnsVisit(data.visitId, session.user.role);
 
-  // Atomic: insert prescription header + all items together
+  // Atomic: insert prescription header + items + audit log in one transaction
   return db.transaction(async (tx) => {
     const [prescription] = await tx
       .insert(prescriptions)
@@ -67,6 +69,14 @@ export async function createPrescription(input: unknown) {
         })),
       )
       .returning();
+
+    await tx.insert(auditLogs).values({
+      userId: session.user.id,
+      action: 'create',
+      tableName: 'prescriptions',
+      recordId: prescription.id,
+      ipAddress: ip ?? null,
+    });
 
     return { ...prescription, items };
   });
@@ -163,7 +173,8 @@ export async function getPrescriptionsByPatient(patientId: string) {
 // Accessible by: admin, doctor, patient
 
 export async function getPrescriptionById(id: string) {
-  await requireRole(['admin', 'doctor', 'patient']);
+  const session = await requireRole(['admin', 'doctor', 'patient']);
+  const ip = getIpFromHeaders(await headers());
 
   const { id: prescriptionId } = prescriptionIdSchema.parse({ id });
 
@@ -179,5 +190,10 @@ export async function getPrescriptionById(id: string) {
     .from(prescriptionItems)
     .where(eq(prescriptionItems.prescriptionId, prescriptionId));
 
-  return { ...prescription, items };
+  const result = { ...prescription, items };
+
+  return auditRead(
+    { userId: session.user.id, tableName: 'prescriptions', recordId: prescriptionId, ipAddress: ip },
+    result,
+  );
 }

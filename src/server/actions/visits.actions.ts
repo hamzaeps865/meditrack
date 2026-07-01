@@ -1,8 +1,10 @@
 'use server';
 
 import { db } from '@/server/db';
-import { visits, appointments, doctors } from '@/server/db/schema';
+import { visits, appointments, doctors, auditLogs } from '@/server/db/schema';
 import { requireRole, assertDoctorOwnsResource } from '@/server/auth/rbac';
+import { withAudit, auditRead, getIpFromHeaders } from '@/lib/audit-wrapper';
+import { headers } from 'next/headers';
 import {
   createVisitSchema,
   updateVisitSchema,
@@ -49,16 +51,15 @@ async function assertDoctorOwnsAppointment(
 
 export async function createVisit(input: unknown) {
   const session = await requireRole(['admin', 'doctor']);
+  const ip = getIpFromHeaders(await headers());
 
   const data = createVisitSchema.parse(input);
 
-  // Verify the appointment exists and the doctor owns it
   const { doctorId, patientId } = await assertDoctorOwnsAppointment(
     data.appointmentId,
     session.user.role,
   );
 
-  // Guard: prevent duplicate visits for the same appointment (1:1 relationship)
   const [existingVisit] = await db
     .select({ id: visits.id })
     .from(visits)
@@ -68,22 +69,32 @@ export async function createVisit(input: unknown) {
     throw new Error('A visit record already exists for this appointment.');
   }
 
-  const [visit] = await db
-    .insert(visits)
-    .values({
-      appointmentId: data.appointmentId,
-      doctorId,
-      patientId: data.patientId ?? patientId,
-      chiefComplaint: data.chiefComplaint,
-      diagnosis: data.diagnosis ?? null,
-      notes: data.notes ?? null,
-      vitalsBp: data.vitalsBp ?? null,
-      vitalsTemp: data.vitalsTemp ?? null,
-      vitalsWeight: data.vitalsWeight ?? null,
-    })
-    .returning();
+  return db.transaction(async (tx) => {
+    const [visit] = await tx
+      .insert(visits)
+      .values({
+        appointmentId: data.appointmentId,
+        doctorId,
+        patientId: data.patientId ?? patientId,
+        chiefComplaint: data.chiefComplaint,
+        diagnosis: data.diagnosis ?? null,
+        notes: data.notes ?? null,
+        vitalsBp: data.vitalsBp ?? null,
+        vitalsTemp: data.vitalsTemp ?? null,
+        vitalsWeight: data.vitalsWeight ?? null,
+      })
+      .returning();
 
-  return visit;
+    await tx.insert(auditLogs).values({
+      userId: session.user.id,
+      action: 'create',
+      tableName: 'visits',
+      recordId: visit.id,
+      ipAddress: ip ?? null,
+    });
+
+    return visit;
+  });
 }
 
 // ─── Update Visit ─────────────────────────────────────────────────────────────
@@ -92,23 +103,18 @@ export async function createVisit(input: unknown) {
 
 export async function updateVisit(id: string, input: unknown) {
   const session = await requireRole(['admin', 'doctor']);
+  const ip = getIpFromHeaders(await headers());
 
   const { id: visitId } = visitIdSchema.parse({ id });
   const data = updateVisitSchema.parse(input);
 
-  // Fetch the visit to get the appointmentId for ownership check
   const [existing] = await db
-    .select({
-      id: visits.id,
-      doctorId: visits.doctorId,
-      appointmentId: visits.appointmentId,
-    })
+    .select({ id: visits.id, doctorId: visits.doctorId, appointmentId: visits.appointmentId })
     .from(visits)
     .where(eq(visits.id, visitId));
 
   if (!existing) throw new Error('Visit not found.');
 
-  // Doctors can only update their own visits
   if (session.user.role === 'doctor') {
     const [doctor] = await db
       .select({ userId: doctors.userId })
@@ -119,20 +125,24 @@ export async function updateVisit(id: string, input: unknown) {
     await assertDoctorOwnsResource(doctor.userId);
   }
 
-  const [updated] = await db
-    .update(visits)
-    .set({
-      ...(data.chiefComplaint !== undefined && { chiefComplaint: data.chiefComplaint }),
-      ...(data.diagnosis !== undefined && { diagnosis: data.diagnosis }),
-      ...(data.notes !== undefined && { notes: data.notes }),
-      ...(data.vitalsBp !== undefined && { vitalsBp: data.vitalsBp }),
-      ...(data.vitalsTemp !== undefined && { vitalsTemp: data.vitalsTemp }),
-      ...(data.vitalsWeight !== undefined && { vitalsWeight: data.vitalsWeight }),
-    })
-    .where(eq(visits.id, visitId))
-    .returning();
-
-  return updated;
+  return withAudit(
+    { userId: session.user.id, action: 'update', tableName: 'visits', recordId: visitId, ipAddress: ip },
+    async () => {
+      const [updated] = await db
+        .update(visits)
+        .set({
+          ...(data.chiefComplaint !== undefined && { chiefComplaint: data.chiefComplaint }),
+          ...(data.diagnosis      !== undefined && { diagnosis: data.diagnosis }),
+          ...(data.notes          !== undefined && { notes: data.notes }),
+          ...(data.vitalsBp       !== undefined && { vitalsBp: data.vitalsBp }),
+          ...(data.vitalsTemp     !== undefined && { vitalsTemp: data.vitalsTemp }),
+          ...(data.vitalsWeight   !== undefined && { vitalsWeight: data.vitalsWeight }),
+        })
+        .where(eq(visits.id, visitId))
+        .returning();
+      return updated;
+    },
+  );
 }
 
 // ─── Get Visit by Appointment ─────────────────────────────────────────────────
@@ -141,6 +151,7 @@ export async function updateVisit(id: string, input: unknown) {
 
 export async function getVisitByAppointment(appointmentId: string) {
   const session = await requireRole(['admin', 'doctor', 'patient']);
+  const ip = getIpFromHeaders(await headers());
 
   const [visit] = await db
     .select()
@@ -149,7 +160,6 @@ export async function getVisitByAppointment(appointmentId: string) {
 
   if (!visit) throw new Error('Visit not found for this appointment.');
 
-  // Doctors can only view their own visits
   if (session.user.role === 'doctor') {
     const [doctor] = await db
       .select({ userId: doctors.userId })
@@ -160,7 +170,10 @@ export async function getVisitByAppointment(appointmentId: string) {
     await assertDoctorOwnsResource(doctor.userId);
   }
 
-  return visit;
+  return auditRead(
+    { userId: session.user.id, tableName: 'visits', recordId: visit.id, ipAddress: ip },
+    visit,
+  );
 }
 
 // ─── Get Visit by ID ──────────────────────────────────────────────────────────
