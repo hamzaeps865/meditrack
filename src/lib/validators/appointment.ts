@@ -7,7 +7,7 @@ export const bookAppointmentSchema = z.object({
   doctorId: z.string().uuid('Invalid doctor ID'),
   // ISO 8601 datetime string — e.g. "2025-07-01T09:00:00.000Z"
   scheduledAt: z
-    .string({ required_error: 'Scheduled time is required' })
+    .string({ error: 'Scheduled time is required' })
     .datetime({ message: 'Invalid datetime — expected ISO 8601 format' })
     .refine((val) => new Date(val) > new Date(), {
       message: 'Appointment must be scheduled in the future',
