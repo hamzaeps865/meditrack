@@ -13,9 +13,10 @@ type Role = 'admin' | 'doctor' | 'receptionist' | 'patient';
 const navItems: Record<Role, { label: string; href: string; icon: any }[]> = {
   admin: [
     { label: 'Dashboard',   href: '/admin',             icon: BarChart2 },
+    { label: 'Users',       href: '/admin/users',       icon: Shield },
     { label: 'Doctors',     href: '/admin/doctors',     icon: Users },
     { label: 'Patients',    href: '/admin/patients',    icon: ClipboardList },
-    { label: 'Audit Logs',  href: '/admin/audit-logs',  icon: Shield },
+    { label: 'Audit Logs',  href: '/admin/audit-logs',  icon: FileText },
   ],
   doctor: [
     { label: 'Dashboard',     href: '/doctor',               icon: BarChart2 },

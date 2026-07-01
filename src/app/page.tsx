@@ -8,6 +8,7 @@ const roleHome: Record<string, string> = {
   patient: '/patient',
 };
 
+
 export default async function RootPage() {
   const session = await auth();
   if (!session) redirect('/login');

@@ -209,6 +209,34 @@ export async function getAppointmentById(id: string) {
   return appointment;
 }
 
+// ─── Get All Appointments ─────────────────────────────────────────────────────
+// Returns all appointments with joined patient and doctor names.
+// Accessible by: admin, receptionist
+
+export async function getAllAppointments() {
+  await requireRole(['admin', 'receptionist']);
+
+  const { users } = await import('@/server/db/schema');
+
+  return db
+    .select({
+      id: appointments.id,
+      scheduledAt: appointments.scheduledAt,
+      status: appointments.status,
+      reason: appointments.reason,
+      createdAt: appointments.createdAt,
+      patientId: appointments.patientId,
+      doctorId: appointments.doctorId,
+      patientName: patients.name,
+      doctorName: users.name,
+    })
+    .from(appointments)
+    .leftJoin(patients, eq(appointments.patientId, patients.id))
+    .leftJoin(doctors, eq(appointments.doctorId, doctors.id))
+    .leftJoin(users, eq(doctors.userId, users.id))
+    .orderBy(appointments.scheduledAt);
+}
+
 // ─── Cancel Appointment ───────────────────────────────────────────────────────
 // Convenience wrapper around updateAppointmentStatus for cancellation.
 // Accessible by: admin, receptionist
