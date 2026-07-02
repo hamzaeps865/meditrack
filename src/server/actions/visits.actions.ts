@@ -69,32 +69,30 @@ export async function createVisit(input: unknown) {
     throw new Error('A visit record already exists for this appointment.');
   }
 
-  return db.transaction(async (tx) => {
-    const [visit] = await tx
-      .insert(visits)
-      .values({
-        appointmentId: data.appointmentId,
-        doctorId,
-        patientId: data.patientId ?? patientId,
-        chiefComplaint: data.chiefComplaint,
-        diagnosis: data.diagnosis ?? null,
-        notes: data.notes ?? null,
-        vitalsBp: data.vitalsBp ?? null,
-        vitalsTemp: data.vitalsTemp ?? null,
-        vitalsWeight: data.vitalsWeight ?? null,
-      })
-      .returning();
+  const [visit] = await db
+    .insert(visits)
+    .values({
+      appointmentId: data.appointmentId,
+      doctorId,
+      patientId: data.patientId ?? patientId,
+      chiefComplaint: data.chiefComplaint,
+      diagnosis: data.diagnosis ?? null,
+      notes: data.notes ?? null,
+      vitalsBp: data.vitalsBp ?? null,
+      vitalsTemp: data.vitalsTemp ?? null,
+      vitalsWeight: data.vitalsWeight ?? null,
+    })
+    .returning();
 
-    await tx.insert(auditLogs).values({
-      userId: session.user.id,
-      action: 'create',
-      tableName: 'visits',
-      recordId: visit.id,
-      ipAddress: ip ?? null,
-    });
+  await db.insert(auditLogs).values({
+    userId: session.user.id,
+    action: 'create',
+    tableName: 'visits',
+    recordId: visit.id,
+    ipAddress: ip ?? null,
+  }).catch((err) => console.error('[audit] createVisit log failed:', err));
 
-    return visit;
-  });
+  return visit;
 }
 
 // ─── Update Visit ─────────────────────────────────────────────────────────────

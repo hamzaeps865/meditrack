@@ -49,37 +49,35 @@ export async function createPrescription(input: unknown) {
 
   await assertDoctorOwnsVisit(data.visitId, session.user.role);
 
-  // Atomic: insert prescription header + items + audit log in one transaction
-  return db.transaction(async (tx) => {
-    const [prescription] = await tx
-      .insert(prescriptions)
-      .values({ visitId: data.visitId })
-      .returning();
+  // Insert prescription header then items sequentially
+  const [prescription] = await db
+    .insert(prescriptions)
+    .values({ visitId: data.visitId })
+    .returning();
 
-    const items = await tx
-      .insert(prescriptionItems)
-      .values(
-        data.items.map((item) => ({
-          prescriptionId: prescription.id,
-          medicineName: item.medicineName,
-          dosage: item.dosage,
-          frequency: item.frequency,
-          duration: item.duration,
-          notes: item.notes ?? null,
-        })),
-      )
-      .returning();
+  const items = await db
+    .insert(prescriptionItems)
+    .values(
+      data.items.map((item) => ({
+        prescriptionId: prescription.id,
+        medicineName: item.medicineName,
+        dosage: item.dosage,
+        frequency: item.frequency,
+        duration: item.duration,
+        notes: item.notes ?? null,
+      })),
+    )
+    .returning();
 
-    await tx.insert(auditLogs).values({
-      userId: session.user.id,
-      action: 'create',
-      tableName: 'prescriptions',
-      recordId: prescription.id,
-      ipAddress: ip ?? null,
-    });
+  await db.insert(auditLogs).values({
+    userId: session.user.id,
+    action: 'create',
+    tableName: 'prescriptions',
+    recordId: prescription.id,
+    ipAddress: ip ?? null,
+  }).catch((err) => console.error('[audit] createPrescription log failed:', err));
 
-    return { ...prescription, items };
-  });
+  return { ...prescription, items };
 }
 
 // ─── Get Prescriptions by Visit ───────────────────────────────────────────────

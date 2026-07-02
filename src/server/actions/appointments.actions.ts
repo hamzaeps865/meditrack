@@ -49,39 +49,35 @@ export async function bookAppointment(input: unknown) {
   }
 
   try {
-    const [appointment] = await db.transaction(async (tx) => {
-      // Check if the slot is already taken (application-level pre-check for
-      // a friendlier error message — the DB constraint is the real guard).
-      const [existing] = await tx
-        .select({ id: appointments.id })
-        .from(appointments)
-        .where(
-          and(
-            eq(appointments.doctorId, data.doctorId),
-            eq(appointments.scheduledAt, new Date(data.scheduledAt)),
-          ),
-        );
+    // Application-level pre-check for a friendlier error message.
+    // The DB unique constraint is the real concurrency guard.
+    const [existing] = await db
+      .select({ id: appointments.id })
+      .from(appointments)
+      .where(
+        and(
+          eq(appointments.doctorId, data.doctorId),
+          eq(appointments.scheduledAt, new Date(data.scheduledAt)),
+        ),
+      );
 
-      if (existing) {
-        throw new Error('This time slot is already booked. Please choose another time.');
-      }
+    if (existing) {
+      throw new Error('This time slot is already booked. Please choose another time.');
+    }
 
-      return tx
-        .insert(appointments)
-        .values({
-          patientId: data.patientId,
-          doctorId: data.doctorId,
-          scheduledAt: new Date(data.scheduledAt),
-          reason: data.reason ?? null,
-          createdBy: session.user.id,
-        })
-        .returning();
-    });
+    const [appointment] = await db
+      .insert(appointments)
+      .values({
+        patientId: data.patientId,
+        doctorId: data.doctorId,
+        scheduledAt: new Date(data.scheduledAt),
+        reason: data.reason ?? null,
+        createdBy: session.user.id,
+      })
+      .returning();
 
     return appointment;
   } catch (error) {
-    // The DB unique constraint violation surfaces as a Postgres error code 23505.
-    // Catch it and re-throw with a user-friendly message.
     if (error instanceof Error && error.message.includes('23505')) {
       throw new Error('This time slot was just booked by someone else. Please choose another time.');
     }

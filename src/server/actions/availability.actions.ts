@@ -131,24 +131,22 @@ export async function replaceAvailabilitySchedule(
     setAvailabilitySchema.parse({ ...(w as object), doctorId: validatedDoctorId }),
   );
 
-  // Atomic: delete all existing windows then insert the new set
-  return db.transaction(async (tx) => {
-    await tx
-      .delete(doctorAvailability)
-      .where(eq(doctorAvailability.doctorId, validatedDoctorId));
+  // Delete all existing windows then insert the new set sequentially
+  await db
+    .delete(doctorAvailability)
+    .where(eq(doctorAvailability.doctorId, validatedDoctorId));
 
-    if (validatedWindows.length === 0) return [];
+  if (validatedWindows.length === 0) return [];
 
-    return tx
-      .insert(doctorAvailability)
-      .values(
-        validatedWindows.map((w) => ({
-          doctorId: validatedDoctorId,
-          dayOfWeek: w.dayOfWeek,
-          startTime: w.startTime,
-          endTime: w.endTime,
-        })),
-      )
-      .returning();
-  });
+  return db
+    .insert(doctorAvailability)
+    .values(
+      validatedWindows.map((w) => ({
+        doctorId: validatedDoctorId,
+        dayOfWeek: w.dayOfWeek,
+        startTime: w.startTime,
+        endTime: w.endTime,
+      })),
+    )
+    .returning();
 }

@@ -78,28 +78,25 @@ export async function createPatient(input: unknown) {
 
   const data = createPatientSchema.parse(input);
 
-  // Insert + audit in one transaction. We insert first to get the new ID,
-  // then write the audit log row in the same transaction.
-  return db.transaction(async (tx) => {
-    const [newPatient] = await tx
-      .insert(patients)
-      .values({
-        ...data,
-        email: data.email || null,
-        createdBy: session.user.id,
-      })
-      .returning();
+  const [newPatient] = await db
+    .insert(patients)
+    .values({
+      ...data,
+      email: data.email || null,
+      createdBy: session.user.id,
+    })
+    .returning();
 
-    await tx.insert(auditLogs).values({
-      userId: session.user.id,
-      action: 'create',
-      tableName: 'patients',
-      recordId: newPatient.id,
-      ipAddress: ip ?? null,
-    });
+  // Write audit log after insert (best-effort — failure won't undo the insert)
+  await db.insert(auditLogs).values({
+    userId: session.user.id,
+    action: 'create',
+    tableName: 'patients',
+    recordId: newPatient.id,
+    ipAddress: ip ?? null,
+  }).catch((err) => console.error('[audit] createPatient log failed:', err));
 
-    return newPatient;
-  });
+  return newPatient;
 }
 
 // ─── Update Patient ───────────────────────────────────────────────────────────

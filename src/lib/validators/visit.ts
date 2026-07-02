@@ -43,7 +43,7 @@ export const createVisitSchema = z
     appointmentId: z.string().uuid('Invalid appointment ID'),
     patientId: z.string().uuid('Invalid patient ID'),
     chiefComplaint: z
-        .string({ error: 'Chief complaint is required' })
+      .string({ required_error: 'Chief complaint is required' })
       .min(3, 'Chief complaint must be at least 3 characters')
       .max(2000)
       .trim(),
@@ -72,22 +72,22 @@ export type UpdateVisitInput = z.infer<typeof updateVisitSchema>;
 
 export const prescriptionItemSchema = z.object({
   medicineName: z
-    .string({ error: 'Medicine name is required' })
+    .string({ required_error: 'Medicine name is required' })
     .min(1)
     .max(255)
     .trim(),
   dosage: z
-    .string({ error: 'Dosage is required' })
+    .string({ required_error: 'Dosage is required' })
     .min(1, 'Dosage is required')
     .max(100)
     .trim(),
   frequency: z
-    .string({ error: 'Frequency is required' })
+    .string({ required_error: 'Frequency is required' })
     .min(1, 'Frequency is required')
     .max(100)
     .trim(),
   duration: z
-    .string({ error: 'Duration is required' })
+    .string({ required_error: 'Duration is required' })
     .min(1, 'Duration is required')
     .max(100)
     .trim(),
