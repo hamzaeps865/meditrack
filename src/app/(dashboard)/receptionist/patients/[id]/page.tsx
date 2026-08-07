@@ -2,10 +2,11 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { format } from 'date-fns';
 import {
-  Search, Bell, Settings, ChevronRight, Plus,
+  Search, Settings, ChevronRight, Plus,
   User, AlertTriangle, CalendarClock, Phone, Mail, MapPin,
   CalendarPlus, IdCard, Printer,
 } from 'lucide-react';
+import NotificationBell from '@/components/shared/notification-bell';
 import { getPatientById } from '@/server/actions/patients.actions';
 import { getAppointmentsByPatient } from '@/server/actions/appointments.actions';
 import { db } from '@/server/db';
@@ -78,13 +79,7 @@ export default async function PatientDetailPage({
           />
         </div>
         <div className="flex items-center gap-2">
-          <button
-            type="button"
-            aria-label="Notifications"
-            className="h-9 w-9 flex items-center justify-center rounded-full text-muted-foreground hover:bg-muted transition-colors"
-          >
-            <Bell className="h-4 w-4" />
-          </button>
+          <NotificationBell />
           <button
             type="button"
             aria-label="Settings"

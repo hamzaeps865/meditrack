@@ -43,7 +43,7 @@ const quickAction: Record<Role, { label: string; href: string } | null> = {
   admin: { label: 'New Appointment', href: '/admin/appointments/new' },
   doctor: { label: 'New Appointment', href: '/doctor/appointments/new' },
   receptionist: { label: 'New Appointment', href: '/receptionist/appointments/new' },
-  patient: null,
+  patient: { label: 'Book Appointment', href: '/patient/appointments/new' },
 };
 
 export default function Sidebar({ role, userName }: { role: Role; userName?: string | null }) {

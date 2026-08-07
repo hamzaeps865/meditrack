@@ -9,4 +9,4 @@ export const users = pgTable('users', {
   passwordHash: varchar('password_hash', { length: 255 }).notNull(),
   role: roleEnum('role').notNull().default('patient'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
-});
+});   

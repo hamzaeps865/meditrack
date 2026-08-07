@@ -1,3 +1,7 @@
+import 'dotenv/config';
+import ws from 'ws';
+import { neonConfig } from '@neondatabase/serverless';
+neonConfig.webSocketConstructor = ws;
 import { db } from '@/server/db';
 import { users } from '@/server/db/schema';
 import bcrypt from 'bcryptjs';

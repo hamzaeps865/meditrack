@@ -6,10 +6,11 @@ import { isNull, count, eq, gte, lte, desc, and } from 'drizzle-orm';
 import Link from 'next/link';
 import { format, startOfDay, endOfDay } from 'date-fns';
 import {
-  Search, Bell, HelpCircle, Plus,
+  Search, HelpCircle, Plus,
   Users, Calendar, UserCheck, ShieldAlert,
   Eye, ClipboardEdit, Trash2, PlusCircle,
 } from 'lucide-react';
+import NotificationBell from '@/components/shared/notification-bell';
 
 // ─── Data fetchers ────────────────────────────────────────────────────────────
 
@@ -186,14 +187,7 @@ export default async function AdminDashboard() {
         </div>
 
         <div className="flex items-center gap-2">
-          <button
-            type="button"
-            aria-label="Notifications"
-            className="h-9 w-9 flex items-center justify-center rounded-full
-              text-muted-foreground hover:bg-muted transition-colors"
-          >
-            <Bell className="h-4 w-4" />
-          </button>
+          <NotificationBell />
           <button
             type="button"
             aria-label="Help"

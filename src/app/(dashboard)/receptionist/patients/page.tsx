@@ -4,9 +4,10 @@ import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { getAllPatients } from '@/server/actions/patients.actions';
 import {
-  Search, Bell, Settings, UserPlus, MoreVertical,
+  Search, Settings, UserPlus, MoreVertical,
   ChevronLeft, ChevronRight, X,
 } from 'lucide-react';
+import NotificationBell from '@/components/shared/notification-bell';
 import dynamic from 'next/dynamic';
 
 const RegisterPatientModal = dynamic(
@@ -165,13 +166,7 @@ export default function PatientsPage() {
           />
         </div>
         <div className="flex items-center gap-2">
-          <button
-            type="button"
-            aria-label="Notifications"
-            className="h-9 w-9 flex items-center justify-center rounded-full text-muted-foreground hover:bg-muted transition-colors"
-          >
-            <Bell className="h-4 w-4" />
-          </button>
+          <NotificationBell />
           <button
             type="button"
             aria-label="Settings"

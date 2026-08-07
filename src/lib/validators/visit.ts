@@ -13,24 +13,25 @@ export type VisitIdInput = z.infer<typeof visitIdSchema>;
 // Stored as varchars in the DB so we validate format here.
 
 const vitalsSchema = z.object({
-  // Blood pressure — e.g. "120/80"
+  // Blood pressure — e.g. "120/80", stored as free-form varchar
   vitalsBp: z
     .string()
-    .regex(/^\d{2,3}\/\d{2,3}$/, 'Blood pressure must be in format "120/80"')
+    .max(20)
+    .trim()
     .optional(),
 
-  // Temperature — e.g. "98.6" (°F or °C — unit is display concern, not DB concern)
+  // Temperature — e.g. "98.6"
   vitalsTemp: z
     .string()
-    .regex(/^\d{2,3}(\.\d{1,2})?$/, 'Temperature must be a number like "98.6"')
     .max(10)
+    .trim()
     .optional(),
 
   // Weight — e.g. "72.5"
   vitalsWeight: z
     .string()
-    .regex(/^\d{1,3}(\.\d{1,2})?$/, 'Weight must be a number like "72.5"')
     .max(10)
+    .trim()
     .optional(),
 });
 
@@ -43,7 +44,7 @@ export const createVisitSchema = z
     appointmentId: z.string().uuid('Invalid appointment ID'),
     patientId: z.string().uuid('Invalid patient ID'),
     chiefComplaint: z
-      .string({ required_error: 'Chief complaint is required' })
+      .string({ message: 'Chief complaint is required' })
       .min(3, 'Chief complaint must be at least 3 characters')
       .max(2000)
       .trim(),
@@ -72,22 +73,22 @@ export type UpdateVisitInput = z.infer<typeof updateVisitSchema>;
 
 export const prescriptionItemSchema = z.object({
   medicineName: z
-    .string({ required_error: 'Medicine name is required' })
+    .string({ message: 'Medicine name is required' })
     .min(1)
     .max(255)
     .trim(),
   dosage: z
-    .string({ required_error: 'Dosage is required' })
+    .string({ message: 'Dosage is required' })
     .min(1, 'Dosage is required')
     .max(100)
     .trim(),
   frequency: z
-    .string({ required_error: 'Frequency is required' })
+    .string({ message: 'Frequency is required' })
     .min(1, 'Frequency is required')
     .max(100)
     .trim(),
   duration: z
-    .string({ required_error: 'Duration is required' })
+    .string({ message: 'Duration is required' })
     .min(1, 'Duration is required')
     .max(100)
     .trim(),

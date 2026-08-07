@@ -29,12 +29,11 @@ async function getDoctorUserId(doctorId: string): Promise<string> {
 // Accessible by: admin, receptionist, doctor (own only)
 
 export async function getDoctorAvailability(doctorId: string) {
-  await requireRole(['admin', 'receptionist', 'doctor']);
+  const session = await requireRole(['admin', 'receptionist', 'doctor', 'patient']);
 
   const { doctorId: validatedDoctorId } = getAvailabilitySchema.parse({ doctorId });
 
   // Doctors can only view their own availability
-  const session = await requireRole(['admin', 'receptionist', 'doctor']);
   if (session.user.role === 'doctor') {
     const userId = await getDoctorUserId(validatedDoctorId);
     await assertDoctorOwnsResource(userId);

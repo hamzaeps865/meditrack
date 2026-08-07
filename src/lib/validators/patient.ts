@@ -3,13 +3,13 @@ import { z } from 'zod';
 // ─── Reusable field definitions ───────────────────────────────────────────────
 
 const nameSchema = z
-  .string({ required_error: 'Name is required' })
+  .string({ message: 'Name is required' })
   .min(2, 'Name must be at least 2 characters')
   .max(255, 'Name must be at most 255 characters')
   .trim();
 
 const dobSchema = z
-  .string({ required_error: 'Date of birth is required' })
+  .string({ message: 'Date of birth is required' })
   .date('Invalid date — expected YYYY-MM-DD format')
   .refine((val) => new Date(val) < new Date(), {
     message: 'Date of birth must be in the past',
@@ -20,7 +20,7 @@ const genderSchema = z.enum(['male', 'female', 'other'], {
 });
 
 const phoneSchema = z
-  .string({ required_error: 'Phone number is required' })
+  .string({ message: 'Phone number is required' })
   .min(7, 'Phone number is too short')
   .max(20, 'Phone number must be at most 20 characters')
   .trim();

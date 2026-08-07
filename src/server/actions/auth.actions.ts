@@ -8,18 +8,18 @@ import { z } from 'zod';
 
 const registerSchema = z.object({
   name: z
-    .string({ required_error: 'Name is required' })
+    .string({ message: 'Name is required' })
     .min(2, 'Name must be at least 2 characters')
     .max(255)
     .trim(),
   email: z
-    .string({ required_error: 'Email is required' })
+    .string({ message: 'Email is required' })
     .email('Invalid email address')
     .max(255)
     .trim()
     .toLowerCase(),
   password: z
-    .string({ required_error: 'Password is required' })
+    .string({ message: 'Password is required' })
     .min(8, 'Password must be at least 8 characters')
     .max(72, 'Password too long'), // bcrypt max is 72 bytes
 });
