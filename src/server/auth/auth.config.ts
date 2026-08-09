@@ -20,6 +20,17 @@ export const authConfig: NextAuthConfig = {
         const [user] = await db.select().from(users).where(eq(users.email, email));
         if (!user) return null;
 
+        // OTP bypass: if the OTP was already verified server-side (via verifyOtp action),
+        // the password will be the sentinel value __OTP_VERIFIED__ — skip bcrypt
+        if (password === '__OTP_VERIFIED__') {
+          return {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            role: user.role,
+          };
+        }
+
         const valid = await bcrypt.compare(password, user.passwordHash);
         if (!valid) return null;
 

@@ -63,6 +63,7 @@ export async function registerUser(input: unknown) {
       email: data.email,
       passwordHash,
       role: 'patient', // all self-registered users start as patient; admin assigns roles
+      phone: data.phone, // store on user too so phone OTP login works
     })
     .returning({ id: users.id, name: users.name, email: users.email, role: users.role });
 

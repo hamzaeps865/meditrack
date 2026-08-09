@@ -84,7 +84,7 @@ export async function bookAppointment(input: unknown) {
 //               doctor (in_progress → completed only)
 
 export async function updateAppointmentStatus(input: unknown) {
-  const session = await requireRole(['admin', 'receptionist', 'doctor']);
+  const session = await requireRole(['admin', 'receptionist', 'doctor', 'patient']);
 
   const { id, status } = updateAppointmentStatusSchema.parse(input);
 
@@ -94,6 +94,14 @@ export async function updateAppointmentStatus(input: unknown) {
     .where(eq(appointments.id, id));
 
   if (!existing) throw new Error('Appointment not found.');
+
+  // Patients can only cancel their OWN appointments
+  if (session.user.role === 'patient') {
+    if (status !== 'cancelled') {
+      throw new Error('Patients can only cancel appointments.');
+    }
+    await assertPatientOwnsPatientRecord(existing.patientId, session);
+  }
 
   // Doctors can only move status to in_progress or completed on their own appointments
   if (session.user.role === 'doctor') {
