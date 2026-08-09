@@ -316,3 +316,92 @@ export async function getPendingDispensings() {
     .where(isNull(dispensings.id))
     .orderBy(desc(prescriptions.createdAt));
 }
+
+// ─── Undo Dispensing (admin + pharmacist) ─────────────────────────────────────
+// Reverses a dispensing: restores stock + removes the dispensing record.
+// The prescription item becomes pending again.
+
+export async function undoDispensing(dispensingId: string) {
+  const session = await requireRole(['admin', 'pharmacist']);
+
+  const [dispensing] = await db
+    .select()
+    .from(dispensings)
+    .where(eq(dispensings.id, dispensingId));
+
+  if (!dispensing) throw new Error('Dispensing record not found.');
+
+  return db.transaction(async (tx) => {
+    // 1. Restore stock to the batch
+    await tx
+      .update(medicineInventory)
+      .set({
+        quantityInStock: sql`${medicineInventory.quantityInStock} + ${dispensing.quantityDispensed}`,
+        updatedAt: new Date(),
+      })
+      .where(eq(medicineInventory.id, dispensing.inventoryBatchId));
+
+    // 2. Delete the dispensing record (makes the prescription item pending again)
+    await tx.delete(dispensings).where(eq(dispensings.id, dispensingId));
+
+    return { success: true };
+  });
+}
+
+// ─── Get Dispense History (admin + pharmacist) ────────────────────────────────
+
+export async function getDispenseHistory(limit = 50) {
+  await requireRole(['admin', 'pharmacist']);
+
+  return db
+    .select({
+      id: dispensings.id,
+      medicineName: prescriptionItems.medicineName,
+      quantityDispensed: dispensings.quantityDispensed,
+      dispensedAt: dispensings.dispensedAt,
+      patientName: patients.name,
+      dispensedByName: users.name,
+      notes: dispensings.notes,
+    })
+    .from(dispensings)
+    .innerJoin(prescriptionItems, eq(dispensings.prescriptionItemId, prescriptionItems.id))
+    .innerJoin(visits, eq(prescriptions.visitId, visits.id))
+    .leftJoin(patients, eq(visits.patientId, patients.id))
+    .leftJoin(users, eq(dispensings.dispensedBy, users.id))
+    .orderBy(desc(dispensings.dispensedAt))
+    .limit(limit);
+}
+
+// ─── Add Medicine (admin only) ────────────────────────────────────────────────
+// Exposed via the admin catalog tab UI
+
+const addMedicineUISchema = z.object({
+  name: z.string().min(1).max(255).trim(),
+  genericName: z.string().max(255).trim().optional(),
+  category: z.string().max(100).trim().optional(),
+  form: z.enum(['tablet', 'capsule', 'syrup', 'injection', 'drops', 'cream', 'inhaler', 'other']).optional(),
+  strength: z.string().max(50).trim().optional(),
+  manufacturer: z.string().max(255).trim().optional(),
+  reorderLevel: z.number().int().min(0).default(50),
+  unitPriceCents: z.number().int().min(0).default(0),
+});
+
+export async function addMedicineUI(input: unknown) {
+  await requireRole(['admin']);
+  const data = addMedicineUISchema.parse(input);
+  const [medicine] = await db.insert(medicines).values(data).returning();
+  return medicine;
+}
+
+// ─── Adjust Stock (admin only) ────────────────────────────────────────────────
+
+export async function adjustStockUI(id: string, newQuantity: number) {
+  await requireRole(['admin']);
+  if (newQuantity < 0) throw new Error('Quantity cannot be negative.');
+  const [updated] = await db
+    .update(medicineInventory)
+    .set({ quantityInStock: newQuantity, updatedAt: new Date() })
+    .where(eq(medicineInventory.id, id))
+    .returning();
+  return updated;
+}

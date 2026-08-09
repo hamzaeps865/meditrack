@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import NotificationBell from '@/components/shared/notification-bell';
 import QuickCheckinButton from '@/components/receptionist/quick-checkin-button';
+import WalkInModal from '@/components/receptionist/walk-in-modal';
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -157,6 +158,7 @@ export default async function ReceptionistDashboardPage() {
               <CalendarPlus className="h-3.5 w-3.5" />
               Manage Schedule
             </Link>
+            <WalkInModal doctors={activeDoctors} />
           </div>
         </div>
 

@@ -191,3 +191,54 @@ export async function createDoctor(input: unknown) {
 
   return { userId, doctor: newDoctor, wasExistingUser: false };
 }
+
+// ─── Update Doctor (admin only) ───────────────────────────────────────────────
+
+const updateDoctorSchema = z.object({
+  name: z.string().min(2).max(255).trim().optional(),
+  specialization: z.string().min(2).max(255).trim().optional(),
+  licenseNumber: z.string().min(2).max(100).trim().optional(),
+});
+
+export async function updateDoctor(doctorId: string, input: unknown) {
+  await requireRole(['admin']);
+  const data = updateDoctorSchema.parse(input);
+
+  // Update doctor profile fields
+  if (data.specialization || data.licenseNumber) {
+    await db
+      .update(doctors)
+      .set({
+        ...(data.specialization && { specialization: data.specialization }),
+        ...(data.licenseNumber && { licenseNumber: data.licenseNumber }),
+      })
+      .where(eq(doctors.id, doctorId));
+  }
+
+  // Update user name if provided
+  if (data.name) {
+    const [doctor] = await db.select({ userId: doctors.userId }).from(doctors).where(eq(doctors.id, doctorId));
+    if (doctor) {
+      await db.update(users).set({ name: data.name }).where(eq(users.id, doctor.userId));
+    }
+  }
+
+  return { success: true };
+}
+
+// ─── Delete Doctor (admin only — soft delete by removing the profile) ─────────
+
+export async function deleteDoctor(doctorId: string) {
+  await requireRole(['admin']);
+
+  const [doctor] = await db.select().from(doctors).where(eq(doctors.id, doctorId));
+  if (!doctor) throw new Error('Doctor not found.');
+
+  // Delete the doctor profile (cascade removes availability)
+  await db.delete(doctors).where(eq(doctors.id, doctorId));
+
+  // Demote the user account to patient role so they can no longer access doctor routes
+  await db.update(users).set({ role: 'patient' }).where(eq(users.id, doctor.userId));
+
+  return { success: true };
+}

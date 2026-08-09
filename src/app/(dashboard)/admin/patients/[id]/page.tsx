@@ -14,6 +14,7 @@ import {
   FileText,
 } from 'lucide-react';
 import NotificationBell from '@/components/shared/notification-bell';
+import EditPatientModal from '@/components/admin/edit-patient-modal';
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -181,6 +182,16 @@ export default async function AdminPatientProfilePage({
           </div>
 
           <div className="flex items-center gap-2">
+            <EditPatientModal
+              patientId={patient.id}
+              initialName={patient.name}
+              initialPhone={patient.phone}
+              initialEmail={patient.email}
+              initialAddress={patient.address}
+              initialEmergencyContact={patient.emergencyContact}
+              initialBloodGroup={patient.bloodGroup}
+              initialAllergies={patient.allergies}
+            />
             <button type="button"
               className="flex items-center gap-1.5 h-9 px-4 rounded-lg border
                 border-border bg-white text-sm font-medium text-foreground

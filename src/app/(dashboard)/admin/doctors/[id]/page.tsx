@@ -16,6 +16,7 @@ import {
 import NotificationBell from '@/components/shared/notification-bell';
 import { getReviewsForDoctor, getDoctorRatingSummary } from '@/server/actions/reviews.actions';
 import { StarRating } from '@/components/shared/star-rating';
+import EditDoctorModal from '@/components/admin/edit-doctor-modal';
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -220,6 +221,12 @@ export default async function AdminDoctorProfilePage({
             </div>
 
             <div className="flex items-center gap-2">
+              <EditDoctorModal
+                doctorId={id}
+                initialName={doctorRow.name ?? ''}
+                initialSpecialization={doctorRow.specialization}
+                initialLicense={doctorRow.licenseNumber}
+              />
               <Link
                 href={`/admin/doctors/${id}/availability`}
                 className="h-9 px-4 rounded-lg border border-border text-sm font-medium

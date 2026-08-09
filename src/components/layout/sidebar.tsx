@@ -45,7 +45,9 @@ const navItems: Record<Role, { label: string; href: string; icon: any }[]> = {
   ],
   pharmacist: [
     { label: 'Dispensing Queue', href: '/pharmacy',                 icon: Pill },
+    { label: 'History',          href: '/pharmacy/history',         icon: ClipboardList },
     { label: 'Inventory',        href: '/pharmacy/inventory',       icon: Package },
+    { label: 'Settings',         href: '/pharmacy/settings',        icon: Settings },
   ],
   patient: [
     { label: 'My Appointments',  href: '/patient/appointments',   icon: Calendar },
