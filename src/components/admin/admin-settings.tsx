@@ -165,6 +165,7 @@ export default function AdminSettings({ adminName, adminEmail }: Props) {
   }
 
   // ── Appointment Settings state ────────────────────────────────────────────
+  const [consultationFee, setConsultationFee] = useState('2000');
   const [slotDuration, setSlotDuration] = useState('30');
   const [bufferTime,   setBufferTime]   = useState('10');
   const [bookingWindow, setBookingWindow] = useState('30');
@@ -196,6 +197,7 @@ export default function AdminSettings({ adminName, adminEmail }: Props) {
         const s = await getSystemSettings();
         if (cancelled) return;
         if (s.clinic_name)    setClinicName(s.clinic_name);
+        if (s.consultation_fee) setConsultationFee(s.consultation_fee);
         if (s.contact_email)  setContactEmail(s.contact_email);
         if (s.phone)          setPhone(s.phone);
         if (s.address)        setAddress(s.address);
@@ -229,6 +231,7 @@ export default function AdminSettings({ adminName, adminEmail }: Props) {
       try {
         await setSystemSettings({
           clinic_name: clinicName,
+          consultation_fee: String(Number(consultationFee) * 100), // store in paisa/cents
           contact_email: contactEmail,
           phone,
           address,
@@ -455,6 +458,23 @@ export default function AdminSettings({ adminName, adminEmail }: Props) {
                   Appointment Settings
                 </h2>
                 <div className="border-t border-border pt-5 space-y-5">
+                  {/* Consultation Fee */}
+                  <div className="rounded-lg bg-primary/5 border border-primary/10 p-4">
+                    <Field label="Consultation Fee (Rs)">
+                      <input
+                        type="number"
+                        value={consultationFee}
+                        onChange={(e) => setConsultationFee(e.target.value)}
+                        className={`${inputCls} max-w-xs`}
+                        placeholder="2000"
+                        min={0}
+                      />
+                    </Field>
+                    <p className="text-xs text-muted-foreground mt-1.5">
+                      This fee is automatically charged on every completed visit invoice.
+                    </p>
+                  </div>
+
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <Field label="Slot Duration (min)">
                       <select value={slotDuration}

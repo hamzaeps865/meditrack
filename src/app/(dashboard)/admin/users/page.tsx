@@ -6,6 +6,7 @@ import {
   TableHead, TableHeader, TableRow,
 } from '@/components/ui/table';
 import RoleSelect from '@/components/admin/role-select';
+import EditUserName from '@/components/admin/edit-user-name';
 import { format } from 'date-fns';
 
 export default async function UsersPage() {
@@ -31,12 +32,17 @@ export default async function UsersPage() {
               <TableHead>Email</TableHead>
               <TableHead>Joined</TableHead>
               <TableHead>Role</TableHead>
+              <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {allUsers.map((user) => (
               <TableRow key={user.id}>
-                <TableCell className="font-medium">{user.name}</TableCell>
+                <TableCell className="font-medium">
+                  <div className="flex items-center gap-2">
+                    {user.name}
+                  </div>
+                </TableCell>
                 <TableCell className="text-gray-500">{user.email}</TableCell>
                 <TableCell className="text-gray-500 text-sm">
                   {format(new Date(user.createdAt), 'MMM dd, yyyy')}
@@ -45,6 +51,13 @@ export default async function UsersPage() {
                   <RoleSelect
                     userId={user.id}
                     currentRole={user.role}
+                    isSelf={user.id === session.user.id}
+                  />
+                </TableCell>
+                <TableCell className="text-right">
+                  <EditUserName
+                    userId={user.id}
+                    currentName={user.name}
                     isSelf={user.id === session.user.id}
                   />
                 </TableCell>

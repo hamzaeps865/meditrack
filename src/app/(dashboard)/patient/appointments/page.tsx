@@ -21,6 +21,7 @@ import { HealthScoreCard } from '@/components/shared/health-score-card';
 import { LoyaltyBadge } from '@/components/shared/loyalty-badge';
 import HealthAlertsBanner from '@/components/shared/health-alerts-banner';
 import { getActiveAlertsForCity } from '@/server/actions/health-alerts.actions';
+import CancelAppointmentButton from '@/components/shared/cancel-appointment-button';
 import MedicationReminders from '@/components/patient/medication-reminders';
 import { getMedicationReminders } from '@/server/actions/medication-reminders.actions';
 
@@ -504,6 +505,13 @@ function AppointmentRow({
             doctorId={appt.doctorId}
             doctorName={appt.doctorName}
           />
+        </div>
+      )}
+
+      {/* Cancel action for upcoming appointments */}
+      {(appt.status === 'scheduled' || appt.status === 'checked_in') && (
+        <div className="shrink-0">
+          <CancelAppointmentButton appointmentId={appt.id} variant="text" />
         </div>
       )}
     </li>

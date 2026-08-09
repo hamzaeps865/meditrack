@@ -6,6 +6,7 @@ import { eq, and, isNull } from 'drizzle-orm';
 import NotificationBell from '@/components/shared/notification-bell';
 import PatientSettingsForm from '@/components/patient/settings-form';
 import { LoyaltyBadge } from '@/components/shared/loyalty-badge';
+import PhotoUpload from '@/components/shared/photo-upload';
 import { getLoyaltyTier } from '@/server/actions/health-score.actions';
 import { User, Settings } from 'lucide-react';
 
@@ -84,18 +85,11 @@ export default async function PatientSettingsPage() {
         {patientRow && (
           <div className="bg-white rounded-2xl border border-border p-5 shadow-sm mb-5">
             <div className="flex items-center gap-4">
-              <div
-                className="h-14 w-14 rounded-2xl flex items-center justify-center text-lg
-                  font-bold text-white shrink-0"
-                style={{ background: 'linear-gradient(135deg, #1E3A5F, #2d6a9f)' }}
-              >
-                {(userRow?.name ?? patientRow.name)
-                  .split(' ')
-                  .map((p) => p[0])
-                  .slice(0, 2)
-                  .join('')
-                  .toUpperCase()}
-              </div>
+              <PhotoUpload
+                name={userRow?.name ?? patientRow.name}
+                initialAvatar={null}
+                size={56}
+              />
               <div className="min-w-0">
                 <p className="text-base font-bold text-foreground truncate">
                   {userRow?.name ?? patientRow.name}

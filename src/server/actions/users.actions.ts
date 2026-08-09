@@ -60,3 +60,48 @@ export async function assignRole(input: unknown) {
 
   return updated;
 }
+
+// ─── Update User Name (admin only) ────────────────────────────────────────────
+
+const updateUserNameSchema = z.object({
+  userId: z.string().uuid(),
+  name: z.string().min(2, 'Name must be at least 2 characters').max(255).trim(),
+});
+
+export async function updateUserName(input: unknown) {
+  const session = await requireRole(['admin']);
+  const { userId, name } = updateUserNameSchema.parse(input);
+
+  const [existing] = await db
+    .select({ id: users.id })
+    .from(users)
+    .where(eq(users.id, userId));
+
+  if (!existing) throw new Error('User not found.');
+
+  await db.update(users).set({ name }).where(eq(users.id, userId));
+  return { success: true };
+}
+
+// ─── Deactivate User (admin only — set role to patient, can't truly delete) ───
+
+export async function deactivateUser(userId: string) {
+  const session = await requireRole(['admin']);
+
+  if (userId === session.user.id) {
+    throw new Error('You cannot deactivate your own account.');
+  }
+
+  const [existing] = await db
+    .select({ id: users.id, role: users.role })
+    .from(users)
+    .where(eq(users.id, userId));
+
+  if (!existing) throw new Error('User not found.');
+  if (existing.role === 'patient') {
+    throw new Error('This user is already a patient (inactive for staff roles).');
+  }
+
+  await db.update(users).set({ role: 'patient' }).where(eq(users.id, userId));
+  return { success: true };
+}

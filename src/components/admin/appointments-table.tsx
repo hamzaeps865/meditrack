@@ -9,6 +9,7 @@ import {
   CalendarDays, Lightbulb,
 } from 'lucide-react';
 import NotificationBell from '@/components/shared/notification-bell';
+import CancelAppointmentButton from '@/components/shared/cancel-appointment-button';
 import { format, isSameDay, isWithinInterval, startOfWeek, endOfWeek, startOfMonth, endOfMonth } from 'date-fns';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -453,14 +454,9 @@ export default function AppointmentsTable({
                           >
                             Reschedule
                           </button>
-                          <button
-                            type="button"
-                            className="w-full text-left px-4 py-2 text-sm
-                              text-red-600 hover:bg-red-50"
-                            onClick={() => setOpenMenu(null)}
-                          >
-                            Cancel
-                          </button>
+                          <div onClick={() => setOpenMenu(null)} className="px-4 py-2 hover:bg-red-50">
+                            <CancelAppointmentButton appointmentId={appt.id} variant="text" />
+                          </div>
                         </div>
                       )}
                     </div>
