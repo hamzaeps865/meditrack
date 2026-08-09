@@ -75,7 +75,7 @@ function AddBlockForm({
   doctorId: string;
   day: DayOfWeek;
   onClose: () => void;
-  onAdded: () => void;
+  onAdded: (newWindow: TimeWindow) => void;
 }) {
   const [start, setStart] = useState('09:00');
   const [end,   setEnd]   = useState('17:00');
@@ -87,9 +87,15 @@ function AddBlockForm({
     setErr(null);
     startTransition(async () => {
       try {
-        await setDoctorAvailability({ doctorId, dayOfWeek: day, startTime: start, endTime: end });
-        toast.success(`Availability added: ${day} ${fmt(start)} – ${fmt(end)}`);
-        onAdded();
+        const result = await setDoctorAvailability({ doctorId, dayOfWeek: day, startTime: start, endTime: end });
+        toast.success(`Availability added: ${DAY_LABELS[day]} ${fmt(start)} – ${fmt(end)}`);
+        // Pass the new window up so the parent updates its local state immediately
+        onAdded({
+          id: result.id,
+          dayOfWeek: day,
+          startTime: start,
+          endTime: end,
+        });
         onClose();
       } catch (e) {
         setErr(e instanceof Error ? e.message : 'Failed to add block.');
@@ -195,8 +201,11 @@ export default function AvailabilityManager({ doctorId, initialWindows }: Props)
     });
   }
 
-  // ── After adding — refresh from server ────────────────────────────────────
-  function handleAdded() {
+  // ── After adding — update local state immediately + refresh server props ───
+  function handleAdded(newWindow: TimeWindow) {
+    // Add the new window to local state so the UI updates INSTANTLY
+    setWindows((prev) => [...prev, newWindow]);
+    // Also refresh server component props to stay in sync
     router.refresh();
   }
 
