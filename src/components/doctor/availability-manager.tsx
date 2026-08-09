@@ -9,8 +9,9 @@ import { useRouter } from 'next/navigation';
 import {
   Plus, X, Loader2, AlertTriangle,
   Calendar, Zap, RefreshCw, Info,
-  Trash2,
+  Trash2, Check,
 } from 'lucide-react';
+import { toast } from 'sonner';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -87,10 +88,12 @@ function AddBlockForm({
     startTransition(async () => {
       try {
         await setDoctorAvailability({ doctorId, dayOfWeek: day, startTime: start, endTime: end });
+        toast.success(`Availability added: ${day} ${fmt(start)} – ${fmt(end)}`);
         onAdded();
         onClose();
       } catch (e) {
         setErr(e instanceof Error ? e.message : 'Failed to add block.');
+        toast.error('Failed to add availability block.');
       }
     });
   }
@@ -112,15 +115,15 @@ function AddBlockForm({
             text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20" />
       </div>
       <button type="button" onClick={submit} disabled={isPending}
-        className="h-8 px-3 rounded-lg bg-primary text-primary-foreground text-xs
-          font-semibold hover:bg-primary/90 transition-colors disabled:opacity-60
-          flex items-center gap-1.5">
-        {isPending ? <Loader2 className="h-3 w-3 animate-spin" /> : null}
-        Save
+        className="h-9 px-4 rounded-lg bg-primary text-primary-foreground text-sm
+          font-bold hover:bg-primary/90 transition-colors disabled:opacity-60
+          disabled:cursor-not-allowed flex items-center gap-2 shadow-sm">
+        {isPending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Check className="h-3.5 w-3.5" />}
+        {isPending ? 'Saving...' : 'Save Block'}
       </button>
       <button type="button" onClick={onClose}
-        className="h-8 px-3 rounded-lg border border-border text-xs font-medium
-          text-muted-foreground hover:bg-muted transition-colors">
+        className="h-9 px-4 rounded-lg border border-border text-sm font-medium
+          text-foreground hover:bg-muted transition-colors">
         Cancel
       </button>
       {err && (
@@ -160,8 +163,10 @@ export default function AvailabilityManager({ doctorId, initialWindows }: Props)
     startTransition(async () => {
       try {
         await deleteAvailabilityWindow(windowId);
+        toast.success('Availability block removed.');
         router.refresh();
       } catch {
+        toast.error('Failed to remove block.');
         // Revert on failure
         router.refresh();
       }
@@ -171,7 +176,6 @@ export default function AvailabilityManager({ doctorId, initialWindows }: Props)
   // ── After adding — refresh from server ────────────────────────────────────
   function handleAdded() {
     router.refresh();
-    // Also refresh local state via router.refresh (server re-passes props)
   }
 
   // ── Group windows by day ───────────────────────────────────────────────────
@@ -228,15 +232,13 @@ export default function AvailabilityManager({ doctorId, initialWindows }: Props)
 
                 {/* Toggle + day name */}
                 <div className="flex items-center gap-2.5">
-                  {/* Toggle pill */}
+                  {/* Toggle pill — opens add form for inactive days */}
                   <button
                     type="button"
-                    onClick={() => {
-                      if (!active) setAddingDay(isAdding ? null : day);
-                    }}
-                    aria-label={active ? 'Day active' : 'Enable day'}
+                    onClick={() => setAddingDay(isAdding ? null : day)}
+                    aria-label={active ? `${DAY_LABELS[day]} active` : `Enable ${DAY_LABELS[day]}`}
                     className={`h-6 w-11 rounded-full flex items-center px-0.5
-                      transition-colors shrink-0
+                      transition-colors shrink-0 cursor-pointer
                       ${active ? 'bg-primary justify-end' : 'bg-muted justify-start'}`}
                   >
                     <div className="h-5 w-5 rounded-full bg-white shadow-sm" />
