@@ -156,6 +156,28 @@ export default function AvailabilityManager({ doctorId, initialWindows }: Props)
     { id: '1', label: 'Out of office', date: 'Sunday, July 14, 2024' },
   ]);
 
+  // ── Toggle day on/off ─────────────────────────────────────────────────────
+  // ON → OFF: delete all windows for that day (makes the day unavailable)
+  // OFF → ON: open the add block form so the doctor can set hours
+  function handleToggleDay(day: DayOfWeek) {
+    const dayWins = byDay.get(day) ?? [];
+    if (dayWins.length > 0) {
+      // Day is active → turn it OFF: remove all blocks
+      if (!confirm(`Remove all availability for ${DAY_LABELS[day]}?`)) return;
+      setWindows((prev) => prev.filter((w) => w.dayOfWeek !== day));
+      startTransition(async () => {
+        for (const w of dayWins) {
+          try { await deleteAvailabilityWindow(w.id); } catch {}
+        }
+        toast.success(`${DAY_LABELS[day]} marked as unavailable.`);
+        router.refresh();
+      });
+    } else {
+      // Day is inactive → turn it ON: open the add form
+      setAddingDay(day);
+    }
+  }
+
   // ── Delete window ──────────────────────────────────────────────────────────
   function handleDelete(windowId: string) {
     // Optimistic remove
@@ -232,11 +254,11 @@ export default function AvailabilityManager({ doctorId, initialWindows }: Props)
 
                 {/* Toggle + day name */}
                 <div className="flex items-center gap-2.5">
-                  {/* Toggle pill — opens add form for inactive days */}
+                  {/* Toggle pill — turns day ON (opens add form) or OFF (deletes all blocks) */}
                   <button
                     type="button"
-                    onClick={() => setAddingDay(isAdding ? null : day)}
-                    aria-label={active ? `${DAY_LABELS[day]} active` : `Enable ${DAY_LABELS[day]}`}
+                    onClick={() => handleToggleDay(day)}
+                    aria-label={active ? `Turn off ${DAY_LABELS[day]}` : `Turn on ${DAY_LABELS[day]}`}
                     className={`h-6 w-11 rounded-full flex items-center px-0.5
                       transition-colors shrink-0 cursor-pointer
                       ${active ? 'bg-primary justify-end' : 'bg-muted justify-start'}`}
