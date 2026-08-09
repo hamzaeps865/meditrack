@@ -7,6 +7,7 @@ import {
   LayoutDashboard, Stethoscope, Users, Calendar,
   FileText, Settings, ClipboardList, HelpCircle, LogOut, ShieldCheck,
   Search, HeartPulse, BarChart2, UsersRound, ShieldAlert, Receipt, Pill, Package,
+  FlaskConical,
 } from 'lucide-react';
 import ProfileSwitcher from '@/components/layout/profile-switcher';
 
@@ -49,8 +50,11 @@ const navItems: Record<Role, { label: string; href: string; icon: any }[]> = {
   patient: [
     { label: 'My Appointments',  href: '/patient/appointments',   icon: Calendar },
     { label: 'Find a Doctor',    href: '/patient/doctors',        icon: Search },
-    { label: 'Family',           href: '/patient/family',         icon: UsersRound },
+    { label: 'My Visits',        href: '/patient/visits',         icon: Stethoscope },
     { label: 'Prescriptions',    href: '/patient/prescriptions',  icon: FileText },
+    { label: 'Lab Results',      href: '/patient/lab-results',    icon: FlaskConical },
+    { label: 'Billing',          href: '/patient/billing',        icon: Receipt },
+    { label: 'Family',           href: '/patient/family',         icon: UsersRound },
     { label: 'Health Report',    href: '/patient/reports',        icon: HeartPulse },
     { label: 'Settings',         href: '/patient/settings',       icon: Settings },
   ],
