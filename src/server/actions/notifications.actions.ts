@@ -3,10 +3,12 @@
 import { db } from '@/server/db';
 import {
   appointments, doctors, patients, users, auditLogs,
+  prescriptionItems, prescriptions, visits, dispensings,
+  medicineInventory, medicines,
 } from '@/server/db/schema';
 import { requireSession } from '@/server/auth/rbac';
 import {
-  eq, and, gte, lte, desc, isNull,
+  eq, and, gte, lte, desc, isNull, sql,
 } from 'drizzle-orm';
 import {
   startOfDay, endOfDay, subHours, addHours,
@@ -16,7 +18,7 @@ import {
 
 export type NotificationItem = {
   id:        string;
-  type:      'appointment' | 'checked_in' | 'cancelled' | 'new_patient' | 'audit' | 'system';
+  type:      'appointment' | 'checked_in' | 'cancelled' | 'new_patient' | 'audit' | 'system' | 'pharmacy' | 'prescription';
   title:     string;
   body:      string;
   time:      string;   // ISO string
@@ -317,6 +319,104 @@ export async function getNotifications(): Promise<NotificationItem[]> {
         time:  a.createdAt.toISOString(),
         read:  false,
         href:  `/receptionist/appointments`,
+      });
+    }
+  }
+
+  // ── PHARMACIST notifications ──────────────────────────────────────────────
+  if (role === 'pharmacist') {
+    // 1. Pending prescriptions awaiting dispensing (last 24h)
+    const pendingRx = await db
+      .select({
+        id:          prescriptionItems.id,
+        medicineName: prescriptionItems.medicineName,
+        patientName: patients.name,
+        createdAt:   prescriptions.createdAt,
+      })
+      .from(prescriptionItems)
+      .innerJoin(prescriptions, eq(prescriptionItems.prescriptionId, prescriptions.id))
+      .innerJoin(visits, eq(prescriptions.visitId, visits.id))
+      .leftJoin(patients, eq(visits.patientId, patients.id))
+      .leftJoin(dispensings, eq(prescriptionItems.id, dispensings.prescriptionItemId))
+      .where(
+        and(
+          isNull(dispensings.id),
+          gte(prescriptions.createdAt, subHours(now, 24)),
+        ),
+      )
+      .orderBy(desc(prescriptions.createdAt))
+      .limit(5);
+
+    for (const rx of pendingRx) {
+      items.push({
+        id:    `rx-${rx.id}`,
+        type:  'pharmacy',
+        title: 'New Prescription to Dispense',
+        body:  `${rx.patientName ?? 'A patient'} — ${rx.medicineName}`,
+        time:  rx.createdAt.toISOString(),
+        read:  false,
+        href:  `/pharmacy`,
+      });
+    }
+
+    // 2. Low-stock alerts (batches below 10 units)
+    const lowStock = await db
+      .select({
+        id:        medicineInventory.id,
+        medicineName: medicines.name,
+        quantity:  medicineInventory.quantityInStock,
+      })
+      .from(medicineInventory)
+      .innerJoin(medicines, eq(medicineInventory.medicineId, medicines.id))
+      .where(lte(medicineInventory.quantityInStock, 10))
+      .limit(5);
+
+    for (const ls of lowStock) {
+      items.push({
+        id:    `lows-${ls.id}`,
+        type:  'pharmacy',
+        title: 'Low Stock Alert',
+        body:  `${ls.medicineName} — only ${ls.quantity} units left`,
+        time:  now.toISOString(),
+        read:  false,
+        href:  `/pharmacy/inventory`,
+      });
+    }
+  }
+
+  // ── PATIENT notifications ─────────────────────────────────────────────────
+  if (role === 'patient') {
+    // Prescription ready for pickup (dispensed in the last 24h)
+    const readyRx = await db
+      .select({
+        id:          dispensings.id,
+        medicineName: prescriptionItems.medicineName,
+        quantity:    dispensings.quantityDispensed,
+        dispensedAt: dispensings.dispensedAt,
+      })
+      .from(dispensings)
+      .innerJoin(prescriptionItems, eq(dispensings.prescriptionItemId, prescriptionItems.id))
+      .innerJoin(prescriptions, eq(prescriptionItems.prescriptionId, prescriptions.id))
+      .innerJoin(visits, eq(prescriptions.visitId, visits.id))
+      .leftJoin(patients, eq(visits.patientId, patients.id))
+      .where(
+        and(
+          eq(patients.email, session.user.email ?? ''),
+          gte(dispensings.dispensedAt, subHours(now, 24)),
+        ),
+      )
+      .orderBy(desc(dispensings.dispensedAt))
+      .limit(5);
+
+    for (const rx of readyRx) {
+      items.push({
+        id:    `ready-${rx.id}`,
+        type:  'prescription',
+        title: 'Prescription Ready',
+        body:  `${rx.medicineName} × ${rx.quantity} — please collect from the pharmacy.`,
+        time:  rx.dispensedAt.toISOString(),
+        read:  false,
+        href:  `/patient/prescriptions`,
       });
     }
   }

@@ -6,7 +6,7 @@ import { requireRole } from '@/server/auth/rbac';
 import { createPatientSchema, updatePatientSchema, patientIdSchema } from '@/lib/validators/patient';
 import { withAudit, auditRead, getIpFromHeaders } from '@/lib/audit-wrapper';
 import { headers } from 'next/headers';
-import { eq, isNull, or, ilike } from 'drizzle-orm';
+import { eq, and, isNull, or, ilike } from 'drizzle-orm';
 
 // ─── Get All Patients ─────────────────────────────────────────────────────────
 // Returns all non-deleted patients.
@@ -35,10 +35,13 @@ export async function searchPatients(query: string) {
     .select()
     .from(patients)
     .where(
-      or(
-        ilike(patients.name, term),
-        ilike(patients.phone, term),
-      ) 
+      and(
+        isNull(patients.deletedAt),
+        or(
+          ilike(patients.name, term),
+          ilike(patients.phone, term),
+        ),
+      ),
     )
     .orderBy(patients.name);
 }

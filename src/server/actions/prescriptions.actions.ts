@@ -1,15 +1,15 @@
 'use server';
 
 import { db } from '@/server/db';
-import { prescriptions, prescriptionItems, visits, doctors, auditLogs } from '@/server/db/schema';
-import { requireRole, assertDoctorOwnsResource } from '@/server/auth/rbac';
+import { prescriptions, prescriptionItems, visits, doctors, patients, users, auditLogs } from '@/server/db/schema';
+import { requireRole, assertDoctorOwnsResource, assertPatientOwnsPatientRecord } from '@/server/auth/rbac';
 import { auditRead, getIpFromHeaders } from '@/lib/audit-wrapper';
 import { headers } from 'next/headers';
 import {
   createPrescriptionSchema,
   prescriptionIdSchema,
 } from '@/lib/validators/visit';
-import { eq } from 'drizzle-orm';
+import { eq, inArray } from 'drizzle-orm';
 
 // ─── Helper: assert doctor owns the visit ────────────────────────────────────
 // A prescription is tied to a visit — we resolve visit → doctorId
@@ -49,25 +49,30 @@ export async function createPrescription(input: unknown) {
 
   await assertDoctorOwnsVisit(data.visitId, session.user.role);
 
-  // Insert prescription header then items sequentially
-  const [prescription] = await db
-    .insert(prescriptions)
-    .values({ visitId: data.visitId })
-    .returning();
+  // Insert prescription header + items atomically so a failure in the items
+  // insert can never leave an orphan prescription with zero items.
+  const { prescription, items } = await db.transaction(async (tx) => {
+    const [prescription] = await tx
+      .insert(prescriptions)
+      .values({ visitId: data.visitId })
+      .returning();
 
-  const items = await db
-    .insert(prescriptionItems)
-    .values(
-      data.items.map((item) => ({
-        prescriptionId: prescription.id,
-        medicineName: item.medicineName,
-        dosage: item.dosage,
-        frequency: item.frequency,
-        duration: item.duration,
-        notes: item.notes ?? null,
-      })),
-    )
-    .returning();
+    const items = await tx
+      .insert(prescriptionItems)
+      .values(
+        data.items.map((item) => ({
+          prescriptionId: prescription.id,
+          medicineName: item.medicineName,
+          dosage: item.dosage,
+          frequency: item.frequency,
+          duration: item.duration,
+          notes: item.notes ?? null,
+        })),
+      )
+      .returning();
+
+    return { prescription, items };
+  });
 
   await db.insert(auditLogs).values({
     userId: session.user.id,
@@ -107,12 +112,7 @@ export async function getPrescriptionsByVisit(visitId: string) {
   const allItems = await db
     .select()
     .from(prescriptionItems)
-    .where(
-      prescriptionIds.length === 1
-        ? eq(prescriptionItems.prescriptionId, prescriptionIds[0])
-        : // Use inArray for multiple IDs when there are multiple prescriptions
-          eq(prescriptionItems.prescriptionId, prescriptionIds[0]),
-    );
+    .where(inArray(prescriptionItems.prescriptionId, prescriptionIds));
 
   // Group items back onto their parent prescription
   return prescriptionRows.map((prescription) => ({
@@ -127,7 +127,12 @@ export async function getPrescriptionsByVisit(visitId: string) {
 // Accessible by: admin, doctor, patient (own only)
 
 export async function getPrescriptionsByPatient(patientId: string) {
-  await requireRole(['admin', 'doctor', 'patient']);
+  const session = await requireRole(['admin', 'doctor', 'patient']);
+
+  // Patients may only view their own prescriptions
+  if (session.user.role === 'patient') {
+    await assertPatientOwnsPatientRecord(patientId, session);
+  }
 
   // Join prescriptions → visits to filter by patientId
   const rows = await db
@@ -153,11 +158,7 @@ export async function getPrescriptionsByPatient(patientId: string) {
   const allItems = await db
     .select()
     .from(prescriptionItems)
-    .where(
-      prescriptionIds.length === 1
-        ? eq(prescriptionItems.prescriptionId, prescriptionIds[0])
-        : eq(prescriptionItems.prescriptionId, prescriptionIds[0]),
-    );
+    .where(inArray(prescriptionItems.prescriptionId, prescriptionIds));
 
   return rows.map((row) => ({
     ...row.prescription,
@@ -194,4 +195,81 @@ export async function getPrescriptionById(id: string) {
     { userId: session.user.id, tableName: 'prescriptions', recordId: prescriptionId, ipAddress: ip },
     result,
   );
+}
+
+// ─── Get Prescription for Print (enriched) ───────────────────────────────────
+// Returns a prescription with all its line items PLUS the visit, doctor, and
+// patient details needed to render a printable prescription document.
+// Accessible by: admin, doctor (own only), patient (own only)
+
+export async function getPrescriptionForPrint(id: string) {
+  const session = await requireRole(['admin', 'doctor', 'patient']);
+
+  const { id: prescriptionId } = prescriptionIdSchema.parse({ id });
+
+  // Prescription + visit + doctor + patient (all in one joined query)
+  const [row] = await db
+    .select({
+      prescriptionId: prescriptions.id,
+      prescriptionCreatedAt: prescriptions.createdAt,
+      visitId: visits.id,
+      visitCreatedAt: visits.createdAt,
+      diagnosis: visits.diagnosis,
+      chiefComplaint: visits.chiefComplaint,
+      patientId: visits.patientId,
+      patientName: patients.name,
+      patientDob: patients.dob,
+      patientGender: patients.gender,
+      patientBloodGroup: patients.bloodGroup,
+      patientPhone: patients.phone,
+      doctorId: visits.doctorId,
+      doctorName: users.name,
+      doctorSpecialization: doctors.specialization,
+    })
+    .from(prescriptions)
+    .innerJoin(visits, eq(prescriptions.visitId, visits.id))
+    .leftJoin(doctors, eq(visits.doctorId, doctors.id))
+    .leftJoin(users, eq(doctors.userId, users.id))
+    .leftJoin(patients, eq(visits.patientId, patients.id))
+    .where(eq(prescriptions.id, prescriptionId));
+
+  if (!row) throw new Error('Prescription not found.');
+
+  // Ownership enforcement
+  if (session.user.role === 'doctor') {
+    const [doctor] = await db
+      .select({ userId: doctors.userId })
+      .from(doctors)
+      .where(eq(doctors.id, row.doctorId));
+    if (doctor) await assertDoctorOwnsResource(doctor.userId);
+  } else if (session.user.role === 'patient') {
+    await assertPatientOwnsPatientRecord(row.patientId, session);
+  }
+
+  // Fetch the medicine line items
+  const items = await db
+    .select()
+    .from(prescriptionItems)
+    .where(eq(prescriptionItems.prescriptionId, prescriptionId));
+
+  return {
+    prescriptionId: row.prescriptionId,
+    prescriptionCreatedAt: row.prescriptionCreatedAt,
+    visitCreatedAt: row.visitCreatedAt,
+    diagnosis: row.diagnosis,
+    chiefComplaint: row.chiefComplaint,
+    patient: {
+      id: row.patientId,
+      name: row.patientName,
+      dob: row.patientDob,
+      gender: row.patientGender,
+      bloodGroup: row.patientBloodGroup,
+      phone: row.patientPhone,
+    },
+    doctor: {
+      name: row.doctorName,
+      specialization: row.doctorSpecialization,
+    },
+    items,
+  };
 }

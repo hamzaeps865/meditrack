@@ -5,7 +5,7 @@ import Link from 'next/link';
 import {
   Bell, X, Calendar, UserCheck, XCircle,
   UserPlus, ShieldAlert, Info, Loader2,
-  CheckCheck,
+  CheckCheck, Pill, Package,
 } from 'lucide-react';
 import { getNotifications, type NotificationItem } from '@/server/actions/notifications.actions';
 import { formatDistanceToNow } from 'date-fns';
@@ -20,6 +20,8 @@ function NotifIcon({ type }: { type: NotificationItem['type'] }) {
     case 'new_patient':  return <UserPlus   className={`${cls} text-emerald-500`}/>;
     case 'audit':        return <ShieldAlert className={`${cls} text-red-500`}   />;
     case 'appointment':  return <Calendar   className={`${cls} text-blue-500`}   />;
+    case 'pharmacy':     return <Pill       className={`${cls} text-emerald-500`} />;
+    case 'prescription': return <Package    className={`${cls} text-violet-500`}  />;
     default:             return <Info       className={`${cls} text-muted-foreground`} />;
   }
 }
@@ -33,6 +35,8 @@ const dotColor: Record<NotificationItem['type'], string> = {
   audit:       'bg-red-500',
   appointment: 'bg-blue-400',
   system:      'bg-muted-foreground',
+  pharmacy:    'bg-emerald-400',
+  prescription: 'bg-violet-400',
 };
 
 // ─── Component ────────────────────────────────────────────────────────────────

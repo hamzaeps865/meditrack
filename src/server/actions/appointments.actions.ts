@@ -2,21 +2,28 @@
 
 import { db } from '@/server/db';
 import { appointments, doctors, patients } from '@/server/db/schema';
-import { requireRole, assertDoctorOwnsResource } from '@/server/auth/rbac';
+import {
+  requireRole,
+  assertDoctorOwnsResource,
+  assertPatientOwnsPatientRecord,
+} from '@/server/auth/rbac';
 import {
   bookAppointmentSchema,
   updateAppointmentStatusSchema,
   appointmentIdSchema,
 } from '@/lib/validators/appointment';
-import { eq, and, isNull } from 'drizzle-orm';
+import { eq, and } from 'drizzle-orm';
 
 // ─── Book Appointment ─────────────────────────────────────────────────────────
 // The core concurrency-safe booking action (SRS §FR-3, §6).
 //
-// Safety is achieved through two layers:
-//   1. UNIQUE(doctor_id, scheduled_at) at the DB level — the DB rejects
-//      duplicate inserts even under concurrent requests.
-//   2. The insert is wrapped in a transaction so the check + insert is atomic.
+// Concurrency safety is provided by the UNIQUE(doctor_id, scheduled_at)
+// constraint at the DB level — under a race the DB rejects the second insert
+// with a 23505 unique violation, which we map to a friendly message.
+//
+// The SELECT below is only an application-level pre-check for a friendlier
+// error message in the common (non-concurrent) case; it is NOT the
+// concurrency guard. The unique constraint is.
 //
 // Accessible by: admin, receptionist, patient (self-booking)
 
@@ -25,27 +32,10 @@ export async function bookAppointment(input: unknown) {
 
   const data = bookAppointmentSchema.parse(input);
 
-  // Patients can only book for themselves — resolve their patient record
+  // Patients can only book for themselves — verify they own the patient record
+  // (matched by email, since there is no patients.user_id FK yet).
   if (session.user.role === 'patient') {
-    const [patientRecord] = await db
-      .select({ id: patients.id })
-      .from(patients)
-      .where(
-        and(
-          eq(patients.id, data.patientId),
-          isNull(patients.deletedAt),
-        ),
-      );
-
-    if (!patientRecord) {
-      throw new Error('Patient not found.');
-    }
-
-    // The patient's users.id must map to the patientId being booked.
-    // For self-booking, the form should pre-fill patientId from their profile.
-    // We verify the session user owns that patient record via createdBy is not
-    // sufficient — add a direct userId field to patients if needed.
-    // For now, admins/receptionists bypass; patients are validated by role scope.
+    await assertPatientOwnsPatientRecord(data.patientId, session);
   }
 
   try {
@@ -126,6 +116,52 @@ export async function updateAppointmentStatus(input: unknown) {
     .where(eq(appointments.id, id))
     .returning();
 
+  // Gamified health score: award +20 points when an appointment transitions
+  // into 'completed' (one-shot — guarded by the transition check + idempotency
+  // in awardPoints). Best-effort: never blocks the status update.
+  if (status === 'completed' && existing.status !== 'completed') {
+    // 1. Award health points
+    try {
+      const { awardPoints } = await import('@/server/actions/health-score.actions');
+      await awardPoints(existing.patientId, 20, 'appointment_completed', existing.id);
+    } catch (err) {
+      console.error('[appointments] failed to award completion points:', err);
+    }
+
+    // 2. Auto-generate invoice (best-effort)
+    try {
+      const { autoGenerateInvoice } = await import('@/server/actions/billing.actions');
+      const { db: db2 } = await import('@/server/db');
+      const { visits } = await import('@/server/db/schema');
+      const { eq: eq2 } = await import('drizzle-orm');
+      const [visit] = await db2.select().from(visits).where(eq2(visits.appointmentId, existing.id));
+      if (visit) {
+        await autoGenerateInvoice({
+          visitId: visit.id,
+          appointmentId: existing.id,
+          doctorId: existing.doctorId,
+          patientId: existing.patientId,
+        });
+      }
+    } catch (err) {
+      console.error('[appointments] failed to auto-generate invoice:', err);
+    }
+
+    // 3. Generate medication reminders from prescriptions (best-effort)
+    try {
+      const { generateMedicationReminders } = await import('@/server/actions/medication-reminders.actions');
+      const { db: db3 } = await import('@/server/db');
+      const { visits: visitsTable } = await import('@/server/db/schema');
+      const { eq: eq3 } = await import('drizzle-orm');
+      const [visit] = await db3.select().from(visitsTable).where(eq3(visitsTable.appointmentId, existing.id));
+      if (visit) {
+        await generateMedicationReminders(visit.id, existing.patientId);
+      }
+    } catch (err) {
+      console.error('[appointments] failed to generate medication reminders:', err);
+    }
+  }
+
   return updated;
 }
 
@@ -162,22 +198,8 @@ export async function getAppointmentsByPatient(patientId: string) {
   const session = await requireRole(['admin', 'receptionist', 'doctor', 'patient']);
 
   // Patients can only view their own appointments.
-  // Patient records link to users via createdBy — for self-service the patientId
-  // must correspond to the logged-in user's patient profile.
   if (session.user.role === 'patient') {
-    const [patientRecord] = await db
-      .select({ id: patients.id })
-      .from(patients)
-      .where(
-        and(
-          eq(patients.id, patientId),
-          isNull(patients.deletedAt),
-        ),
-      );
-
-    if (!patientRecord) throw new Error('Patient not found.');
-    // Additional ownership: patient can only request their own patientId
-    // (enforced at the API/form layer — the patient portal pre-fills this)
+    await assertPatientOwnsPatientRecord(patientId, session);
   }
 
   return db
@@ -239,4 +261,96 @@ export async function getAllAppointments() {
 
 export async function cancelAppointment(id: string) {
   return updateAppointmentStatus({ id, status: 'cancelled' });
+}
+
+// ─── Schedule Follow-Up ───────────────────────────────────────────────────────
+// Creates a new scheduled appointment linked to the original via followUpOfId.
+// Accessible by: admin, doctor
+
+export async function scheduleFollowUp(params: {
+  originalAppointmentId: string;
+  doctorId: string;
+  patientId: string;
+  scheduledAt: string;
+  reason?: string;
+}) {
+  const session = await requireRole(['admin', 'doctor']);
+
+  try {
+    const [appt] = await db
+      .insert(appointments)
+      .values({
+        patientId: params.patientId,
+        doctorId: params.doctorId,
+        scheduledAt: new Date(params.scheduledAt),
+        status: 'scheduled',
+        reason: params.reason ?? 'Follow-up appointment',
+        followUpOfId: params.originalAppointmentId,
+        createdBy: session.user.id,
+      })
+      .returning();
+    return appt;
+  } catch (error) {
+    if (error instanceof Error && error.message.includes('23505')) {
+      throw new Error('That follow-up slot is already booked. Please choose another time.');
+    }
+    throw error;
+  }
+}
+
+// ─── Create Walk-In Appointment ───────────────────────────────────────────────
+// Walk-ins don't use the slot-booking flow — they arrive now and join the
+// queue. scheduledAt is set to the current time; isWalkIn flags them so the UI
+// can show them in a separate walk-in queue rather than the calendar grid.
+// Accessible by: admin, receptionist, nurse
+
+export async function createWalkInAppointment(input: {
+  patientId: string;
+  doctorId: string;
+  reason?: string;
+}) {
+  const session = await requireRole(['admin', 'receptionist', 'nurse']);
+
+  // Minimal validation — walk-ins skip the future-only and slot checks
+  if (!input.patientId || !input.doctorId) {
+    throw new Error('Patient and doctor are required.');
+  }
+
+  const now = new Date();
+
+  try {
+    const [appointment] = await db
+      .insert(appointments)
+      .values({
+        patientId: input.patientId,
+        doctorId: input.doctorId,
+        scheduledAt: now,
+        status: 'walk_in',
+        isWalkIn: true,
+        reason: input.reason ?? null,
+        createdBy: session.user.id,
+      })
+      .returning();
+
+    return appointment;
+  } catch (error) {
+    // Slot collision is extremely unlikely at sub-second precision, but handle it
+    if (error instanceof Error && error.message.includes('23505')) {
+      // Retry once with a 1-second offset to avoid the unique constraint
+      const [retry] = await db
+        .insert(appointments)
+        .values({
+          patientId: input.patientId,
+          doctorId: input.doctorId,
+          scheduledAt: new Date(now.getTime() + 1000),
+          status: 'walk_in',
+          isWalkIn: true,
+          reason: input.reason ?? null,
+          createdBy: session.user.id,
+        })
+        .returning();
+      return retry;
+    }
+    throw error;
+  }
 }

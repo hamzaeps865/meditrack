@@ -47,6 +47,9 @@ export default function RegisterPage() {
     const form = new FormData(e.currentTarget);
     const name = form.get('name') as string;
     const email = form.get('email') as string;
+    const dob = form.get('dob') as string;
+    const gender = form.get('gender') as string;
+    const phone = form.get('phone') as string;
 
     if (password !== confirm) {
       toast.error('Passwords do not match');
@@ -61,7 +64,7 @@ export default function RegisterPage() {
     setLoading(true);
 
     try {
-      await registerUser({ name, email, password });
+      await registerUser({ name, email, password, dob, gender, phone });
 
       // Auto sign-in after registration
       const result = await signIn('credentials', {
@@ -92,14 +95,14 @@ export default function RegisterPage() {
         <span className="text-xl font-bold text-primary">MediTrack</span>
       </div>
 
-      <div className="bg-card rounded-xl shadow-sm border border-border w-full max-w-[420px] px-6 sm:px-[33px] py-8">
+      <div className="bg-card rounded-xl shadow-sm border border-border w-full max-w-[480px] px-6 sm:px-[33px] py-8">
         {/* Header */}
         <div className="mb-6">
           <h1 className="text-2xl font-bold text-foreground leading-tight">
             Create your account
           </h1>
           <p className="text-muted-foreground text-sm mt-1">
-            Join thousands of healthcare professionals today.
+            Register as a patient to book appointments and manage your health.
           </p>
         </div>
 
@@ -129,10 +132,60 @@ export default function RegisterPage() {
               id="email"
               name="email"
               type="email"
-              placeholder="jane.smith@clinic.com"
+              placeholder="jane.smith@example.com"
               required
               className="mt-1 w-full h-[44px]"
             />
+          </div>
+
+          {/* Phone */}
+          <div>
+            <Label htmlFor="phone" className="text-sm font-medium text-foreground">
+              Phone Number
+            </Label>
+            <Input
+              id="phone"
+              name="phone"
+              type="tel"
+              placeholder="+92 300 1234567"
+              required
+              minLength={7}
+              maxLength={20}
+              className="mt-1 w-full h-[44px]"
+            />
+          </div>
+
+          {/* DOB + Gender row */}
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <Label htmlFor="dob" className="text-sm font-medium text-foreground">
+                Date of Birth
+              </Label>
+              <Input
+                id="dob"
+                name="dob"
+                type="date"
+                required
+                className="mt-1 w-full h-[44px]"
+              />
+            </div>
+            <div>
+              <Label htmlFor="gender" className="text-sm font-medium text-foreground">
+                Gender
+              </Label>
+              <select
+                id="gender"
+                name="gender"
+                required
+                defaultValue=""
+                className="mt-1 w-full h-[44px] px-3 rounded-lg border border-input bg-background text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20"
+              >
+                <option value="" disabled>Select</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
           </div>
 
           {/* Password */}

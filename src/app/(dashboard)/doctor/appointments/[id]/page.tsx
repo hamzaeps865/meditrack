@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import NotificationBell from '@/components/shared/notification-bell';
 import VisitForm from '@/components/doctor/visit-form';
+import { getTriageForAppointment } from '@/server/actions/triage.actions';
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -113,6 +114,9 @@ export default async function AppointmentDetailPage({
       existingPrescriptionItems = items;
     }
   }
+
+  // Load triage data (recorded by nurse before consultation)
+  const triageData = await getTriageForAppointment(id).catch(() => null);
 
   // Load visit history for this patient (last 5 visits, excluding current)
   const visitHistory = await db
@@ -275,6 +279,45 @@ export default async function AppointmentDetailPage({
               </div>
             </div>
 
+            {/* Triage (nurse assessment) */}
+            {triageData && (
+              <div className="bg-white rounded-2xl border border-border p-4 shadow-sm">
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                    Triage Assessment
+                  </h3>
+                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                    triageData.severity === 'critical' ? 'bg-rose-100 text-rose-700' :
+                    triageData.severity === 'urgent' ? 'bg-orange-100 text-orange-700' :
+                    triageData.severity === 'low' ? 'bg-emerald-100 text-emerald-700' :
+                    'bg-blue-100 text-blue-700'
+                  }`}>
+                    {triageData.severity.toUpperCase()}
+                  </span>
+                </div>
+                <div className="space-y-2 text-sm">
+                  {triageData.chiefComplaint && (
+                    <div>
+                      <span className="text-xs text-muted-foreground">Complaint:</span>
+                      <p className="font-medium text-foreground">{triageData.chiefComplaint}</p>
+                    </div>
+                  )}
+                  <div className="flex flex-wrap gap-3 text-xs">
+                    {triageData.vitalsBp && <span className="text-muted-foreground">BP: <strong className="text-foreground">{triageData.vitalsBp}</strong></span>}
+                    {triageData.vitalsTemp && <span className="text-muted-foreground">Temp: <strong className="text-foreground">{triageData.vitalsTemp}°</strong></span>}
+                    {triageData.vitalsPulse && <span className="text-muted-foreground">Pulse: <strong className="text-foreground">{triageData.vitalsPulse}</strong></span>}
+                    {triageData.vitalsWeight && <span className="text-muted-foreground">Weight: <strong className="text-foreground">{triageData.vitalsWeight}</strong></span>}
+                  </div>
+                  {triageData.notes && (
+                    <p className="text-xs text-muted-foreground italic border-t border-border pt-2">{triageData.notes}</p>
+                  )}
+                  <p className="text-[10px] text-muted-foreground/70">
+                    By {triageData.nurseName ?? 'Nurse'} · {format(new Date(triageData.createdAt), 'MMM d, h:mm a')}
+                  </p>
+                </div>
+              </div>
+            )}
+
             {/* Visit History */}
             <div className="bg-white rounded-2xl border border-border p-4 shadow-sm">
               <div className="flex items-center justify-between mb-3">
@@ -321,9 +364,15 @@ export default async function AppointmentDetailPage({
           <VisitForm
             appointmentId={appt.id}
             patientId={appt.patientId}
+            doctorId={appt.doctorId}
             existingVisit={existingVisit ?? null}
             existingPrescriptionItems={existingPrescriptionItems}
             appointmentStatus={appt.status}
+            triageVitals={triageData ? {
+              vitalsBp: triageData.vitalsBp,
+              vitalsTemp: triageData.vitalsTemp,
+              vitalsWeight: triageData.vitalsWeight,
+            } : null}
           />
         </div>
       </div>

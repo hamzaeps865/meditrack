@@ -15,6 +15,55 @@
       "when": 1782815699795,
       "tag": "0001_magenta_shen",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1786200687895,
+      "tag": "0002_equal_smiling_tiger",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1786211662785,
+      "tag": "0003_lively_hellcat",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1786215674719,
+      "tag": "0004_bizarre_sinister_six",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1786253307002,
+      "tag": "0005_robust_ultragirl",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1786254776400,
+      "tag": "0006_fluffy_squirrel_girl",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1786266930014,
+      "tag": "0007_steady_bloodstorm",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1786268917518,
+      "tag": "0008_gorgeous_katie_power",
+      "breakpoints": true
     }
   ]
 }

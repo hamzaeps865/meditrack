@@ -70,6 +70,17 @@ export default async function DoctorPatientDetailPage({
 
   if (!patient || patient.deletedAt) notFound();
 
+  // If this patient is a managed family member, resolve the manager's name
+  // for hereditary-context display
+  let managerName: string | null = null;
+  if (patient.managedBy) {
+    const [manager] = await db
+      .select({ name: users.name })
+      .from(users)
+      .where(eq(users.id, patient.managedBy));
+    managerName = manager?.name ?? null;
+  }
+
   // Verify doctor has actually seen this patient
   const [seenCheck] = await db
     .select({ id: visits.id })
@@ -211,6 +222,11 @@ export default async function DoctorPatientDetailPage({
                   <span className="ml-2 font-semibold text-red-500">{patient.bloodGroup}</span>
                 )}
               </p>
+              {managerName && (
+                <p className="text-xs text-violet-600 mt-1.5 flex items-center gap-1">
+                  👤 Managed by <strong>{managerName}</strong> (family head)
+                </p>
+              )}
             </div>
           </div>
 

@@ -6,9 +6,11 @@ import { signOut } from 'next-auth/react';
 import {
   LayoutDashboard, Stethoscope, Users, Calendar,
   FileText, Settings, ClipboardList, HelpCircle, LogOut, ShieldCheck,
+  Search, HeartPulse, BarChart2, UsersRound, ShieldAlert, Receipt, Pill, Package,
 } from 'lucide-react';
+import ProfileSwitcher from '@/components/layout/profile-switcher';
 
-type Role = 'admin' | 'doctor' | 'receptionist' | 'patient';
+type Role = 'admin' | 'doctor' | 'receptionist' | 'patient' | 'nurse' | 'pharmacist';
 
 const navItems: Record<Role, { label: string; href: string; icon: any }[]> = {
   admin: [
@@ -16,6 +18,9 @@ const navItems: Record<Role, { label: string; href: string; icon: any }[]> = {
     { label: 'Doctors',     href: '/admin/doctors',     icon: Stethoscope },
     { label: 'Patients',    href: '/admin/patients',    icon: Users },
     { label: 'Appointments',href: '/admin/appointments',icon: Calendar },
+    { label: 'Billing',     href: '/admin/billing',     icon: Receipt },
+    { label: 'Pharmacy',    href: '/admin/pharmacy',    icon: Pill },
+    { label: 'Health Alerts', href: '/admin/alerts',    icon: ShieldAlert },
     { label: 'Audit Logs',  href: '/admin/audit-logs',  icon: FileText },
     { label: 'Settings',    href: '/admin/settings',    icon: Settings },
   ],
@@ -23,6 +28,7 @@ const navItems: Record<Role, { label: string; href: string; icon: any }[]> = {
     { label: 'Dashboard',     href: '/doctor',               icon: LayoutDashboard },
     { label: 'Appointments',  href: '/doctor/appointments',  icon: Calendar },
     { label: 'Patients',      href: '/doctor/patients',      icon: Users },
+    { label: 'Analytics',     href: '/doctor/analytics',     icon: BarChart2 },
     { label: 'Availability',  href: '/doctor/availability',  icon: ClipboardList },
     { label: 'Settings',      href: '/doctor/settings',      icon: Settings },
   ],
@@ -32,21 +38,44 @@ const navItems: Record<Role, { label: string; href: string; icon: any }[]> = {
     { label: 'Appointments',  href: '/receptionist/appointments',   icon: Calendar },
     { label: 'Settings',      href: '/receptionist/settings',       icon: Settings },
   ],
+  nurse: [
+    { label: 'Triage Queue',  href: '/nurse',                       icon: LayoutDashboard },
+    { label: 'Settings',      href: '/nurse/settings',              icon: Settings },
+  ],
+  pharmacist: [
+    { label: 'Dispensing Queue', href: '/pharmacy',                 icon: Pill },
+    { label: 'Inventory',        href: '/pharmacy/inventory',       icon: Package },
+  ],
   patient: [
     { label: 'My Appointments',  href: '/patient/appointments',   icon: Calendar },
+    { label: 'Find a Doctor',    href: '/patient/doctors',        icon: Search },
+    { label: 'Family',           href: '/patient/family',         icon: UsersRound },
     { label: 'Prescriptions',    href: '/patient/prescriptions',  icon: FileText },
+    { label: 'Health Report',    href: '/patient/reports',        icon: HeartPulse },
     { label: 'Settings',         href: '/patient/settings',       icon: Settings },
   ],
 };
 
 const quickAction: Record<Role, { label: string; href: string } | null> = {
   admin: { label: 'New Appointment', href: '/admin/appointments/new' },
-  doctor: { label: 'New Appointment', href: '/doctor/appointments/new' },
-  receptionist: { label: 'New Appointment', href: '/receptionist/appointments/new' },
+  doctor: { label: "Today's Appointments", href: '/doctor/appointments' },
+  receptionist: { label: 'Book Appointment', href: '/receptionist/appointments' },
   patient: { label: 'Book Appointment', href: '/patient/appointments/new' },
+  nurse: null,
+  pharmacist: null,
 };
 
-export default function Sidebar({ role, userName }: { role: Role; userName?: string | null }) {
+export default function Sidebar({
+  role,
+  userName,
+  profiles,
+  activePatientId,
+}: {
+  role: Role;
+  userName?: string | null;
+  profiles?: { id: string; name: string; isManaged: boolean }[];
+  activePatientId?: string | null;
+}) {
   const pathname = usePathname();
   const action = quickAction[role];
 
@@ -60,6 +89,13 @@ export default function Sidebar({ role, userName }: { role: Role; userName?: str
           <p className="text-xs text-muted-foreground mt-1 capitalize">{role} Portal</p>
         </div>
       </div>
+
+      {/* Profile switcher (patients only — shown when profiles exist) */}
+      {role === 'patient' && profiles && profiles.length > 0 && (
+        <div className="pt-3">
+          <ProfileSwitcher profiles={profiles} activeId={activePatientId ?? null} />
+        </div>
+      )}
 
       {/* Nav links */}
       <nav className="flex-1 px-4 py-4 space-y-1 overflow-y-auto">

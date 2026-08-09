@@ -1,13 +1,23 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useTransition } from 'react';
 import {
   Search, HelpCircle, Globe,
   Calendar, BellRing, Shield, Users,
   FileImage, CheckCircle2, Clock,
   Lock, Eye, EyeOff, ToggleLeft, ToggleRight,
+  Loader2,
 } from 'lucide-react';
 import NotificationBell from '@/components/shared/notification-bell';
+import { toast } from 'sonner';
+import {
+  getSystemSettings,
+  setSystemSettings,
+} from '@/server/actions/settings.actions';
+import {
+  updateOwnAdminProfile,
+  changeOwnAdminPassword,
+} from '@/server/actions/admin-self.actions';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -132,7 +142,11 @@ function ToggleRow({
 
 export default function AdminSettings({ adminName, adminEmail }: Props) {
   const [activeTab, setActiveTab] = useState<Tab>('clinic');
-  const [saved,     setSaved]     = useState(false);
+  const [saved, setSaved] = useState(false);
+  const [isPending, startTransition] = useTransition();
+
+  // ── Admin profile (editable name) ─────────────────────────────────────────
+  const [name, setName] = useState(adminName);
 
   // ── Clinic Information state ──────────────────────────────────────────────
   const [clinicName,    setClinicName]    = useState('MediTrack Central Clinic');
@@ -174,10 +188,103 @@ export default function AdminSettings({ adminName, adminEmail }: Props) {
   const [oldPw,        setOldPw]        = useState('');
   const [newPw,        setNewPw]        = useState('');
 
-  // ── Save handler (stub — no real API yet) ─────────────────────────────────
+  // ── Load persisted settings on mount ──────────────────────────────────────
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const s = await getSystemSettings();
+        if (cancelled) return;
+        if (s.clinic_name)    setClinicName(s.clinic_name);
+        if (s.contact_email)  setContactEmail(s.contact_email);
+        if (s.phone)          setPhone(s.phone);
+        if (s.address)        setAddress(s.address);
+        if (s.slot_duration)  setSlotDuration(s.slot_duration);
+        if (s.buffer_time)    setBufferTime(s.buffer_time);
+        if (s.booking_window) setBookingWindow(s.booking_window);
+        if (s.allow_self_book !== undefined)      setAllowSelfBook(s.allow_self_book === 'true');
+        if (s.require_approval !== undefined)     setRequireApproval(s.require_approval === 'true');
+        if (s.allow_cancellation !== undefined)   setAllowCancellation(s.allow_cancellation === 'true');
+        if (s.email_reminders !== undefined)      setEmailReminders(s.email_reminders === 'true');
+        if (s.sms_reminders !== undefined)        setSmsReminders(s.sms_reminders === 'true');
+        if (s.reminder_hours)                     setReminderHours(s.reminder_hours);
+        if (s.new_patient_alert !== undefined)    setNewPatientAlert(s.new_patient_alert === 'true');
+        if (s.cancellation_alert !== undefined)   setCancellationAlert(s.cancellation_alert === 'true');
+        if (s.daily_digest !== undefined)         setDailyDigest(s.daily_digest === 'true');
+        if (s.two_factor !== undefined)           setTwoFactor(s.two_factor === 'true');
+        if (s.session_timeout)                    setSessionTimeout(s.session_timeout);
+        if (s.operating_hours) {
+          try { setHours(JSON.parse(s.operating_hours)); } catch { /* ignore bad JSON */ }
+        }
+      } catch {
+        // Settings load is non-critical; defaults remain.
+      }
+    })();
+    return () => { cancelled = true; };
+  }, []);
+
+  // ── Save handler — persists clinic/appointments/notifications/security prefs ─
   function handleSave() {
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2500);
+    startTransition(async () => {
+      try {
+        await setSystemSettings({
+          clinic_name: clinicName,
+          contact_email: contactEmail,
+          phone,
+          address,
+          operating_hours: JSON.stringify(hours),
+          slot_duration: slotDuration,
+          buffer_time: bufferTime,
+          booking_window: bookingWindow,
+          allow_self_book: String(allowSelfBook),
+          require_approval: String(requireApproval),
+          allow_cancellation: String(allowCancellation),
+          email_reminders: String(emailReminders),
+          sms_reminders: String(smsReminders),
+          reminder_hours: reminderHours,
+          new_patient_alert: String(newPatientAlert),
+          cancellation_alert: String(cancellationAlert),
+          daily_digest: String(dailyDigest),
+          two_factor: String(twoFactor),
+          session_timeout: sessionTimeout,
+        });
+        setSaved(true);
+        setTimeout(() => setSaved(false), 2500);
+        toast.success('Settings saved.');
+      } catch (err) {
+        toast.error(err instanceof Error ? err.message : 'Failed to save settings.');
+      }
+    });
+  }
+
+  // ── Change password (security tab) ────────────────────────────────────────
+  function handleChangePassword() {
+    if (!oldPw || !newPw) {
+      toast.error('Please fill in both password fields.');
+      return;
+    }
+    startTransition(async () => {
+      try {
+        await changeOwnAdminPassword({ currentPassword: oldPw, newPassword: newPw });
+        setOldPw('');
+        setNewPw('');
+        toast.success('Password changed successfully.');
+      } catch (err) {
+        toast.error(err instanceof Error ? err.message : 'Failed to change password.');
+      }
+    });
+  }
+
+  // ── Save admin profile name ───────────────────────────────────────────────
+  function handleSaveProfile() {
+    startTransition(async () => {
+      try {
+        await updateOwnAdminProfile({ name });
+        toast.success('Profile updated.');
+      } catch (err) {
+        toast.error(err instanceof Error ? err.message : 'Failed to update profile.');
+      }
+    });
   }
 
   // ── Sidebar nav ──────────────────────────────────────────────────────────
@@ -489,6 +596,7 @@ export default function AdminSettings({ adminName, adminEmail }: Props) {
                             value={newPw}
                             onChange={(e) => setNewPw(e.target.value)}
                             placeholder="Min. 8 characters"
+                            minLength={8}
                             className={`${inputCls} pr-10`} />
                           <button type="button"
                             onClick={() => setShowNewPw((v) => !v)}
@@ -498,6 +606,17 @@ export default function AdminSettings({ adminName, adminEmail }: Props) {
                           </button>
                         </div>
                       </Field>
+                      <div className="pt-1">
+                        <button
+                          type="button"
+                          onClick={handleChangePassword}
+                          disabled={isPending}
+                          className="h-9 px-4 rounded-lg border border-border bg-white text-sm font-medium text-foreground hover:bg-muted transition-colors disabled:opacity-60 disabled:cursor-not-allowed flex items-center gap-2"
+                        >
+                          {isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
+                          Update Password
+                        </button>
+                      </div>
                     </div>
                   </div>
 
@@ -527,7 +646,27 @@ export default function AdminSettings({ adminName, adminEmail }: Props) {
                       text-muted-foreground mb-2">
                       Current Session
                     </p>
-                    <div className="space-y-1.5">
+                    <div className="space-y-3">
+                      <div className="max-w-sm">
+                        <label className={labelCls}>Display Name</label>
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="text"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            className={inputCls}
+                          />
+                          <button
+                            type="button"
+                            onClick={handleSaveProfile}
+                            disabled={isPending}
+                            className="shrink-0 h-10 px-4 rounded-lg border border-border bg-white text-sm font-medium text-foreground hover:bg-muted transition-colors disabled:opacity-60 disabled:cursor-not-allowed flex items-center gap-2"
+                          >
+                            {isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
+                            Save
+                          </button>
+                        </div>
+                      </div>
                       {[
                         { label: 'Account',  value: adminEmail },
                         { label: 'Role',     value: 'Administrator' },
@@ -636,10 +775,13 @@ export default function AdminSettings({ adminName, adminEmail }: Props) {
                 <button
                   type="button"
                   onClick={handleSave}
+                  disabled={isPending}
                   className="h-10 px-6 rounded-xl text-sm font-bold text-white
-                    hover:opacity-90 transition-opacity"
+                    hover:opacity-90 transition-opacity disabled:opacity-60
+                    disabled:cursor-not-allowed flex items-center gap-2"
                   style={{ backgroundColor: '#1E3A5F' }}
                 >
+                  {isPending && <Loader2 className="h-4 w-4 animate-spin" />}
                   Save Changes
                 </button>
               </div>

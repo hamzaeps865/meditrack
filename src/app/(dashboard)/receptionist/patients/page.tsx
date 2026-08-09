@@ -356,13 +356,13 @@ export default function PatientsPage() {
                               View
                             </Link>
                             <Link
-                              href={`/receptionist/patients/${p.id}/edit`}
+                              href={`/receptionist/patients/${p.id}`}
                               className="block px-3 py-2 text-sm text-foreground hover:bg-muted"
                             >
                               Edit
                             </Link>
                             <Link
-                              href={`/receptionist/appointments/new?patientId=${p.id}`}
+                              href={`/receptionist/appointments`}
                               className="block px-3 py-2 text-sm text-foreground hover:bg-muted"
                             >
                               Book Appointment

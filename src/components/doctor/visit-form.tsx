@@ -4,8 +4,10 @@ import { useState, useTransition, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { createVisit, updateVisit } from '@/server/actions/visits.actions';
 import { createPrescription } from '@/server/actions/prescriptions.actions';
-import { updateAppointmentStatus } from '@/server/actions/appointments.actions';
-import { Plus, Trash2, Loader2, AlertCircle } from 'lucide-react';
+import { createLabOrders } from '@/server/actions/lab-orders.actions';
+import { updateAppointmentStatus, scheduleFollowUp } from '@/server/actions/appointments.actions';
+import { Plus, Trash2, Loader2, AlertCircle, Download, FlaskConical } from 'lucide-react';
+import MedicineSearch from '@/components/doctor/medicine-search';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -18,9 +20,16 @@ interface PrescriptionRow {
   notes: string;
 }
 
+interface LabOrderRow {
+  id: string; // local key only
+  testName: string;
+  instructions: string;
+}
+
 interface VisitFormProps {
   appointmentId: string;
   patientId: string;
+  doctorId?: string;
   /** Existing visit if already started */
   existingVisit?: {
     id: string;
@@ -42,6 +51,12 @@ interface VisitFormProps {
     notes: string | null;
   }[];
   appointmentStatus: string;
+  /** Triage vitals recorded by nurse — used to pre-fill if no visit exists yet */
+  triageVitals?: {
+    vitalsBp: string | null;
+    vitalsTemp: string | null;
+    vitalsWeight: string | null;
+  } | null;
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
@@ -49,19 +64,22 @@ interface VisitFormProps {
 export default function VisitForm({
   appointmentId,
   patientId,
+  doctorId,
   existingVisit,
   existingPrescriptionItems = [],
   appointmentStatus,
+  triageVitals = null,
 }: VisitFormProps) {
   const router  = useRouter();
   const [isPending, startTransition] = useTransition();
   const [error, setError]   = useState<string | null>(null);
   const [saved, setSaved]   = useState(false);
 
-  // Vitals
-  const [bp,     setBp]     = useState(existingVisit?.vitalsBp     ?? '');
-  const [temp,   setTemp]   = useState(existingVisit?.vitalsTemp   ?? '');
-  const [weight, setWeight] = useState(existingVisit?.vitalsWeight ?? '');
+  // Vitals — pre-fill from triage if no visit exists yet (so the doctor
+  // doesn't re-enter what the nurse already recorded)
+  const [bp,     setBp]     = useState(existingVisit?.vitalsBp     ?? triageVitals?.vitalsBp     ?? '');
+  const [temp,   setTemp]   = useState(existingVisit?.vitalsTemp   ?? triageVitals?.vitalsTemp   ?? '');
+  const [weight, setWeight] = useState(existingVisit?.vitalsWeight ?? triageVitals?.vitalsWeight ?? '');
 
   // Clinical
   const [complaint,  setComplaint]  = useState(existingVisit?.chiefComplaint ?? '');
@@ -82,8 +100,32 @@ export default function VisitForm({
       : [],
   );
 
+  // Lab orders (empty initially — filled by the doctor during consultation)
+  const [labRows, setLabRows] = useState<LabOrderRow[]>([]);
+
+  // Follow-up scheduling
+  const [wantsFollowUp, setWantsFollowUp] = useState(false);
+  const [followUpDate, setFollowUpDate] = useState('');
+
   const isReadOnly   = appointmentStatus === 'completed';
   const canComplete  = appointmentStatus === 'in_progress' || appointmentStatus === 'checked_in';
+
+  // ── Add / remove lab order rows ─────────────────────────────────────────────
+
+  function addLabRow() {
+    setLabRows((prev) => [
+      ...prev,
+      { id: crypto.randomUUID(), testName: '', instructions: '' },
+    ]);
+  }
+
+  function removeLabRow(id: string) {
+    setLabRows((prev) => prev.filter((r) => r.id !== id));
+  }
+
+  function updateLabRow(id: string, field: keyof LabOrderRow, value: string) {
+    setLabRows((prev) => prev.map((r) => r.id === id ? { ...r, [field]: value } : r));
+  }
 
   // ── Add / remove prescription rows ─────────────────────────────────────────
 
@@ -196,8 +238,36 @@ export default function VisitForm({
           });
         }
 
-        // 3. Mark appointment completed
+        // 3. Save lab orders (only rows with a test name filled)
+        const validLabRows = labRows.filter((r) => r.testName.trim());
+        if (validLabRows.length > 0 && existingVisit?.id) {
+          await createLabOrders({
+            visitId: existingVisit.id,
+            orders: validLabRows.map((r) => ({
+              testName: r.testName,
+              instructions: r.instructions || undefined,
+            })),
+          });
+        }
+
+        // 4. Mark appointment completed
         await updateAppointmentStatus({ id: appointmentId, status: 'completed' });
+
+        // 5. Schedule follow-up if requested
+        if (wantsFollowUp && followUpDate && doctorId) {
+          try {
+            await scheduleFollowUp({
+              originalAppointmentId: appointmentId,
+              doctorId,
+              patientId,
+              scheduledAt: new Date(followUpDate).toISOString(),
+              reason: `Follow-up for ${complaint || 'previous visit'}`,
+            });
+          } catch (err) {
+            // Follow-up scheduling failure shouldn't block completion
+            console.error('Follow-up scheduling failed:', err);
+          }
+        }
 
         router.push('/doctor/appointments');
         router.refresh();
@@ -338,6 +408,17 @@ export default function VisitForm({
               Add Medicine
             </button>
           )}
+          {isReadOnly && existingPrescriptionItems.length > 0 && existingPrescriptionItems[0]?.prescriptionId && (
+            <a
+              href={`/prescriptions/${existingPrescriptionItems[0].prescriptionId}/print`}
+              target="_blank"
+              className="flex items-center gap-1.5 h-8 px-3 rounded-lg border border-border
+                text-sm font-medium text-foreground hover:bg-muted transition-colors"
+            >
+              <Download className="h-3.5 w-3.5 text-primary" />
+              Download
+            </a>
+          )}
         </div>
 
         {rxRows.length === 0 ? (
@@ -371,16 +452,24 @@ export default function VisitForm({
                       </>
                     ) : (
                       <>
-                        {(['medicineName', 'dosage', 'frequency', 'duration'] as const).map((field) => (
+                        <td className="py-2 pr-3">
+                          <MedicineSearch
+                            value={row.medicineName}
+                            onChange={(val) => updateRxRow(row.id, 'medicineName', val)}
+                            onSelect={(medicineId, displayName) => {
+                              updateRxRow(row.id, 'medicineName', displayName);
+                            }}
+                          />
+                        </td>
+                        {(['dosage', 'frequency', 'duration'] as const).map((field) => (
                           <td key={field} className="py-2 pr-3">
                             <input
                               type="text"
                               value={row[field]}
                               onChange={(e) => updateRxRow(row.id, field, e.target.value)}
                               placeholder={
-                                field === 'medicineName' ? 'e.g. Lisinopril' :
-                                field === 'dosage'       ? '10mg'            :
-                                field === 'frequency'    ? 'Once daily'      :
+                                field === 'dosage'       ? '10mg'       :
+                                field === 'frequency'    ? 'Once daily' :
                                                            '30 days'
                               }
                               className="w-full h-8 px-2.5 rounded-md border border-border
@@ -411,6 +500,92 @@ export default function VisitForm({
           </div>
         )}
       </section>
+
+      {/* ── Lab Orders ── */}
+      {!isReadOnly && (
+        <section className="bg-white rounded-2xl border border-border p-5 shadow-sm">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <FlaskConical className="h-4 w-4 text-primary" />
+              <h2 className="text-xs font-bold uppercase tracking-widest text-foreground">
+                Lab Orders
+              </h2>
+            </div>
+            <button
+              type="button"
+              onClick={addLabRow}
+              className="flex items-center gap-1.5 h-8 px-3 rounded-lg border border-border text-sm font-medium text-foreground hover:bg-muted transition-colors"
+            >
+              <Plus className="h-3.5 w-3.5" />
+              Add Test
+            </button>
+          </div>
+
+          {labRows.length === 0 ? (
+            <p className="text-sm text-muted-foreground text-center py-6">
+              No lab tests ordered.
+            </p>
+          ) : (
+            <div className="space-y-3">
+              {labRows.map((row) => (
+                <div key={row.id} className="flex items-start gap-3">
+                  <div className="flex-1 grid grid-cols-1 sm:grid-cols-[1fr_1.5fr] gap-2">
+                    <input
+                      type="text"
+                      value={row.testName}
+                      onChange={(e) => updateLabRow(row.id, 'testName', e.target.value)}
+                      placeholder="Test name (e.g. CBC, NS1 Antigen)"
+                      className="w-full h-10 px-3 rounded-lg border border-border bg-muted/30 text-sm text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:bg-white transition-colors"
+                    />
+                    <input
+                      type="text"
+                      value={row.instructions}
+                      onChange={(e) => updateLabRow(row.id, 'instructions', e.target.value)}
+                      placeholder="Instructions (e.g. Fasting required)"
+                      className="w-full h-10 px-3 rounded-lg border border-border bg-muted/30 text-sm text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:bg-white transition-colors"
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => removeLabRow(row.id)}
+                    className="h-10 w-10 flex items-center justify-center rounded-lg text-muted-foreground hover:text-red-500 hover:bg-red-50 transition-colors shrink-0"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
+      )}
+
+      {/* ── Follow-up scheduling ── */}
+      {!isReadOnly && canComplete && (
+        <section className="bg-white rounded-2xl border border-border p-5 shadow-sm">
+          <label className="flex items-center gap-3 cursor-pointer mb-3">
+            <input
+              type="checkbox"
+              checked={wantsFollowUp}
+              onChange={(e) => setWantsFollowUp(e.target.checked)}
+              className="h-4 w-4 rounded border-border text-primary focus:ring-primary/20"
+            />
+            <span className="text-sm font-medium text-foreground">Schedule a follow-up appointment</span>
+          </label>
+          {wantsFollowUp && (
+            <div className="ml-7">
+              <input
+                type="datetime-local"
+                value={followUpDate}
+                onChange={(e) => setFollowUpDate(e.target.value)}
+                className="h-10 px-3 rounded-lg border border-border bg-muted/30 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:bg-white transition-colors"
+              />
+              <p className="text-xs text-muted-foreground mt-1.5">
+                A new appointment will be created for this patient with the same doctor.
+              </p>
+            </div>
+          )}
+        </section>
+      )}
 
       {/* ── Footer action bar ── */}
       {!isReadOnly && (

@@ -1,10 +1,11 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { format } from 'date-fns';
 import {
   ChevronDown, ChevronUp, Pill, Stethoscope,
-  Activity, Thermometer, Weight, FileText, Heart,
+  Activity, Thermometer, Weight, FileText, Heart, Download,
 } from 'lucide-react';
 
 interface PrescriptionItem {
@@ -235,6 +236,19 @@ export default function PrescriptionAccordion({ prescriptions }: Props) {
                     </div>
                   </div>
                 )}
+
+                {/* Download prescription */}
+                <div className="px-5 py-3 border-t border-border flex justify-end">
+                  <Link
+                    href={`/prescriptions/${rx.id}/print`}
+                    target="_blank"
+                    className="inline-flex items-center gap-1.5 h-8 px-3 rounded-lg border border-border
+                      text-xs font-semibold text-foreground hover:bg-muted transition-colors"
+                  >
+                    <Download className="h-3.5 w-3.5 text-primary" />
+                    Download Prescription
+                  </Link>
+                </div>
               </div>
             )}
           </div>

@@ -130,22 +130,25 @@ export async function replaceAvailabilitySchedule(
     setAvailabilitySchema.parse({ ...(w as object), doctorId: validatedDoctorId }),
   );
 
-  // Delete all existing windows then insert the new set sequentially
-  await db
-    .delete(doctorAvailability)
-    .where(eq(doctorAvailability.doctorId, validatedDoctorId));
+  // Replace the whole schedule atomically — a failure during insert rolls
+  // back the delete, so the doctor is never left with an empty schedule.
+  return db.transaction(async (tx) => {
+    await tx
+      .delete(doctorAvailability)
+      .where(eq(doctorAvailability.doctorId, validatedDoctorId));
 
-  if (validatedWindows.length === 0) return [];
+    if (validatedWindows.length === 0) return [];
 
-  return db
-    .insert(doctorAvailability)
-    .values(
-      validatedWindows.map((w) => ({
-        doctorId: validatedDoctorId,
-        dayOfWeek: w.dayOfWeek,
-        startTime: w.startTime,
-        endTime: w.endTime,
-      })),
-    )
-    .returning();
+    return tx
+      .insert(doctorAvailability)
+      .values(
+        validatedWindows.map((w) => ({
+          doctorId: validatedDoctorId,
+          dayOfWeek: w.dayOfWeek,
+          startTime: w.startTime,
+          endTime: w.endTime,
+        })),
+      )
+      .returning();
+  });
 }

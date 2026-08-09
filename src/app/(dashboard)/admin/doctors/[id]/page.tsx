@@ -14,6 +14,8 @@ import {
   CalendarCheck, Activity, ChevronRight,
 } from 'lucide-react';
 import NotificationBell from '@/components/shared/notification-bell';
+import { getReviewsForDoctor, getDoctorRatingSummary } from '@/server/actions/reviews.actions';
+import { StarRating } from '@/components/shared/star-rating';
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -91,6 +93,12 @@ export default async function AdminDoctorProfilePage({
     .from(doctorAvailability)
     .where(eq(doctorAvailability.doctorId, id))
     .orderBy(doctorAvailability.dayOfWeek, doctorAvailability.startTime);
+
+  // Reviews + rating summary (parallel)
+  const [reviews, ratingSummary] = await Promise.all([
+    getReviewsForDoctor(id, 20),
+    getDoctorRatingSummary(id),
+  ]);
 
   // Group availability by day
   const availByDay = new Map<string, typeof availWindows>();
@@ -410,6 +418,48 @@ export default async function AdminDoctorProfilePage({
             )}
           </div>
         </div>
+      </div>
+
+      {/* ── Patient Reviews ── */}
+      <div className="bg-card rounded-xl border border-border overflow-hidden mt-4">
+        <div className="flex items-center justify-between px-6 py-5 border-b border-border">
+          <div className="flex items-center gap-3">
+            <h2 className="text-sm font-semibold text-foreground">Patient Reviews</h2>
+            <StarRating rating={ratingSummary.average} showNumber count={ratingSummary.count} />
+          </div>
+        </div>
+
+        {reviews.length === 0 ? (
+          <div className="px-6 py-10 text-center text-sm text-muted-foreground">
+            No reviews yet.
+          </div>
+        ) : (
+          <div className="divide-y divide-border">
+            {reviews.map((review) => (
+              <div key={review.id} className="px-6 py-4">
+                <div className="flex items-center justify-between mb-1.5">
+                  <div className="flex items-center gap-2.5">
+                    <div className="h-8 w-8 rounded-full bg-muted text-muted-foreground flex items-center justify-center text-xs font-semibold">
+                      {review.patientName?.split(' ').map((p) => p[0]).slice(0, 2).join('').toUpperCase() ?? '?'}
+                    </div>
+                    <span className="text-sm font-medium text-foreground">
+                      {review.patientName ?? 'Anonymous'}
+                    </span>
+                  </div>
+                  <span className="text-xs text-muted-foreground">
+                    {format(new Date(review.createdAt), 'MMM d, yyyy')}
+                  </span>
+                </div>
+                <div className="mb-2">
+                  <StarRating rating={review.rating} size={13} />
+                </div>
+                {review.comment && (
+                  <p className="text-sm text-muted-foreground leading-relaxed">{review.comment}</p>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

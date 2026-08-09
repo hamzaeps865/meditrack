@@ -8,6 +8,8 @@ import {
   Send, AlertCircle, CheckCircle2,
 } from 'lucide-react';
 import NotificationBell from '@/components/shared/notification-bell';
+import { toast } from 'sonner';
+import { createSupportRequest } from '@/server/actions/settings.actions';
 
 // ─── Quick Topics ─────────────────────────────────────────────────────────────
 
@@ -97,16 +99,21 @@ export default function HelpPage() {
     });
   }
 
-  function handleSend(e: React.FormEvent) {
+  async function handleSend(e: React.FormEvent) {
     e.preventDefault();
     if (!subject.trim() || !message.trim()) return;
     setSending(true);
-    setTimeout(() => {
-      setSending(false);
+    try {
+      await createSupportRequest({ subject, message });
       setSent(true);
       setSubject('');
       setMessage('');
-    }, 1000);
+      toast.success('Your message has been sent.');
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Failed to send message. Please try again.');
+    } finally {
+      setSending(false);
+    }
   }
 
   // Filter FAQs by search
@@ -387,12 +394,14 @@ export default function HelpPage() {
             © 2024 MediTrack Medical Solutions. System Version 4.2.1-Stable
           </p>
           <div className="flex items-center gap-5">
-            {['Privacy Policy', 'Service Status', 'System Log'].map((link) => (
+            <a href="/privacy" className="text-xs text-muted-foreground hover:text-foreground transition-colors">
+              Privacy Policy
+            </a>
+            {['Service Status', 'System Log'].map((link) => (
               <button
                 key={link}
                 type="button"
-                className="text-xs text-muted-foreground hover:text-foreground
-                  transition-colors"
+                className="text-xs text-muted-foreground hover:text-foreground transition-colors"
               >
                 {link}
               </button>

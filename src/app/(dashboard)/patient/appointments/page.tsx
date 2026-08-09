@@ -2,9 +2,9 @@ import { auth } from '@/server/auth';
 import { redirect } from 'next/navigation';
 import { db } from '@/server/db';
 import {
-  patients, appointments, doctors, users,
+  appointments, doctors, users, patients,
 } from '@/server/db/schema';
-import { eq, desc, isNull, and } from 'drizzle-orm';
+import { eq, desc } from 'drizzle-orm';
 import Link from 'next/link';
 import { format, isFuture, isPast, differenceInDays, isToday, isTomorrow } from 'date-fns';
 import {
@@ -13,6 +13,16 @@ import {
   Activity, Info,
 } from 'lucide-react';
 import NotificationBell from '@/components/shared/notification-bell';
+import ReviewModal from '@/components/patient/review-modal';
+import { getActivePatient } from '@/server/actions/active-patient';
+import { getHealthScore } from '@/server/actions/health-score.actions';
+import { getLoyaltyTier } from '@/server/actions/health-score.actions';
+import { HealthScoreCard } from '@/components/shared/health-score-card';
+import { LoyaltyBadge } from '@/components/shared/loyalty-badge';
+import HealthAlertsBanner from '@/components/shared/health-alerts-banner';
+import { getActiveAlertsForCity } from '@/server/actions/health-alerts.actions';
+import MedicationReminders from '@/components/patient/medication-reminders';
+import { getMedicationReminders } from '@/server/actions/medication-reminders.actions';
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -50,17 +60,11 @@ export default async function PatientAppointmentsPage() {
   const session = await auth();
   if (!session || session.user.role !== 'patient') redirect('/login');
 
-  const [patientRow] = await db
-    .select()
-    .from(patients)
-    .where(
-      and(
-        eq(patients.email, session.user.email ?? ''),
-        isNull(patients.deletedAt),
-      ),
-    );
+  // Resolve the active patient (self via email, or a managed family member)
+  const active = await getActivePatient();
+  const patientId = active?.id ?? null;
 
-  if (!patientRow) {
+  if (!patientId) {
     return (
       <PatientShell name={session.user.name}>
         <div className="flex flex-col items-center justify-center py-24 gap-4 text-muted-foreground">
@@ -92,7 +96,7 @@ export default async function PatientAppointmentsPage() {
     .from(appointments)
     .leftJoin(doctors, eq(appointments.doctorId, doctors.id))
     .leftJoin(users,   eq(doctors.userId, users.id))
-    .where(eq(appointments.patientId, patientRow.id))
+    .where(eq(appointments.patientId, patientId))
     .orderBy(desc(appointments.scheduledAt));
 
   const upcoming = allAppointments
@@ -106,9 +110,60 @@ export default async function PatientAppointmentsPage() {
   const completed = allAppointments.filter((a) => a.status === 'completed').length;
   const cancelled = allAppointments.filter((a) => a.status === 'cancelled').length;
 
+  // Gamified health score + loyalty tier (best-effort — won't block the page)
+  let healthScore: Awaited<ReturnType<typeof getHealthScore>> | null = null;
+  let loyalty: Awaited<ReturnType<typeof getLoyaltyTier>> | null = null;
+  try {
+    [healthScore, loyalty] = await Promise.all([
+      getHealthScore(patientId),
+      getLoyaltyTier(patientId),
+    ]);
+  } catch {
+    // Non-critical — page still renders without gamification
+  }
+
+  // Community health alerts for the patient's city (best-effort)
+  let healthAlerts: { id: string; title: string; message: string; disease: string | null; severity: 'low' | 'medium' | 'high' | 'critical'; city: string | null }[] = [];
+  try {
+    // Resolve the active patient's city
+    const [pRow] = await db.select({ city: patients.city }).from(patients).where(eq(patients.id, patientId));
+    const activeAlerts = await getActiveAlertsForCity(pRow?.city ?? null);
+    healthAlerts = activeAlerts.map((a) => ({
+      id: a.id, title: a.title, message: a.message,
+      disease: a.disease, severity: a.severity, city: a.city,
+    }));
+  } catch {
+    // Non-critical
+  }
+
+  // Medication reminders (best-effort)
+  let medicationRemindersData: { id: string; medicineName: string; dosage: string; frequency: string; nextDoseAt: Date }[] = [];
+  try {
+    const reminders = await getMedicationReminders(patientId);
+    medicationRemindersData = reminders.map((r) => ({
+      id: r.id, medicineName: r.medicineName, dosage: r.dosage,
+      frequency: r.frequency, nextDoseAt: r.nextDoseAt,
+    }));
+  } catch {
+    // Non-critical
+  }
+
   return (
     <PatientShell name={session.user.name}>
       <div className="max-w-3xl mx-auto space-y-6">
+
+        {/* ── Community health alerts ── */}
+        {healthAlerts.length > 0 && <HealthAlertsBanner alerts={healthAlerts} />}
+
+        {/* ── Managing-as indicator (family profile) ── */}
+        {active?.isManaged && (
+          <div className="bg-violet-50 border border-violet-200 rounded-xl px-4 py-2.5 flex items-center gap-2">
+            <span className="text-sm">👤</span>
+            <p className="text-sm text-violet-700">
+              Viewing appointments for <strong>{active.name}</strong>
+            </p>
+          </div>
+        )}
 
         {/* ── Header ── */}
         <div className="flex items-center justify-between">
@@ -152,6 +207,46 @@ export default async function PatientAppointmentsPage() {
             bg="bg-red-50"
           />
         </div>
+
+        {/* ── Gamification: Health Score + Loyalty ── */}
+        {healthScore && loyalty && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <HealthScoreCard
+              total={healthScore.total}
+              tier={healthScore.tier}
+              next={healthScore.next}
+            />
+            <div className="bg-white rounded-2xl border border-border p-5 shadow-sm flex flex-col">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
+                  Loyalty Status
+                </h3>
+                <Activity className="h-4 w-4 text-primary" />
+              </div>
+              <div className="flex-1 flex flex-col justify-center">
+                {loyalty.tier ? (
+                  <>
+                    <p className="text-4xl font-bold text-foreground leading-none">
+                      {loyalty.tier.icon}
+                    </p>
+                    <p className={`text-base font-bold mt-2 ${loyalty.tier.color}`}>{loyalty.tier.name}</p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Active for {loyalty.activeMonths} month{loyalty.activeMonths !== 1 ? 's' : ''}
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <p className="text-2xl">👋</p>
+                    <p className="text-base font-bold text-foreground mt-2">Welcome!</p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Book {3 - (loyalty.activeMonths % 3)} more month{3 - (loyalty.activeMonths % 3) !== 1 ? 's' : ''} to reach Silver status.
+                    </p>
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* ── Next Appointment Banner ── */}
         {nextAppt && (
@@ -218,6 +313,11 @@ export default async function PatientAppointmentsPage() {
               </div>
             </div>
           </div>
+        )}
+
+        {/* ── Medication Reminders ── */}
+        {medicationRemindersData.length > 0 && (
+          <MedicationReminders reminders={medicationRemindersData} />
         )}
 
         {/* ── Upcoming ── */}
@@ -331,6 +431,7 @@ function AppointmentRow({
     scheduledAt: Date | string;
     status: string;
     reason: string | null;
+    doctorId: string;
     doctorName: string | null;
     doctorSpec: string | null;
   };
@@ -394,6 +495,17 @@ function AppointmentRow({
         <span className={`h-1.5 w-1.5 rounded-full ${cfg.dot}`} />
         {cfg.label}
       </span>
+
+      {/* Leave-review action for completed appointments */}
+      {appt.status === 'completed' && appt.doctorName && (
+        <div className="shrink-0">
+          <ReviewModal
+            appointmentId={appt.id}
+            doctorId={appt.doctorId}
+            doctorName={appt.doctorName}
+          />
+        </div>
+      )}
     </li>
   );
 }

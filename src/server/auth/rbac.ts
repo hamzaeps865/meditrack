@@ -1,6 +1,9 @@
 import { auth } from '@/server/auth';
+import { db } from '@/server/db';
+import { patients } from '@/server/db/schema';
+import { and, eq, isNull } from 'drizzle-orm';
 
-type Role = 'admin' | 'doctor' | 'receptionist' | 'patient';
+type Role = 'admin' | 'doctor' | 'receptionist' | 'patient' | 'nurse' | 'pharmacist';
 
 export class UnauthorizedError extends Error {
   constructor(message = 'Unauthorized') {
@@ -45,4 +48,31 @@ export async function assertPatientOwnsResource(patientUserId: string) {
     throw new UnauthorizedError('You do not have access to this resource.');
   }
   return session;
+}
+
+// Ensures a patient (matched by email since there is no patients.user_id FK)
+// can only act on their own patient record. Admins bypass.
+//
+// We resolve the patient row and require that its email equals the logged-in
+// user's email. This is the email-join that links users → patients today.
+export async function assertPatientOwnsPatientRecord(
+  patientId: string,
+  session?: Awaited<ReturnType<typeof requireSession>>,
+) {
+  const sess = session ?? (await requireSession());
+  if (sess.user.role !== 'patient') return sess;
+
+  const [patient] = await db
+    .select({ email: patients.email, managedBy: patients.managedBy })
+    .from(patients)
+    .where(and(eq(patients.id, patientId), isNull(patients.deletedAt)));
+
+  // Access is granted if this is the patient's own record (matched by email)
+  // OR if the logged-in patient user manages this record (Family Profiles).
+  const isOwner = patient && patient.email === sess.user.email;
+  const isManager = patient && patient.managedBy === sess.user.id;
+  if (!patient || (!isOwner && !isManager)) {
+    throw new UnauthorizedError('You do not have access to this resource.');
+  }
+  return sess;
 }

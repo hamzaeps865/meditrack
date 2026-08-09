@@ -1,5 +1,6 @@
 import { pgTable, uuid, varchar, timestamp } from 'drizzle-orm/pg-core';
 import { visits } from './visits';
+import { medicines } from './pharmacy';
 
 export const prescriptions = pgTable('prescriptions', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -11,6 +12,8 @@ export const prescriptionItems = pgTable('prescription_items', {
   id: uuid('id').primaryKey().defaultRandom(),
   prescriptionId: uuid('prescription_id').notNull().references(() => prescriptions.id, { onDelete: 'cascade' }),
   medicineName: varchar('medicine_name', { length: 255 }).notNull(),
+  // Optional link to the medicine catalog (for dispensing + autocomplete)
+  medicineId: uuid('medicine_id').references(() => medicines.id),
   dosage: varchar('dosage', { length: 100 }).notNull(),
   frequency: varchar('frequency', { length: 100 }).notNull(),
   duration: varchar('duration', { length: 100 }).notNull(),

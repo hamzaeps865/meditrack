@@ -2,14 +2,15 @@ import { auth } from '@/server/auth';
 import { redirect } from 'next/navigation';
 import { db } from '@/server/db';
 import {
-  patients, prescriptions, prescriptionItems,
+  prescriptions, prescriptionItems,
   visits, doctors, users,
 } from '@/server/db/schema';
-import { eq, desc, isNull, and } from 'drizzle-orm';
+import { eq, desc } from 'drizzle-orm';
 
 import { Pill, Stethoscope, Activity } from 'lucide-react';
 import NotificationBell from '@/components/shared/notification-bell';
 import PrescriptionAccordion from '@/components/patient/prescription-accordion';
+import { getActivePatient } from '@/server/actions/active-patient';
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
@@ -17,17 +18,10 @@ export default async function PatientPrescriptionsPage() {
   const session = await auth();
   if (!session || session.user.role !== 'patient') redirect('/login');
 
-  const [patientRow] = await db
-    .select()
-    .from(patients)
-    .where(
-      and(
-        eq(patients.email, session.user.email ?? ''),
-        isNull(patients.deletedAt),
-      ),
-    );
+  const active = await getActivePatient();
+  const patientId = active?.id ?? null;
 
-  if (!patientRow) {
+  if (!patientId) {
     return (
       <PatientShell name={session.user.name}>
         <div className="flex flex-col items-center justify-center py-24 gap-4 text-muted-foreground">
@@ -66,7 +60,7 @@ export default async function PatientPrescriptionsPage() {
     .innerJoin(visits,   eq(prescriptions.visitId, visits.id))
     .leftJoin(doctors,   eq(visits.doctorId, doctors.id))
     .leftJoin(users,     eq(doctors.userId, users.id))
-    .where(eq(visits.patientId, patientRow.id))
+    .where(eq(visits.patientId, patientId))
     .orderBy(desc(prescriptions.createdAt));
 
   // Fetch all items for these prescriptions

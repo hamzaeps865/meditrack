@@ -1,7 +1,7 @@
 'use server';
 
 import { db } from '@/server/db';
-import { users } from '@/server/db/schema';
+import { users, patients } from '@/server/db/schema';
 import { eq } from 'drizzle-orm';
 import bcrypt from 'bcryptjs';
 import { z } from 'zod';
@@ -22,6 +22,18 @@ const registerSchema = z.object({
     .string({ message: 'Password is required' })
     .min(8, 'Password must be at least 8 characters')
     .max(72, 'Password too long'), // bcrypt max is 72 bytes
+  // Patient profile fields — required so the account is immediately usable
+  dob: z
+    .string({ message: 'Date of birth is required' })
+    .min(1, 'Date of birth is required'),
+  gender: z.enum(['male', 'female', 'other'], {
+    message: 'Gender must be male, female, or other',
+  }),
+  phone: z
+    .string({ message: 'Phone number is required' })
+    .min(7, 'Phone number is too short')
+    .max(20, 'Phone number must be at most 20 characters')
+    .trim(),
 });
 
 export type RegisterInput = z.infer<typeof registerSchema>;
@@ -39,8 +51,11 @@ export async function registerUser(input: unknown) {
     throw new Error('An account with this email already exists.');
   }
 
-  const passwordHash = await bcrypt.hash(data.password, 10);
+  const passwordHash = await bcrypt.hash(data.password, 12);
 
+  // Create the user account + linked patient record in one go so the patient
+  // can immediately book appointments (no more "no patient profile" dead-end).
+  // The patient row is linked by email (the system's email-join model).
   const [newUser] = await db
     .insert(users)
     .values({
@@ -50,6 +65,16 @@ export async function registerUser(input: unknown) {
       role: 'patient', // all self-registered users start as patient; admin assigns roles
     })
     .returning({ id: users.id, name: users.name, email: users.email, role: users.role });
+
+  // Create the matching patient record (createdBy = the new user themselves)
+  await db.insert(patients).values({
+    name: data.name,
+    dob: data.dob,
+    gender: data.gender,
+    phone: data.phone,
+    email: data.email, // links to the user via the email-join
+    createdBy: newUser.id,
+  });
 
   return newUser;
 }

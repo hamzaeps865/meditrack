@@ -72,7 +72,7 @@ export async function changeOwnReceptionistPassword(input: unknown) {
   const valid = await bcrypt.compare(currentPassword, userRow.passwordHash);
   if (!valid) throw new Error('Current password is incorrect.');
 
-  const newHash = await bcrypt.hash(newPassword, 10);
+  const newHash = await bcrypt.hash(newPassword, 12);
 
   await db
     .update(users)

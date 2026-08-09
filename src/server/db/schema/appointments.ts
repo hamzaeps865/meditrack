@@ -1,10 +1,10 @@
-import { pgTable, uuid, timestamp, varchar, text, pgEnum, unique } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, timestamp, varchar, text, boolean, pgEnum, unique } from 'drizzle-orm/pg-core';
 import { patients } from './patients';
 import { doctors } from './doctors';
 import { users } from './users';
 
 export const appointmentStatusEnum = pgEnum('appointment_status', [
-  'scheduled', 'checked_in', 'in_progress', 'completed', 'cancelled', 'no_show',
+  'scheduled', 'checked_in', 'in_progress', 'completed', 'cancelled', 'no_show', 'walk_in',
 ]);
 
 export const appointments = pgTable('appointments', {
@@ -14,6 +14,9 @@ export const appointments = pgTable('appointments', {
   scheduledAt: timestamp('scheduled_at').notNull(),
   status: appointmentStatusEnum('status').notNull().default('scheduled'),
   reason: text('reason'),
+  isWalkIn: boolean('is_walk_in').default(false).notNull(),
+  // Self-FK: if set, this appointment is a follow-up of the referenced one
+  followUpOfId: uuid('follow_up_of_id'),
   createdBy: uuid('created_by').notNull().references(() => users.id),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 }, (table) => ({

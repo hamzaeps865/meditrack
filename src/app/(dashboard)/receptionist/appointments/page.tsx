@@ -1,5 +1,7 @@
 import { getAllAppointments } from '@/server/actions/appointments.actions';
 import { getAllDoctors } from '@/server/actions/doctors.actions';
+import { auth } from '@/server/auth';
+import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { format, startOfDay, endOfDay, addDays, subDays, isSameDay } from 'date-fns';
 import { ChevronLeft, ChevronRight, Calendar } from 'lucide-react';
@@ -45,6 +47,12 @@ export default async function AppointmentsPage({
 }: {
   searchParams: Promise<{ date?: string; view?: string }>;
 }) {
+  // Auth guard — receptionist (admin also allowed to manage appointments)
+  const session = await auth();
+  if (!session || (session.user.role !== 'receptionist' && session.user.role !== 'admin')) {
+    redirect('/login');
+  }
+
   // Next.js 15+: searchParams is a Promise
   const params = await searchParams;
 

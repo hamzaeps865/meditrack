@@ -11,9 +11,11 @@ import Link from 'next/link';
 import { format, startOfDay, endOfDay, startOfWeek, endOfWeek } from 'date-fns';
 import {
   Search, Settings, Calendar, ChevronRight,
-  ClipboardList, BarChart2, Clock, CheckCircle2, Printer,
+  ClipboardList, BarChart2, Clock, CheckCircle2, Printer, Star,
 } from 'lucide-react';
 import NotificationBell from '@/components/shared/notification-bell';
+import { getDoctorRatingSummary, getReviewsForDoctor } from '@/server/actions/reviews.actions';
+import { StarRating } from '@/components/shared/star-rating';
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -171,12 +173,14 @@ export default async function DoctorDashboard() {
     );
   }
 
-  const [todayAppointments, weekPatients, recentPatients, availabilityDays] =
+  const [todayAppointments, weekPatients, recentPatients, availabilityDays, ratingSummary, recentReviews] =
     await Promise.all([
       getTodayAppointments(doctor.id),
       getWeekPatientCount(doctor.id),
       getRecentPatients(doctor.id),
       getDoctorAvailabilityDays(doctor.id),
+      getDoctorRatingSummary(doctor.id),
+      getReviewsForDoctor(doctor.id, 3),
     ]);
 
   const total     = todayAppointments.length;
@@ -432,6 +436,50 @@ export default async function DoctorDashboard() {
                 </div>
               ))}
             </div>
+          </div>
+
+          {/* Doctor Rating & Recent Reviews */}
+          <div className="bg-card rounded-xl border border-border p-5">
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+                Patient Rating
+              </h2>
+              <Star className="h-4 w-4 text-amber-400" />
+            </div>
+
+            <div className="flex items-center gap-3 mb-4">
+              <p className="text-4xl font-bold text-foreground leading-none">
+                {ratingSummary.average > 0 ? ratingSummary.average.toFixed(1) : '—'}
+              </p>
+              <div>
+                <StarRating rating={ratingSummary.average} size={16} />
+                <p className="text-xs text-muted-foreground mt-1">
+                  {ratingSummary.count > 0
+                    ? `${ratingSummary.count} review${ratingSummary.count !== 1 ? 's' : ''}`
+                    : 'No reviews yet'}
+                </p>
+              </div>
+            </div>
+
+            {recentReviews.length > 0 && (
+              <div className="space-y-3 pt-3 border-t border-border">
+                {recentReviews.map((review) => (
+                  <div key={review.id} className="text-xs">
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="font-medium text-foreground">
+                        {review.patientName ?? 'Anonymous'}
+                      </span>
+                      <StarRating rating={review.rating} size={11} />
+                    </div>
+                    {review.comment && (
+                      <p className="text-muted-foreground leading-relaxed line-clamp-2">
+                        &ldquo;{review.comment}&rdquo;
+                      </p>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Recent Patients */}

@@ -5,6 +5,8 @@ import { patients, users } from '@/server/db/schema';
 import { eq, and, isNull } from 'drizzle-orm';
 import NotificationBell from '@/components/shared/notification-bell';
 import PatientSettingsForm from '@/components/patient/settings-form';
+import { LoyaltyBadge } from '@/components/shared/loyalty-badge';
+import { getLoyaltyTier } from '@/server/actions/health-score.actions';
 import { User, Settings } from 'lucide-react';
 
 // ─── Page (server component — loads real data) ────────────────────────────────
@@ -29,6 +31,12 @@ export default async function PatientSettingsPage() {
         isNull(patients.deletedAt),
       ),
     );
+
+  // Loyalty tier (best-effort)
+  let loyalty: Awaited<ReturnType<typeof getLoyaltyTier>> | null = null;
+  if (patientRow) {
+    try { loyalty = await getLoyaltyTier(patientRow.id); } catch { /* non-critical */ }
+  }
 
   return (
     <div className="min-h-full bg-[#f5f7fa]">
@@ -110,6 +118,9 @@ export default async function PatientSettingsPage() {
                     <span className="text-[10px] text-muted-foreground">
                       DOB: {patientRow.dob}
                     </span>
+                  )}
+                  {loyalty && (
+                    <LoyaltyBadge months={loyalty.activeMonths} tier={loyalty.tier} />
                   )}
                 </div>
               </div>

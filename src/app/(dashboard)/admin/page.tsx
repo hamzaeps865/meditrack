@@ -395,7 +395,7 @@ export default async function AdminDashboard() {
 
       {/* Floating action button */}
       <Link
-        href="/receptionist/appointments/new"
+        href="/admin/appointments/new"
         aria-label="New appointment"
         className="fixed bottom-8 right-8 h-12 w-12 rounded-full bg-primary
           text-primary-foreground flex items-center justify-center

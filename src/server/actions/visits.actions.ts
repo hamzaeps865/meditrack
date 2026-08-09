@@ -2,7 +2,11 @@
 
 import { db } from '@/server/db';
 import { visits, appointments, doctors, auditLogs } from '@/server/db/schema';
-import { requireRole, assertDoctorOwnsResource } from '@/server/auth/rbac';
+import {
+  requireRole,
+  assertDoctorOwnsResource,
+  assertPatientOwnsPatientRecord,
+} from '@/server/auth/rbac';
 import { withAudit, auditRead, getIpFromHeaders } from '@/lib/audit-wrapper';
 import { headers } from 'next/headers';
 import {
@@ -10,7 +14,7 @@ import {
   updateVisitSchema,
   visitIdSchema,
 } from '@/lib/validators/visit';
-import { eq } from 'drizzle-orm';
+import { eq, and } from 'drizzle-orm';
 
 // ─── Helper: verify doctor owns the appointment ───────────────────────────────
 // Fetches the appointment and cross-checks the doctor's userId against session.
@@ -166,6 +170,9 @@ export async function getVisitByAppointment(appointmentId: string) {
 
     if (!doctor) throw new Error('Doctor not found.');
     await assertDoctorOwnsResource(doctor.userId);
+  } else if (session.user.role === 'patient') {
+    // Patients may only view their own visits
+    await assertPatientOwnsPatientRecord(visit.patientId, session);
   }
 
   return auditRead(
@@ -209,16 +216,13 @@ export async function getVisitById(id: string) {
 export async function getVisitsByPatient(patientId: string) {
   const session = await requireRole(['admin', 'doctor', 'patient']);
 
-  // Note: doctor scope (own patients) is enforced at the query level —
-  // a doctor query is filtered by their doctorId in addition to the patientId.
-  const query = db
-    .select()
-    .from(visits)
-    .where(eq(visits.patientId, patientId))
-    .orderBy(visits.createdAt);
+  if (session.user.role === 'patient') {
+    await assertPatientOwnsPatientRecord(patientId, session);
+  }
 
   if (session.user.role === 'doctor') {
-    // Doctors only see visits they personally recorded
+    // Doctors only see visits they personally recorded — scoped to their
+    // doctorId in addition to the patientId.
     const [doctor] = await db
       .select({ id: doctors.id })
       .from(doctors)
@@ -229,9 +233,13 @@ export async function getVisitsByPatient(patientId: string) {
     return db
       .select()
       .from(visits)
-      .where(eq(visits.patientId, patientId))
+      .where(and(eq(visits.patientId, patientId), eq(visits.doctorId, doctor.id)))
       .orderBy(visits.createdAt);
   }
 
-  return query;
+  return db
+    .select()
+    .from(visits)
+    .where(eq(visits.patientId, patientId))
+    .orderBy(visits.createdAt);
 }
