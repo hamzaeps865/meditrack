@@ -216,14 +216,14 @@ export default async function DoctorDashboard() {
 
         <div className="flex items-center gap-2">
           <NotificationBell />
-          <button
-            type="button"
+          <Link
+            href="/doctor/settings"
             aria-label="Settings"
             className="h-9 w-9 flex items-center justify-center rounded-full
               text-muted-foreground hover:bg-muted transition-colors"
           >
             <Settings className="h-4 w-4" />
-          </button>
+          </Link>
 
           <div className="flex items-center gap-2.5 pl-3 ml-1 border-l border-border">
             <div className="text-right hidden sm:block">
@@ -266,14 +266,14 @@ export default async function DoctorDashboard() {
           </p>
         </div>
 
-        <button
-          type="button"
+        <Link
+          href="/doctor/appointments"
           className="flex items-center gap-2 h-9 px-4 rounded-lg border border-border
             bg-card text-sm font-medium text-foreground hover:bg-muted transition-colors"
         >
-          <Printer className="h-4 w-4 text-muted-foreground" />
+          <Calendar className="h-4 w-4 text-muted-foreground" />
           Daily Schedule
-        </button>
+        </Link>
       </div>
 
       {/* ── Main grid ── */}

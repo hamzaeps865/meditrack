@@ -5,6 +5,7 @@ import { doctors, doctorAvailability } from '@/server/db/schema';
 import { eq } from 'drizzle-orm';
 import { Search, ChevronDown, Plus } from 'lucide-react';
 import NotificationBell from '@/components/shared/notification-bell';
+import DoctorDropdown from '@/components/doctor/doctor-dropdown';
 import AvailabilityManager from '@/components/doctor/availability-manager';
 
 export default async function DoctorAvailabilityPage() {
@@ -45,14 +46,7 @@ export default async function DoctorAvailabilityPage() {
         </div>
         <div className="flex items-center gap-3">
           <NotificationBell />
-          <button
-            type="button"
-            className="flex items-center gap-1.5 text-sm font-semibold text-foreground
-              hover:text-primary transition-colors"
-          >
-            Dr. {doctorName}
-            <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
-          </button>
+          <DoctorDropdown doctorName={doctorName} />
         </div>
       </div>
 

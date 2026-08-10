@@ -64,6 +64,13 @@
       "when": 1786268917518,
       "tag": "0008_gorgeous_katie_power",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1786353064752,
+      "tag": "0009_same_fat_cobra",
+      "breakpoints": true
     }
   ]
 }

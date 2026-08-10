@@ -14,6 +14,7 @@ import {
   AlertTriangle, Clock,
 } from 'lucide-react';
 import NotificationBell from '@/components/shared/notification-bell';
+import DoctorDropdown from '@/components/doctor/doctor-dropdown';
 import VisitForm from '@/components/doctor/visit-form';
 import { getTriageForAppointment } from '@/server/actions/triage.actions';
 
@@ -174,12 +175,7 @@ export default async function AppointmentDetailPage({
         </div>
         <div className="flex items-center gap-3">
           <NotificationBell />
-          <button type="button"
-            className="flex items-center gap-1.5 text-sm font-medium
-              text-foreground hover:text-primary transition-colors">
-            Dr. {doctorName}
-            <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
-          </button>
+          <DoctorDropdown doctorName={doctorName} />
         </div>
       </div>
 
