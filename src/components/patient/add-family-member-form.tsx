@@ -6,6 +6,8 @@ import { createFamilyMember, updateFamilyMember } from '@/server/actions/family.
 import { Plus, Loader2, X } from 'lucide-react';
 import { toast } from 'sonner';
 
+import { isValidPakistaniPhone, pakistaniPhoneMessage } from '@/lib/validators/phone';
+
 type Member = { id: string; name: string; dob: string; gender: 'male' | 'female' | 'other'; phone: string; bloodGroup: string | null; allergies: string | null; city: string | null; emergencyContact: string | null };
 export default function AddFamilyMemberForm({ onClose, member }: { onClose: () => void; member?: Member | null }) {
  const router = useRouter();
@@ -17,8 +19,12 @@ export default function AddFamilyMemberForm({ onClose, member }: { onClose: () =
 
  function handleSubmit(e: React.FormEvent) {
   e.preventDefault();
-  if (!name.trim() || !dob || !/^\+?[0-9]{10,15}$/.test(phone.trim())) {
-   toast.error('Enter a name, date of birth, and valid 10–15 digit phone number.');
+  if (!name.trim() || !dob) {
+   toast.error('Please enter name and date of birth.');
+   return;
+  }
+  if (!isValidPakistaniPhone(phone)) {
+   toast.error(pakistaniPhoneMessage);
    return;
   }
   startTransition(async () => {
@@ -73,7 +79,7 @@ export default function AddFamilyMemberForm({ onClose, member }: { onClose: () =
        <input type="date" className={inputCls} value={dob} onChange={(e) => setDob(e.target.value)} required />
       </div>
      </div>
-     <div><label className={labelCls}>Phone Number *</label><input type="tel" pattern="\+?[0-9]{10,15}" title="10–15 digits, optionally starting with +" className={inputCls} value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="e.g. +923001234567" required /></div>
+     <div><label className={labelCls}>Phone Number *</label><input type="tel" pattern="0[0-9]{10}" maxLength={11} title="11 digits starting with 0" className={inputCls} value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="e.g. 03001234567" required /></div>
 
      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
       <div>

@@ -212,10 +212,11 @@ export default function LoginPage() {
           <Input
            id="phone"
            type="tel"
-           placeholder="+92 300 1234567"
+           placeholder="03001234567"
            value={phone}
            onChange={(e) => setPhone(e.target.value)}
            required
+           maxLength={11}
            className="mt-1 w-full h-[44px]"
           />
          </div>

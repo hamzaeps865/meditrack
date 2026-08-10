@@ -153,10 +153,10 @@ export default function RegisterPage() {
        id="phone"
        name="phone"
        type="tel"
-       placeholder="+92 300 1234567"
+       placeholder="03001234567"
        required
-       minLength={7}
-       maxLength={20}
+       minLength={11}
+       maxLength={11}
        className="mt-1 w-full h-[44px]"
       />
      </div>

@@ -8,14 +8,21 @@ import { z } from 'zod';
 import bcrypt from 'bcryptjs';
 import { revalidatePath } from 'next/cache';
 
-// ─── Schemas ──────────────────────────────────────────────────────────────────
+import { isValidPakistaniPhone, pakistaniPhoneMessage } from '@/lib/validators/phone';
 
-const phoneRegex = /^\+?[0-9]{10,15}$/;
+// ─── Schemas ──────────────────────────────────────────────────────────────────
 
 const updateProfileSchema = z.object({
   name: z.string().min(2).max(255).trim(),
   email: z.string().email('Enter a valid email address').max(255).trim(),
-  phone: z.string().trim().regex(phoneRegex, 'Enter 10–15 digits, optionally starting with +').optional().or(z.literal('')),
+  phone: z
+    .string()
+    .trim()
+    .refine((val) => !val || isValidPakistaniPhone(val), {
+      message: pakistaniPhoneMessage,
+    })
+    .optional()
+    .or(z.literal('')),
   address: z.string().max(500).trim().optional().nullable(),
   emergencyContact: z.string().max(255).trim().optional().nullable(),
 });

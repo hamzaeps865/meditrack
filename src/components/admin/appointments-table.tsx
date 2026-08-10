@@ -447,9 +447,7 @@ export default function AppointmentsTable({
              >
               View Details
              </Link>
-             <div onClick={() => setOpenMenu(null)}>
-              <RescheduleModal appointmentId={appt.id} />
-             </div>
+             <RescheduleModal appointmentId={appt.id} currentScheduledAt={appt.scheduledAt} currentDoctorId={appt.doctorId} doctors={doctorOptions.map(([id, name]) => ({ id, name: name || '' }))} onSuccess={() => setOpenMenu(null)} />
              <div onClick={() => setOpenMenu(null)} className="px-4 py-2 hover:bg-red-50">
               <CancelAppointmentButton appointmentId={appt.id} variant="text" />
              </div>

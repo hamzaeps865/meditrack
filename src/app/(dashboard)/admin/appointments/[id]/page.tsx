@@ -13,6 +13,8 @@ import {
  AlertTriangle, Activity,
 } from 'lucide-react';
 import NotificationBell from '@/components/shared/notification-bell';
+import RescheduleModal from '@/components/admin/reschedule-modal';
+import CancelAppointmentButton from '@/components/shared/cancel-appointment-button';
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -90,7 +92,9 @@ export default async function AdminAppointmentDetailPage({
   .from(visits)
   .where(eq(visits.appointmentId, id));
 
- // Prescription items (if visit exists)
+ const allDoctors = await db.select({ id: doctors.id, name: users.name }).from(doctors).leftJoin(users, eq(doctors.userId, users.id));
+
+  // Prescription items (if visit exists)
  let rxItems: { medicineName: string; dosage: string; frequency: string; duration: string; notes: string | null }[] = [];
  if (visitRow) {
   const [rxHeader] = await db
@@ -187,6 +191,10 @@ export default async function AdminAppointmentDetailPage({
        <p className="text-sm text-muted-foreground">
         {format(new Date(appt.scheduledAt), 'hh:mm a')}
        </p>
+       <div className="mt-3 flex items-center justify-end gap-2">
+        <RescheduleModal appointmentId={id} currentScheduledAt={appt.scheduledAt.toISOString()} currentDoctorId={appt.doctorId} doctors={allDoctors.map(d => ({ id: d.id, name: d.name || '' }))} variant="button" triggerLabel="Reschedule Appointment" />
+        <CancelAppointmentButton appointmentId={id} />
+       </div>
        {appt.reason && (
         <p className="text-xs text-muted-foreground uppercase tracking-wide mt-0.5">
          {appt.reason}

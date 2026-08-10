@@ -399,6 +399,7 @@ export async function createWalkInAppointment(input: {
 export async function rescheduleAppointment(input: {
   appointmentId: string;
   newScheduledAt: string; // ISO datetime string
+  doctorId?: string;      // Optional new doctor ID
 }) {
   const session = await requireRole(['admin', 'receptionist']);
 
@@ -413,17 +414,26 @@ export async function rescheduleAppointment(input: {
 
   if (!existing) throw new Error('Appointment not found.');
 
+  const updateFields: { scheduledAt: Date; status: 'scheduled'; doctorId?: string } = {
+    scheduledAt: new Date(input.newScheduledAt),
+    status: 'scheduled',
+  };
+
+  if (input.doctorId) {
+    updateFields.doctorId = input.doctorId;
+  }
+
   try {
     const [updated] = await db
       .update(appointments)
-      .set({ scheduledAt: new Date(input.newScheduledAt), status: 'scheduled' })
+      .set(updateFields)
       .where(eq(appointments.id, input.appointmentId))
       .returning();
 
     return updated;
   } catch (error) {
     if (error instanceof Error && error.message.includes('23505')) {
-      throw new Error('That time slot is already booked. Please choose another time.');
+      throw new Error('That time slot is already booked for this doctor. Please choose another time.');
     }
     throw error;
   }
