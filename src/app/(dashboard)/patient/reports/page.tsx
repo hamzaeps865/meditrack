@@ -1,6 +1,7 @@
 import { auth } from '@/server/auth';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
+import HealthInsightsButton from '@/components/ai/health-insights-button';
 import { format } from 'date-fns';
 import { getHealthReportData } from '@/server/actions/reports.actions';
 import { getHealthScore, getLoyaltyTier } from '@/server/actions/health-score.actions';
@@ -53,15 +54,18 @@ export default async function PatientReportsPage() {
               Your complete medical activity summary
             </p>
           </div>
-          <Link
-            href="/patient-reports-print"
-            target="_blank"
-            className="h-10 px-4 rounded-xl text-sm font-bold text-white flex items-center gap-2 hover:opacity-90 transition-opacity shadow-sm"
-            style={{ backgroundColor: '#1E3A5F' }}
-          >
-            <FileDown className="h-4 w-4" />
-            Download PDF
-          </Link>
+          <div className="flex items-center gap-2">
+            <HealthInsightsButton />
+            <Link
+              href="/patient-reports-print"
+              target="_blank"
+              className="h-10 px-4 rounded-xl text-sm font-bold text-white flex items-center gap-2 hover:opacity-90 transition-opacity shadow-sm"
+              style={{ backgroundColor: '#1E3A5F' }}
+            >
+              <FileDown className="h-4 w-4" />
+              Download PDF
+            </Link>
+          </div>
         </div>
 
         {/* Gamification snapshot */}

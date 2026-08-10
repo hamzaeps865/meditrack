@@ -3,13 +3,17 @@
 import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { createTriageRecord } from '@/server/actions/triage.actions';
-import { Loader2, AlertTriangle, Activity, Thermometer, Weight, HeartPulse } from 'lucide-react';
+import TriageSuggestionButton from '@/components/ai/triage-suggestion-button';
+import { Loader2, AlertTriangle, Activity, Thermometer, Weight, HeartPulse, Sparkles } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface TriageFormProps {
   appointmentId: string;
   patientId: string;
   patientName: string;
+  patientAge?: number;
+  patientGender?: string;
+  patientAllergies?: string;
 }
 
 const severityOptions = [
@@ -19,7 +23,7 @@ const severityOptions = [
   { value: 'low', label: 'Low', desc: 'Minor / follow-up', bg: 'bg-emerald-50', border: 'border-emerald-300', text: 'text-emerald-700', dot: 'bg-emerald-500' },
 ] as const;
 
-export default function TriageForm({ appointmentId, patientId, patientName }: TriageFormProps) {
+export default function TriageForm({ appointmentId, patientId, patientName, patientAge, patientGender, patientAllergies }: TriageFormProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [severity, setSeverity] = useState<'critical' | 'urgent' | 'standard' | 'low'>('standard');
@@ -91,6 +95,22 @@ export default function TriageForm({ appointmentId, patientId, patientName }: Tr
             </button>
           ))}
         </div>
+
+        {/* AI Triage Suggestion */}
+        {chiefComplaint.trim() && (
+          <div className="flex justify-end mt-2">
+            <TriageSuggestionButton
+              chiefComplaint={chiefComplaint}
+              vitalsBp={bp}
+              vitalsTemp={temp}
+              vitalsPulse={pulse}
+              vitalsWeight={weight}
+              patientAge={patientAge}
+              patientGender={patientGender}
+              patientAllergies={patientAllergies}
+            />
+          </div>
+        )}
       </div>
 
       {/* Chief complaint */}
