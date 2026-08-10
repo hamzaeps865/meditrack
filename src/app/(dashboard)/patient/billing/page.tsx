@@ -47,14 +47,14 @@ export default async function PatientBillingPage() {
 
     {/* Summary */}
     <div className="grid grid-cols-2 gap-4 mb-6">
-     <div className="bg-white border border-border p-5 shadow-sm">
+    <div className="premium-card premium-card-pad">
       <div className="h-10 w-10 bg-emerald-50 flex items-center justify-center mb-3">
        <TrendingUp className="h-5 w-5 text-emerald-600" />
       </div>
       <p className="text-2xl font-bold text-foreground">{formatAmount(totalPaid)}</p>
       <p className="text-xs text-muted-foreground mt-0.5">Total Paid</p>
      </div>
-     <div className="bg-white border border-border p-5 shadow-sm">
+    <div className="premium-card premium-card-pad">
       <div className={`h-10 w-10 flex items-center justify-center mb-3 ${totalOutstanding > 0 ? 'bg-amber-50' : 'bg-muted'}`}>
        <AlertCircle className={`h-5 w-5 ${totalOutstanding > 0 ? 'text-amber-600' : 'text-muted-foreground'}`} />
       </div>
@@ -65,13 +65,13 @@ export default async function PatientBillingPage() {
 
     {/* Invoice list */}
     {patientInvoices.length === 0 ? (
-     <div className="bg-white border border-border p-12 text-center shadow-sm">
+    <div className="premium-card p-12 text-center">
       <Receipt className="h-10 w-10 text-muted-foreground opacity-20 mx-auto mb-3" />
       <p className="text-sm font-medium text-foreground">No invoices yet</p>
       <p className="text-xs text-muted-foreground mt-1">Invoices are generated when you complete a consultation.</p>
      </div>
     ) : (
-     <div className="bg-white border border-border overflow-hidden shadow-sm">
+    <div className="premium-card overflow-hidden">
       <table className="w-full text-sm">
        <thead><tr className="border-b border-border bg-muted/30 text-left">
         <th className="px-5 py-3 text-xs font-medium text-muted-foreground uppercase">Date</th>

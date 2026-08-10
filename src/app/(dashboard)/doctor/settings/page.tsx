@@ -46,7 +46,7 @@ export default async function DoctorSettingsPage() {
     </div>
 
     {/* Profile banner */}
-    <div className="bg-white border border-border p-5 shadow-sm mb-4 flex items-center gap-4">
+    <div className="premium-card premium-card-pad mb-4 flex items-center gap-4">
      <div className="h-14 w-14 bg-primary/10 text-primary flex items-center justify-center text-lg font-bold shrink-0">
       {doctorName.split(' ').map((p: string) => p[0]).slice(0, 2).join('').toUpperCase()}
      </div>

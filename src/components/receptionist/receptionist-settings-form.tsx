@@ -150,7 +150,7 @@ export default function ReceptionistSettingsForm({
  return (
   <div className="flex gap-6 items-start">
    {/* ── Left Navigation ── */}
-   <nav className="w-56 shrink-0 bg-white border border-border overflow-hidden shadow-sm">
+  <nav className="w-56 shrink-0 premium-card overflow-hidden">
     {tabs.map((tab) => {
      const Icon = tab.icon;
      const isActive = activeTab === tab.key;

@@ -222,8 +222,7 @@ export default async function AdminDashboard() {
       <Link
        key={card.label}
        href={card.href}
-       className="bg-card border border-border p-5
-        hover:shadow-sm transition-shadow block"
+       className="premium-card-interactive premium-card-pad block"
       >
        <div className="flex items-start justify-between">
         <div>
@@ -248,7 +247,7 @@ export default async function AdminDashboard() {
    <div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-4">
 
     {/* Today's Schedule */}
-    <div className="bg-card border border-border overflow-hidden">
+    <div className="premium-card overflow-hidden">
      <div className="flex items-start justify-between px-6 py-5">
       <div>
        <h2 className="text-sm font-semibold text-foreground">
@@ -332,7 +331,7 @@ export default async function AdminDashboard() {
     </div>
 
     {/* Recent Audit Activity */}
-    <div className="bg-card border border-border flex flex-col">
+    <div className="premium-card flex flex-col">
      <div className="px-6 py-5">
       <h2 className="text-sm font-semibold text-foreground">Recent Activity</h2>
       <p className="text-xs text-muted-foreground mt-1">

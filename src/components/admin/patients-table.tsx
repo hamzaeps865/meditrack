@@ -521,7 +521,7 @@ export default function PatientsTable({
     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
 
      {/* Growth */}
-     <div className="bg-white border border-border p-5 shadow-sm">
+    <div className="premium-card premium-card-pad">
       <div className="flex items-center gap-2 mb-3">
        <div className="h-8 w-8 bg-emerald-50 flex items-center
         justify-center shrink-0">
@@ -536,7 +536,7 @@ export default function PatientsTable({
      </div>
 
      {/* Patient Demographics */}
-     <div className=" p-5 text-white"
+    <div className="premium-card premium-card-pad text-white"
       style={{ backgroundColor: '#01411C' }}>
       <p className="text-[10px] font-semibold uppercase tracking-widest
        text-white/60 mb-2">
@@ -562,7 +562,7 @@ export default function PatientsTable({
      </div>
 
      {/* Drop-off */}
-     <div className="bg-white border border-border p-5 shadow-sm">
+    <div className="premium-card premium-card-pad">
       <div className="flex items-center gap-2 mb-3">
        <div className="h-8 w-8 bg-red-50 flex items-center
         justify-center shrink-0">

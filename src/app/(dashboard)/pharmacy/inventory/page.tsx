@@ -30,12 +30,12 @@ export default async function PharmacyInventoryPage() {
     </p>
 
     {inventory.length === 0 ? (
-     <div className="bg-white border border-border p-12 text-center shadow-sm">
+    <div className="premium-card p-12 text-center">
       <Package className="h-10 w-10 text-muted-foreground opacity-20 mx-auto mb-3" />
       <p className="text-sm font-medium text-foreground">No stock in inventory</p>
      </div>
     ) : (
-     <div className="bg-white border border-border overflow-hidden shadow-sm">
+    <div className="premium-card overflow-hidden">
       <table className="w-full text-sm">
        <thead><tr className="border-b border-border bg-muted/30 text-left">
         <th className="px-4 py-3 text-xs font-medium text-muted-foreground uppercase">Medicine</th>

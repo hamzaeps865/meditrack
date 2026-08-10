@@ -98,7 +98,7 @@ export default async function NurseDashboardPage() {
 
     {/* Queue */}
     {sorted.length === 0 ? (
-     <div className="bg-white border border-border p-12 text-center shadow-sm">
+    <div className="premium-card p-12 text-center">
       <HeartPulse className="h-10 w-10 text-muted-foreground opacity-20 mx-auto mb-3" />
       <p className="text-sm font-medium text-foreground">Queue is empty</p>
       <p className="text-xs text-muted-foreground mt-1">

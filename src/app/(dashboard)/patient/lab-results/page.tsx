@@ -35,7 +35,7 @@ export default async function PatientLabResultsPage() {
     <p className="text-sm text-muted-foreground mb-6">{labOrders.length} completed report{labOrders.length !== 1 ? 's' : ''}</p>
 
     {labOrders.length === 0 ? (
-     <div className="bg-white border border-border p-12 text-center shadow-sm">
+    <div className="premium-card p-12 text-center">
       <FlaskConical className="h-10 w-10 text-muted-foreground opacity-20 mx-auto mb-3" />
       <p className="text-sm font-medium text-foreground">No completed lab reports yet</p>
       <p className="text-xs text-muted-foreground mt-1">Reports from your completed lab orders will appear here once the lab finishes them.</p>
@@ -46,7 +46,7 @@ export default async function PatientLabResultsPage() {
        const cfg = statusConfig[order.status] ?? statusConfig.ordered;
        const Icon = cfg.icon;
        return (
-        <div key={order.id} className="bg-white border border-border p-5 shadow-sm">
+        <div key={order.id} className="premium-card premium-card-pad">
          <div className="flex items-start justify-between mb-3">
           <div className="flex items-center gap-3">
            <div className={`h-9 w-9 ${cfg.bg} flex items-center justify-center shrink-0`}>

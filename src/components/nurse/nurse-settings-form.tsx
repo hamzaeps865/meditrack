@@ -49,7 +49,7 @@ export default function NurseSettingsForm({
  return (
   <div className="space-y-5">
    {/* Profile */}
-   <div className="bg-white border border-border p-5 shadow-sm">
+    <div className="premium-card premium-card-pad">
     <h2 className="text-sm font-bold text-foreground mb-4">Profile</h2>
     <div className="space-y-4">
      <div>

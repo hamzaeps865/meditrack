@@ -27,7 +27,7 @@ export default async function PatientVisitsPage() {
     <p className="text-sm text-muted-foreground mb-6">{visits.length} visit{visits.length !== 1 ? 's' : ''} recorded</p>
 
     {visits.length === 0 ? (
-     <div className="bg-white border border-border p-12 text-center shadow-sm">
+    <div className="premium-card p-12 text-center">
       <Stethoscope className="h-10 w-10 text-muted-foreground opacity-20 mx-auto mb-3" />
       <p className="text-sm font-medium text-foreground">No visits yet</p>
       <p className="text-xs text-muted-foreground mt-1">Your consultation records will appear here after your first visit.</p>
@@ -35,7 +35,7 @@ export default async function PatientVisitsPage() {
     ) : (
      <div className="space-y-4">
       {visits.map((visit) => (
-       <div key={visit.id} className="bg-white border border-border p-5 shadow-sm">
+    <div key={visit.id} className="premium-card premium-card-pad">
         <div className="flex items-start justify-between mb-3">
          <div>
           <p className="text-sm font-bold text-foreground">{visit.chiefComplaint ?? 'Consultation'}</p>

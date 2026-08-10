@@ -185,7 +185,7 @@ export default function DoctorsTable({ doctors: initialDoctors }: Props) {
     </div>
 
     {/* Table */}
-    <div className="bg-white border border-border overflow-hidden shadow-sm">
+    <div className="premium-card overflow-hidden">
 
      {/* Header row */}
      <div className="grid grid-cols-[1fr_160px_130px_140px_110px_100px_60px]

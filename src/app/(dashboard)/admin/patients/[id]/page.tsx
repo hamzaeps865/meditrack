@@ -208,7 +208,7 @@ export default async function AdminPatientProfilePage({
      <div className="space-y-4 min-w-0">
 
       {/* Demographics */}
-      <div className="bg-white border border-border p-5 shadow-sm">
+      <div className="premium-card premium-card-pad">
        <div className="flex items-center gap-2 mb-4">
         <User className="h-4 w-4 text-primary" />
         <h2 className="text-sm font-semibold text-foreground">Demographics</h2>
@@ -255,7 +255,7 @@ export default async function AdminPatientProfilePage({
       </div>
 
       {/* Allergies & Conditions */}
-      <div className="bg-white border border-border p-5 shadow-sm">
+      <div className="premium-card premium-card-pad">
        <div className="flex items-center gap-2 mb-4">
         <AlertTriangle className="h-4 w-4 text-amber-500" />
         <h2 className="text-sm font-semibold text-foreground">

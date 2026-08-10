@@ -143,7 +143,7 @@ function InventoryTab({ inventory, catalog }: { inventory: InventoryBatch[]; cat
      <p className="text-xs text-muted-foreground mt-1">Add a batch to start tracking inventory.</p>
     </div>
    ) : (
-    <div className="bg-white border border-border overflow-hidden shadow-sm">
+    <div className="premium-card overflow-hidden">
      <table className="w-full text-sm">
       <thead><tr className="border-b border-border bg-muted/30 text-left">
        <th className="px-4 py-3 text-xs font-medium text-muted-foreground uppercase">Medicine</th>

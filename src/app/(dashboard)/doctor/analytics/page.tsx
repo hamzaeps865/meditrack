@@ -68,7 +68,7 @@ export default async function DoctorAnalyticsPage() {
 
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
      {/* ── 14-day visits trend (SVG line chart) ── */}
-     <div className="bg-white border border-border p-5 shadow-sm lg:col-span-2">
+    <div className="premium-card premium-card-pad lg:col-span-2">
       <div className="flex items-center justify-between mb-5">
        <div className="flex items-center gap-2">
         <TrendingUp className="h-4 w-4 text-primary" />
@@ -82,7 +82,7 @@ export default async function DoctorAnalyticsPage() {
      </div>
 
      {/* ── Appointment status donut ── */}
-     <div className="bg-white border border-border p-5 shadow-sm">
+    <div className="premium-card premium-card-pad">
       <h2 className="text-sm font-bold text-foreground mb-5">Appointment Status</h2>
       <div className="flex items-center gap-6">
        <div className="relative h-32 w-32 shrink-0">
@@ -101,7 +101,7 @@ export default async function DoctorAnalyticsPage() {
      </div>
 
      {/* ── Rating histogram ── */}
-     <div className="bg-white border border-border p-5 shadow-sm">
+    <div className="premium-card premium-card-pad">
       <div className="flex items-center justify-between mb-5">
        <h2 className="text-sm font-bold text-foreground">Rating Distribution</h2>
        <StarRating rating={data.rating.average} showNumber count={data.rating.count} />
@@ -124,7 +124,7 @@ export default async function DoctorAnalyticsPage() {
      </div>
 
      {/* ── Top diagnoses ── */}
-     <div className="bg-white border border-border p-5 shadow-sm lg:col-span-2">
+    <div className="premium-card premium-card-pad lg:col-span-2">
       <h2 className="text-sm font-bold text-foreground mb-5">Top Diagnoses</h2>
       {data.topDiagnoses.length === 0 ? (
        <p className="text-sm text-muted-foreground text-center py-8">No diagnoses recorded yet.</p>
@@ -159,7 +159,7 @@ export default async function DoctorAnalyticsPage() {
 
 function StatCard({ icon: Icon, label, value, color, bg }: { icon: typeof Activity; label: string; value: number | string; color: string; bg: string }) {
  return (
-  <div className="bg-white border border-border p-5 shadow-sm">
+    <div className="premium-card premium-card-pad">
    <div className={`h-10 w-10 ${bg} flex items-center justify-center mb-3`}>
     <Icon className={`h-5 w-5 ${color}`} />
    </div>
