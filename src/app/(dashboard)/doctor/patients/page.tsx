@@ -9,7 +9,7 @@ import Link from 'next/link';
 import { format, startOfMonth, endOfMonth, startOfWeek, endOfWeek } from 'date-fns';
 import {
   Search, Settings, ChevronLeft, ChevronRight,
-  SlidersHorizontal, ArrowUpDown, TrendingUp, BookOpen,
+  SlidersHorizontal, TrendingUp, BookOpen,
 } from 'lucide-react';
 import NotificationBell from '@/components/shared/notification-bell';
 
@@ -302,14 +302,24 @@ export default async function DoctorPatientsPage({
           {/* Sort */}
           <div className="flex items-center gap-1.5">
             <span className="text-xs text-muted-foreground">Sort by:</span>
-            <Link
-              href={buildHref({ sort: sortKey === 'recent' ? 'oldest' : 'recent', page: 1 })}
-              className="flex items-center gap-1 text-sm font-semibold text-primary
-                hover:underline"
-            >
-              {sortKey === 'name' ? 'Name (A–Z)' : sortKey === 'oldest' ? 'Last Visit (Oldest)' : 'Last Visit (Newest)'}
-              <ArrowUpDown className="h-3.5 w-3.5" />
-            </Link>
+            {(
+              [
+                { key: 'recent', label: 'Last Visit (Newest)' },
+                { key: 'oldest', label: 'Last Visit (Oldest)' },
+                { key: 'name',   label: 'Name (A–Z)'          },
+              ] as const
+            ).map((opt) => (
+              <Link
+                key={opt.key}
+                href={buildHref({ sort: opt.key, page: 1 })}
+                className={`h-8 px-3 rounded-full text-xs font-medium border transition-colors
+                  ${sortKey === opt.key
+                    ? 'bg-primary/10 text-primary border-primary/30'
+                    : 'bg-white text-muted-foreground border-border hover:border-primary/30 hover:text-foreground'}`}
+              >
+                {opt.label}
+              </Link>
+            ))}
           </div>
         </div>
 

@@ -56,6 +56,10 @@ function buildSlots(
   const windows = availability.filter((a) => a.dayOfWeek === dayName);
   if (windows.length === 0) return [];
 
+  const now = new Date();
+  const isToday = dateStr === todayISO();
+  const currentMinutes = now.getHours() * 60 + now.getMinutes();
+
   const slots: string[] = [];
   for (const w of windows) {
     const [sh, sm] = w.startTime.split(':').map(Number);
@@ -63,9 +67,11 @@ function buildSlots(
     let cur = sh * 60 + sm;
     const end = eh * 60 + em;
     while (cur + 30 <= end) {
-      const h = Math.floor(cur / 60);
-      const m = cur % 60;
-      slots.push(`${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`);
+      if (!isToday || cur > currentMinutes) {
+        const h = Math.floor(cur / 60);
+        const m = cur % 60;
+        slots.push(`${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`);
+      }
       cur += 30;
     }
   }

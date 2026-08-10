@@ -1,7 +1,7 @@
 import { auth } from '@/server/auth';
 import { redirect } from 'next/navigation';
 import { db } from '@/server/db';
-import { appointments, doctors, patients } from '@/server/db/schema';
+import { appointments, doctors, patients, doctorAvailability } from '@/server/db/schema';
 import { eq, and, gte, lte } from 'drizzle-orm';
 import Link from 'next/link';
 import {
@@ -13,6 +13,7 @@ import {
 } from 'date-fns';
 import { ChevronLeft, ChevronRight, Search, ChevronDown, ExternalLink } from 'lucide-react';
 import NotificationBell from '@/components/shared/notification-bell';
+import DoctorDropdown from '@/components/doctor/doctor-dropdown';
 
 // ─── Status config ────────────────────────────────────────────────────────────
 
@@ -36,6 +37,33 @@ const statusConfig: Record<string, {
 function getInitials(name: string | null | undefined) {
   if (!name) return '?';
   return name.split(' ').map((p) => p[0]).slice(0, 2).join('').toUpperCase();
+}
+
+function buildSlotsForDay(
+  availability: { dayOfWeek: string; startTime: string; endTime: string }[],
+  date: Date
+) {
+  const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+  const dayName = dayNames[date.getDay()];
+  const dayAvail = availability.filter((a) => a.dayOfWeek === dayName);
+  
+  const slots: string[] = [];
+  for (const block of dayAvail) {
+    const [startH, startM] = block.startTime.split(':').map(Number);
+    const [endH, endM] = block.endTime.split(':').map(Number);
+    
+    let currentH = startH;
+    let currentM = startM;
+    while (currentH < endH || (currentH === endH && currentM < endM)) {
+      slots.push(`${String(currentH).padStart(2, '0')}:${String(currentM).padStart(2, '0')}`);
+      currentM += 30;
+      if (currentM >= 60) {
+        currentH += 1;
+        currentM -= 60;
+      }
+    }
+  }
+  return Array.from(new Set(slots)).sort();
 }
 
 // ─── Data fetcher ─────────────────────────────────────────────────────────────
@@ -79,6 +107,11 @@ export default async function DoctorAppointmentsPage({
 
   if (!doctorRow) redirect('/doctor');
 
+  const availability = await db
+    .select()
+    .from(doctorAvailability)
+    .where(eq(doctorAvailability.doctorId, doctorRow.id));
+
   const params       = await searchParams;
   const view         = params.view === 'week' ? 'week' : 'day';
   const selectedDate = params.date ? new Date(params.date) : new Date();
@@ -98,6 +131,34 @@ export default async function DoctorAppointmentsPage({
   const dayAppts = view === 'week'
     ? allAppts
     : allAppts.filter((a) => isSameDay(new Date(a.scheduledAt), selectedDate));
+
+  let unifiedSlots: { type: 'empty' | 'appt'; time: string; appt?: any }[] = [];
+  
+  if (view === 'day') {
+    const timeSlots = buildSlotsForDay(availability, selectedDate);
+    const apptsByTime = new Map<string, typeof dayAppts>();
+    for (const appt of dayAppts) {
+      const timeKey = format(new Date(appt.scheduledAt), 'HH:mm');
+      if (!apptsByTime.has(timeKey)) apptsByTime.set(timeKey, []);
+      apptsByTime.get(timeKey)!.push(appt);
+    }
+    
+    for (const time of timeSlots) {
+      if (apptsByTime.has(time)) {
+        unifiedSlots.push(...apptsByTime.get(time)!.map(appt => ({ type: 'appt' as const, appt, time })));
+        apptsByTime.delete(time);
+      }
+      // Empty slots are intentionally omitted — only booked appointments are shown
+    }
+    
+    for (const [time, appts] of Array.from(apptsByTime.entries())) {
+      unifiedSlots.push(...appts.map(appt => ({ type: 'appt' as const, appt, time })));
+    }
+    
+    unifiedSlots.sort((a, b) => a.time.localeCompare(b.time));
+  } else {
+    unifiedSlots = dayAppts.map(appt => ({ type: 'appt' as const, appt, time: format(new Date(appt.scheduledAt), 'HH:mm') }));
+  }
 
   const total     = dayAppts.length;
   const done      = dayAppts.filter((a) => a.status === 'completed').length;
@@ -140,12 +201,7 @@ export default async function DoctorAppointmentsPage({
         <div className="flex items-center gap-3">
           <NotificationBell />
 
-          <button type="button"
-            className="flex items-center gap-1.5 text-sm font-medium text-foreground
-              hover:text-primary transition-colors">
-            Dr. {doctorName}
-            <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
-          </button>
+          <DoctorDropdown doctorName={doctorName} />
         </div>
       </div>
 
@@ -270,10 +326,10 @@ export default async function DoctorAppointmentsPage({
           </div>
            
           {/* Rows */}
-          {dayAppts.length === 0 ? (
+          {unifiedSlots.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-20
               text-muted-foreground gap-2">
-              <p className="text-sm font-medium">No appointments</p>
+              <p className="text-sm font-medium">No appointments or slots</p>
               <p className="text-xs">
                 {isToday
                   ? 'Your schedule is clear for today.'
@@ -282,13 +338,15 @@ export default async function DoctorAppointmentsPage({
             </div>
           ) : (
             <ul>
-              {dayAppts.map((appt, idx) => {
+              {unifiedSlots.map((item, idx) => {
+                const isLast = idx === unifiedSlots.length - 1;
+
+                const appt = item.appt;
                 const cfg         = statusConfig[appt.status] ?? statusConfig.scheduled;
                 const isDone      = appt.status === 'completed';
                 const isCancelled = appt.status === 'cancelled' || appt.status === 'no_show';
                 const isCheckedIn = appt.status === 'checked_in';
                 const isInProgress = appt.status === 'in_progress';
-                const isLast      = idx === dayAppts.length - 1;
 
                 return (
                   <li

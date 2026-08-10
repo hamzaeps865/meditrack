@@ -75,7 +75,8 @@ export default function VisitForm({
   triageVitals = null,
 }: VisitFormProps) {
   const router  = useRouter();
-  const [isPending, startTransition] = useTransition();
+  const [isDraftPending, startDraftTransition] = useTransition();
+  const [isCompletePending, startCompleteTransition] = useTransition();
   const [error, setError]   = useState<string | null>(null);
   const [saved, setSaved]   = useState(false);
 
@@ -157,7 +158,7 @@ export default function VisitForm({
     setError(null);
     setSaved(false);
 
-    startTransition(async () => {
+    startDraftTransition(async () => {
       try {
         if (!existingVisit) {
           if (!complaint.trim()) {
@@ -188,11 +189,14 @@ export default function VisitForm({
           });
         }
         setSaved(true);
-        router.refresh();
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to save. Please try again.');
       }
     });
+
+    // Refresh outside the transition so the page re-fetches in the background
+    // without keeping the draft button in a pending/disabled state.
+    router.refresh();
   }
 
   // ── Complete visit ──────────────────────────────────────────────────────────
@@ -200,15 +204,17 @@ export default function VisitForm({
   async function handleComplete() {
     setError(null);
 
-    startTransition(async () => {
+    // Validate upfront before entering the transition
+    if (!existingVisit && !complaint.trim()) {
+      setError('Chief complaint is required before completing the visit.');
+      return;
+    }
+
+    startCompleteTransition(async () => {
       try {
-        // 1. Upsert the visit record
+        // 1. Upsert the visit record (must come first — visitId needed below)
         let visitId = existingVisit?.id;
         if (!existingVisit) {
-          if (!complaint.trim()) {
-            setError('Chief complaint is required before completing the visit.');
-            return;
-          }
           const visit = await createVisit({
             appointmentId,
             patientId,
@@ -232,56 +238,53 @@ export default function VisitForm({
           visitId = visit.id;
         }
 
-        // 2. Save prescriptions (only new rows with medicine name filled)
-        // We need the visit id — refetch or use existingVisit.id
-        const validRxRows = rxRows.filter((r) => r.medicineName.trim());
-        if (validRxRows.length > 0 && visitId) {
-          await createPrescription({
-            visitId,
-            items: validRxRows.map((r) => ({
-              medicineId:   r.medicineId,
-              medicineName: r.medicineName,
-              dosage:       r.dosage   || '—',
-              frequency:    r.frequency || '—',
-              duration:     r.duration  || '—',
-              notes:        r.notes    || undefined,
-            })),
-          });
-        }
-
-        // 3. Save lab orders (only rows with a test name filled)
+        // 2 + 3. Save prescriptions and lab orders in parallel — they're independent
+        const validRxRows  = rxRows.filter((r) => r.medicineName.trim());
         const validLabRows = labRows.filter((r) => r.testName.trim());
-        if (validLabRows.length > 0 && visitId) {
-          await createLabOrders({
-            visitId,
-            orders: validLabRows.map((r) => ({
-              testName: r.testName,
-              instructions: r.instructions || undefined,
-            })),
-          });
-        }
+
+        await Promise.all([
+          validRxRows.length > 0 && visitId
+            ? createPrescription({
+                visitId,
+                items: validRxRows.map((r) => ({
+                  medicineId:   r.medicineId,
+                  medicineName: r.medicineName,
+                  dosage:       r.dosage    || '—',
+                  frequency:    r.frequency || '—',
+                  duration:     r.duration  || '—',
+                  notes:        r.notes     || undefined,
+                })),
+              })
+            : Promise.resolve(),
+
+          validLabRows.length > 0 && visitId
+            ? createLabOrders({
+                visitId,
+                orders: validLabRows.map((r) => ({
+                  testName:     r.testName,
+                  instructions: r.instructions || undefined,
+                })),
+              })
+            : Promise.resolve(),
+        ]);
 
         // 4. Mark appointment completed
         await updateAppointmentStatus({ id: appointmentId, status: 'completed' });
 
-        // 5. Schedule follow-up if requested
+        // 5. Schedule follow-up if requested (fire-and-forget — failure logged, not thrown)
         if (wantsFollowUp && followUpDate && doctorId) {
-          try {
-            await scheduleFollowUp({
-              originalAppointmentId: appointmentId,
-              doctorId,
-              patientId,
-              scheduledAt: new Date(followUpDate).toISOString(),
-              reason: `Follow-up for ${complaint || 'previous visit'}`,
-            });
-          } catch (err) {
-            // Follow-up scheduling failure shouldn't block completion
-            console.error('Follow-up scheduling failed:', err);
-          }
+          scheduleFollowUp({
+            originalAppointmentId: appointmentId,
+            doctorId,
+            patientId,
+            scheduledAt: new Date(followUpDate).toISOString(),
+            reason: `Follow-up for ${complaint || 'previous visit'}`,
+          }).catch((err) => console.error('Follow-up scheduling failed:', err));
         }
 
+        // Navigate immediately — outside any refresh so we don't wait for
+        // the appointments page to re-render before releasing the spinner.
         router.push('/doctor/appointments');
-        router.refresh();
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to complete visit. Please try again.');
       }
@@ -634,12 +637,12 @@ export default function VisitForm({
             <button
               type="button"
               onClick={handleSaveDraft}
-              disabled={isPending}
+              disabled={isDraftPending || isCompletePending}
               className="h-9 px-5 rounded-lg border border-border bg-white text-sm
                 font-medium text-foreground hover:bg-muted transition-colors
                 disabled:opacity-60 disabled:cursor-not-allowed flex items-center gap-2"
             >
-              {isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
+              {isDraftPending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
               Save Draft
             </button>
 
@@ -647,12 +650,12 @@ export default function VisitForm({
               <button
                 type="button"
                 onClick={handleComplete}
-                disabled={isPending}
+                disabled={isDraftPending || isCompletePending}
                 className="h-9 px-5 rounded-lg bg-primary text-primary-foreground
                   text-sm font-semibold hover:bg-primary/90 transition-colors
                   disabled:opacity-60 disabled:cursor-not-allowed flex items-center gap-2"
               >
-                {isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
+                {isCompletePending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
                 Complete Visit
               </button>
             )}
