@@ -26,12 +26,12 @@ function getInitials(name: string | null | undefined) {
 }
 
 const avatarPalette = [
-  'bg-blue-100 text-blue-700',
-  'bg-violet-100 text-violet-700',
+  'bg-emerald-100 text-emerald-700',
+  'bg-emerald-100 text-emerald-700',
   'bg-amber-100 text-amber-700',
   'bg-emerald-100 text-emerald-700',
   'bg-rose-100 text-rose-700',
-  'bg-cyan-100 text-cyan-700',
+  'bg-emerald-100 text-emerald-700',
 ];
 
 function avatarColor(name: string) {
@@ -51,12 +51,12 @@ function fmtTime(t: string) {
 }
 
 const statusConfig: Record<string, { badge: string; label: string }> = {
-  scheduled:   { badge: 'bg-blue-100 text-blue-700',       label: 'Scheduled'   },
+  scheduled:   { badge: 'bg-emerald-100 text-emerald-700',       label: 'Scheduled'   },
   checked_in:  { badge: 'bg-amber-100 text-amber-700',     label: 'Checked-in'  },
   in_progress: { badge: 'bg-orange-100 text-orange-700',   label: 'In Progress' },
   completed:   { badge: 'bg-emerald-100 text-emerald-700', label: 'Completed'   },
   cancelled:   { badge: 'bg-red-100 text-red-600',         label: 'Cancelled'   },
-  no_show:     { badge: 'bg-gray-100 text-gray-500',       label: 'No-show'     },
+  no_show:     { badge: 'bg-muted text-emerald-800/60',       label: 'No-show'     },
 };
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
@@ -159,7 +159,7 @@ export default async function AdminDoctorProfilePage({
   const name = doctorRow.name ?? 'Unknown';
 
   return (
-    <div className="min-h-full bg-[#f5f7fa]">
+    <div className="min-h-full bg-[#f0f7f3]">
 
       {/* ── Top bar ── */}
       <div className="bg-white border-b border-border px-6 py-3
@@ -239,7 +239,7 @@ export default async function AdminDoctorProfilePage({
                 href={`/admin/appointments?doctorId=${id}`}
                 className="h-9 px-4 rounded-xl text-sm font-bold text-white
                   hover:opacity-90 transition-opacity flex items-center gap-2"
-                style={{ backgroundColor: '#1E3A5F' }}
+                style={{ backgroundColor: '#01411C' }}
               >
                 <Calendar className="h-4 w-4" />
                 View Appointments
@@ -276,8 +276,8 @@ export default async function AdminDoctorProfilePage({
               label: 'Weekly Hours',
               value: `${Math.round(totalHours)}h`,
               icon:  Clock,
-              color: 'text-violet-600',
-              bg:    'bg-violet-50',
+              color: 'text-emerald-700',
+              bg:    'bg-emerald-50',
             },
           ].map((s) => {
             const Icon = s.icon;

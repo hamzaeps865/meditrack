@@ -56,6 +56,10 @@ function buildSlots(
   const windows = availability.filter((a) => a.dayOfWeek === dayName);
   if (windows.length === 0) return [];
 
+  const now = new Date();
+  const isToday = dateStr === todayISO();
+  const currentMinutes = now.getHours() * 60 + now.getMinutes();
+
   const slots: string[] = [];
   for (const w of windows) {
     const [sh, sm] = w.startTime.split(':').map(Number);
@@ -63,9 +67,11 @@ function buildSlots(
     let cur = sh * 60 + sm;
     const end = eh * 60 + em;
     while (cur + 30 <= end) {
-      const h = Math.floor(cur / 60);
-      const m = cur % 60;
-      slots.push(`${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`);
+      if (!isToday || cur > currentMinutes) {
+        const h = Math.floor(cur / 60);
+        const m = cur % 60;
+        slots.push(`${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`);
+      }
       cur += 30;
     }
   }
@@ -140,7 +146,7 @@ export default function PatientBookingForm({
   }
 
   return (
-    <div className="min-h-full bg-[#f5f7fa]">
+    <div className="min-h-full bg-[#f0f7f3]">
 
       {/* Top bar */}
       <div className="bg-white border-b border-border px-6 py-3
@@ -347,7 +353,7 @@ export default function PatientBookingForm({
                 className="h-11 px-8 rounded-xl text-sm font-bold text-white
                   hover:opacity-90 transition-all disabled:opacity-50
                   disabled:cursor-not-allowed flex items-center gap-2"
-                style={{ backgroundColor: '#1E3A5F' }}
+                style={{ backgroundColor: '#01411C' }}
               >
                 {isPending && <Loader2 className="h-4 w-4 animate-spin" />}
                 Confirm Booking

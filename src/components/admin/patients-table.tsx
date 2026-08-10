@@ -47,12 +47,12 @@ interface Props {
 const PAGE_SIZE = 10;
 
 const avatarPalette = [
-  'bg-blue-100 text-blue-700',
-  'bg-violet-100 text-violet-700',
+  'bg-emerald-100 text-emerald-700',
+  'bg-emerald-100 text-emerald-700',
   'bg-amber-100 text-amber-700',
   'bg-emerald-100 text-emerald-700',
   'bg-rose-100 text-rose-700',
-  'bg-cyan-100 text-cyan-700',
+  'bg-emerald-100 text-emerald-700',
 ];
 
 function getInitials(name: string) {
@@ -92,6 +92,7 @@ export default function PatientsTable({
 }: Props) {
   const [search,      setSearch]      = useState('');
   const [statusTab,   setStatusTab]   = useState<'active' | 'inactive'>('active');
+  const [sortKey,     setSortKey]     = useState<'newest' | 'oldest' | 'name'>('newest');
   const [page,        setPage]        = useState(1);
   const [openMenu,    setOpenMenu]    = useState<string | null>(null);
   const [showModal,   setShowModal]   = useState(false);
@@ -104,10 +105,10 @@ export default function PatientsTable({
   const malePercent   = total > 0 ? Math.round((maleCount   / total) * 100) : 50;
   const femalePercent = 100 - malePercent;
 
-  // Filter
+  // Filter + Sort
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
-    return initialPatients.filter((p) => {
+    const list = initialPatients.filter((p) => {
       const isActive = !p.deletedAt;
       if (statusTab === 'active'   && !isActive) return false;
       if (statusTab === 'inactive' &&  isActive) return false;
@@ -121,7 +122,18 @@ export default function PatientsTable({
       }
       return true;
     });
-  }, [initialPatients, search, statusTab]);
+
+    // Sort
+    if (sortKey === 'newest') {
+      list.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    } else if (sortKey === 'oldest') {
+      list.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+    } else if (sortKey === 'name') {
+      list.sort((a, b) => a.name.localeCompare(b.name));
+    }
+
+    return list;
+  }, [initialPatients, search, statusTab, sortKey]);
 
   const totalPages  = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const currentPage = Math.min(page, totalPages);
@@ -129,7 +141,7 @@ export default function PatientsTable({
   const pageItems   = filtered.slice(pageStart, pageStart + PAGE_SIZE);
 
   return (
-    <div className="min-h-full bg-[#f5f7fa]">
+    <div className="min-h-full bg-[#f0f7f3]">
 
       {/* ── Top bar ── */}
       <div className="bg-white border-b border-border px-6 py-3
@@ -187,7 +199,7 @@ export default function PatientsTable({
             onClick={() => setShowModal(true)}
             className="flex items-center gap-2 h-10 px-5 rounded-xl
               text-white text-sm font-semibold hover:opacity-90 transition-opacity shrink-0"
-            style={{ backgroundColor: '#1E3A5F' }}
+            style={{ backgroundColor: '#01411C' }}
           >
             <UserPlus className="h-4 w-4" />
             Register Patient
@@ -233,8 +245,24 @@ export default function PatientsTable({
             </div>
           </div>
 
-          {/* Right side icons */}
-          <div className="flex items-center gap-1.5">
+          {/* Right side: Sort + icons */}
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-muted-foreground">Sort by:</span>
+            <select
+              value={sortKey}
+              onChange={(e) => {
+                setSortKey(e.target.value as 'newest' | 'oldest' | 'name');
+                setPage(1);
+              }}
+              className="h-8 px-2.5 rounded-lg border border-border bg-white text-xs
+                font-medium text-foreground focus:outline-none focus:ring-2
+                focus:ring-primary/20 transition-colors"
+            >
+              <option value="newest">Registered (Newest)</option>
+              <option value="oldest">Registered (Oldest)</option>
+              <option value="name">Name (A–Z)</option>
+            </select>
+
             <button type="button"
               className="h-8 w-8 flex items-center justify-center rounded-lg
                 border border-border bg-white text-muted-foreground hover:text-foreground
@@ -336,7 +364,7 @@ export default function PatientsTable({
                     <div className="min-w-0 pr-2">
                       {p.primaryDoctor ? (
                         <div className="flex items-center gap-1.5">
-                          <div className={`h-2 w-2 rounded-full shrink-0 ${isActive ? 'bg-emerald-500' : 'bg-gray-300'}`} />
+                          <div className={`h-2 w-2 rounded-full shrink-0 ${isActive ? 'bg-emerald-500' : 'bg-muted-foreground/60'}`} />
                           <p className={`text-sm truncate leading-tight
                             ${isActive ? 'text-foreground' : 'text-muted-foreground'}`}>
                             {p.primaryDoctor}
@@ -369,7 +397,7 @@ export default function PatientsTable({
                         font-bold uppercase tracking-wide
                         ${isActive
                           ? 'bg-emerald-50 text-emerald-600 border border-emerald-100'
-                          : 'bg-gray-100 text-gray-500 border border-gray-200'}`}>
+                          : 'bg-muted text-emerald-800/60 border border-emerald-100'}`}>
                         {isActive ? 'Active' : 'Inactive'}
                       </span>
                     </div>
@@ -509,7 +537,7 @@ export default function PatientsTable({
 
           {/* Patient Demographics */}
           <div className="rounded-2xl p-5 text-white"
-            style={{ backgroundColor: '#1E3A5F' }}>
+            style={{ backgroundColor: '#01411C' }}>
             <p className="text-[10px] font-semibold uppercase tracking-widest
               text-white/60 mb-2">
               Patient Demographics

@@ -9,7 +9,7 @@ import Link from 'next/link';
 import { format, startOfMonth, endOfMonth, startOfWeek, endOfWeek } from 'date-fns';
 import {
   Search, Settings, ChevronLeft, ChevronRight,
-  SlidersHorizontal, ArrowUpDown, TrendingUp, BookOpen,
+  SlidersHorizontal, TrendingUp, BookOpen,
 } from 'lucide-react';
 import NotificationBell from '@/components/shared/notification-bell';
 
@@ -31,12 +31,12 @@ function calcAge(dob: string | null | undefined) {
 
 function avatarColor(name: string) {
   const palette = [
-    'bg-blue-100 text-blue-700',
-    'bg-violet-100 text-violet-700',
+    'bg-emerald-100 text-emerald-700',
+    'bg-emerald-100 text-emerald-700',
     'bg-amber-100 text-amber-700',
     'bg-emerald-100 text-emerald-700',
     'bg-rose-100 text-rose-700',
-    'bg-cyan-100 text-cyan-700',
+    'bg-emerald-100 text-emerald-700',
   ];
   return palette[name.charCodeAt(0) % palette.length];
 }
@@ -44,10 +44,10 @@ function avatarColor(name: string) {
 function conditionTagStyle(tag: string) {
   const t = tag.toLowerCase();
   if (t.includes('diabet'))   return 'bg-orange-50 text-orange-600 border-orange-100';
-  if (t.includes('asthma'))   return 'bg-blue-50 text-blue-600 border-blue-100';
+  if (t.includes('asthma'))   return 'bg-emerald-50 text-emerald-700 border-emerald-100';
   if (t.includes('hyper'))    return 'bg-red-50 text-red-600 border-red-100';
   if (t.includes('allerg'))   return 'bg-amber-50 text-amber-600 border-amber-100';
-  return 'bg-gray-100 text-gray-600 border-gray-200';
+  return 'bg-muted text-muted-foreground border-emerald-100';
 }
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
@@ -206,7 +206,7 @@ export default async function DoctorPatientsPage({
   const doctorName = session.user.name ?? 'Doctor';
 
   return (
-    <div className="min-h-full bg-[#f5f7fa]">
+    <div className="min-h-full bg-[#f0f7f3]">
 
       {/* ── Top bar ── */}
       <div className="bg-white border-b border-border px-6 py-3
@@ -302,14 +302,24 @@ export default async function DoctorPatientsPage({
           {/* Sort */}
           <div className="flex items-center gap-1.5">
             <span className="text-xs text-muted-foreground">Sort by:</span>
-            <Link
-              href={buildHref({ sort: sortKey === 'recent' ? 'oldest' : 'recent', page: 1 })}
-              className="flex items-center gap-1 text-sm font-semibold text-primary
-                hover:underline"
-            >
-              {sortKey === 'name' ? 'Name (A–Z)' : sortKey === 'oldest' ? 'Last Visit (Oldest)' : 'Last Visit (Newest)'}
-              <ArrowUpDown className="h-3.5 w-3.5" />
-            </Link>
+            {(
+              [
+                { key: 'recent', label: 'Last Visit (Newest)' },
+                { key: 'oldest', label: 'Last Visit (Oldest)' },
+                { key: 'name',   label: 'Name (A–Z)'          },
+              ] as const
+            ).map((opt) => (
+              <Link
+                key={opt.key}
+                href={buildHref({ sort: opt.key, page: 1 })}
+                className={`h-8 px-3 rounded-full text-xs font-medium border transition-colors
+                  ${sortKey === opt.key
+                    ? 'bg-primary/10 text-primary border-primary/30'
+                    : 'bg-white text-muted-foreground border-border hover:border-primary/30 hover:text-foreground'}`}
+              >
+                {opt.label}
+              </Link>
+            ))}
           </div>
         </div>
 
@@ -553,7 +563,7 @@ export default async function DoctorPatientsPage({
 
           {/* Medical Updates */}
           <div className="rounded-2xl p-5 text-white"
-            style={{ backgroundColor: '#1E3A5F' }}>
+            style={{ backgroundColor: '#01411C' }}>
             <div className="flex items-center gap-2 mb-3">
               <BookOpen className="h-4 w-4 text-white/60" />
               <h3 className="text-sm font-semibold text-white">Medical Updates</h3>
@@ -566,7 +576,7 @@ export default async function DoctorPatientsPage({
             <button
               type="button"
               className="mt-5 w-full h-9 rounded-lg bg-white text-sm font-semibold
-                text-[#1E3A5F] hover:bg-white/90 transition-colors"
+                text-[#01411C] hover:bg-white/90 transition-colors"
             >
               Review Guidelines
             </button>

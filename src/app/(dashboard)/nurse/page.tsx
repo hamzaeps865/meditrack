@@ -15,7 +15,7 @@ import {
 const severityConfig: Record<string, { bg: string; text: string; border: string; label: string }> = {
   critical: { bg: 'bg-rose-50',    text: 'text-rose-700',    border: 'border-rose-300',    label: 'CRITICAL' },
   urgent:   { bg: 'bg-orange-50',  text: 'text-orange-700',  border: 'border-orange-300',  label: 'URGENT' },
-  standard: { bg: 'bg-blue-50',    text: 'text-blue-700',    border: 'border-blue-300',    label: 'STANDARD' },
+  standard: { bg: 'bg-emerald-50',    text: 'text-emerald-700',    border: 'border-emerald-300',    label: 'STANDARD' },
   low:      { bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-300', label: 'LOW' },
 };
 
@@ -45,12 +45,12 @@ export default async function NurseDashboardPage() {
   const triaged = sorted.filter((q) => q.triaged);
 
   return (
-    <div className="min-h-full bg-[#f5f7fa]">
+    <div className="min-h-full bg-[#f0f7f3]">
       {/* Top bar */}
       <div className="bg-white border-b border-border px-6 py-3 flex items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <div className="h-8 w-8 rounded-full bg-teal-100 flex items-center justify-center shrink-0">
-            <HeartPulse className="h-4 w-4 text-teal-600" />
+          <div className="h-8 w-8 rounded-full bg-emerald-100 flex items-center justify-center shrink-0">
+            <HeartPulse className="h-4 w-4 text-emerald-700" />
           </div>
           <div className="hidden sm:block">
             <p className="text-sm font-semibold text-foreground leading-none">{session.user.name}</p>
@@ -122,7 +122,7 @@ export default async function NurseDashboardPage() {
                   <div className="flex items-start justify-between gap-4">
                     {/* Left: patient info */}
                     <div className="flex items-start gap-3 min-w-0">
-                      <div className="h-11 w-11 rounded-full bg-teal-100 text-teal-700 flex items-center justify-center text-sm font-bold shrink-0">
+                      <div className="h-11 w-11 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-sm font-bold shrink-0">
                         {patient.patientName.split(' ').map((p) => p[0]).slice(0, 2).join('').toUpperCase()}
                       </div>
                       <div className="min-w-0">
@@ -130,7 +130,7 @@ export default async function NurseDashboardPage() {
                           <p className="text-sm font-bold text-foreground">{patient.patientName}</p>
                           <span className="text-xs text-muted-foreground">{age}y · {patient.patientGender}</span>
                           {patient.isWalkIn && (
-                            <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-violet-100 text-violet-700">
+                            <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-700">
                               WALK-IN
                             </span>
                           )}

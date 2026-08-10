@@ -33,8 +33,8 @@ type Patient = {
 const PAGE_SIZE = 10;
 
 const avatarPalette = [
-  'bg-blue-100 text-blue-700',
-  'bg-violet-100 text-violet-700',
+  'bg-emerald-100 text-emerald-700',
+  'bg-emerald-100 text-emerald-700',
   'bg-amber-100 text-amber-700',
   'bg-emerald-100 text-emerald-700',
   'bg-rose-100 text-rose-700',
@@ -43,12 +43,12 @@ const avatarPalette = [
 const bloodGroupStyles: Record<string, string> = {
   'O+': 'bg-red-50 text-red-600 border-red-100',
   'O-': 'bg-red-50 text-red-600 border-red-100',
-  'A+': 'bg-indigo-50 text-indigo-600 border-indigo-100',
-  'A-': 'bg-indigo-50 text-indigo-600 border-indigo-100',
-  'B+': 'bg-violet-50 text-violet-600 border-violet-100',
-  'B-': 'bg-violet-50 text-violet-600 border-violet-100',
-  'AB+': 'bg-gray-100 text-gray-600 border-gray-200',
-  'AB-': 'bg-gray-100 text-gray-600 border-gray-200',
+  'A+': 'bg-emerald-50 text-emerald-700 border-emerald-100',
+  'A-': 'bg-emerald-50 text-emerald-700 border-emerald-100',
+  'B+': 'bg-emerald-50 text-emerald-700 border-emerald-100',
+  'B-': 'bg-emerald-50 text-emerald-700 border-emerald-100',
+  'AB+': 'bg-muted text-muted-foreground border-emerald-100',
+  'AB-': 'bg-muted text-muted-foreground border-emerald-100',
 };
 
 function getInitials(name: string) {
@@ -83,6 +83,7 @@ export default function PatientsPage() {
   const [gender, setGender] = useState('');
   const [bloodGroup, setBloodGroup] = useState('');
   const [registeredDate, setRegisteredDate] = useState('');
+  const [sortKey, setSortKey] = useState<'newest' | 'oldest' | 'name'>('newest');
   const [page, setPage] = useState(1);
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
   const [showRegisterModal, setShowRegisterModal] = useState(false);
@@ -104,7 +105,7 @@ export default function PatientsPage() {
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
-    return patients.filter((p) => {
+    const list = patients.filter((p) => {
       if (q) {
         const matches =
           p.name.toLowerCase().includes(q) ||
@@ -121,7 +122,22 @@ export default function PatientsPage() {
       }
       return true;
     });
-  }, [patients, search, gender, bloodGroup, registeredDate]);
+
+    // Sort
+    if (sortKey === 'newest') {
+      list.sort((a, b) =>
+        new Date(b.registeredAt ?? 0).getTime() - new Date(a.registeredAt ?? 0).getTime(),
+      );
+    } else if (sortKey === 'oldest') {
+      list.sort((a, b) =>
+        new Date(a.registeredAt ?? 0).getTime() - new Date(b.registeredAt ?? 0).getTime(),
+      );
+    } else if (sortKey === 'name') {
+      list.sort((a, b) => a.name.localeCompare(b.name));
+    }
+
+    return list;
+  }, [patients, search, gender, bloodGroup, registeredDate, sortKey]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const currentPage = Math.min(page, totalPages);
@@ -266,6 +282,20 @@ export default function PatientsPage() {
               Clear Filters
             </button>
           )}
+
+          <select
+            value={sortKey}
+            onChange={(e) => {
+              setSortKey(e.target.value as 'newest' | 'oldest' | 'name');
+              setPage(1);
+            }}
+            className="h-9 px-3 rounded-lg border border-border bg-background text-sm
+              text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 ml-auto"
+          >
+            <option value="newest">Registered (Newest)</option>
+            <option value="oldest">Registered (Oldest)</option>
+            <option value="name">Name (A–Z)</option>
+          </select>
         </div>
       </div>
 
@@ -329,7 +359,7 @@ export default function PatientsPage() {
                       <td className="px-5 py-4">
                         <span
                           className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium border ${
-                            bloodGroupStyles[p.bloodGroup ?? ''] ?? 'bg-gray-100 text-gray-600 border-gray-200'
+                            bloodGroupStyles[p.bloodGroup ?? ''] ?? 'bg-muted text-muted-foreground border-emerald-100'
                           }`}
                         >
                           {p.bloodGroup ?? '—'}

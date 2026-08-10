@@ -147,7 +147,7 @@ export default function HelpPage() {
   );
 
   return (
-    <div className="min-h-full bg-[#f5f7fa]">
+    <div className="min-h-full bg-[#f0f7f3]">
 
       {/* ── Top bar ── */}
       <div className="bg-white border-b border-border px-6 py-3
@@ -373,7 +373,7 @@ export default function HelpPage() {
                     className="w-full h-11 rounded-xl text-sm font-bold text-white
                       hover:opacity-90 transition-opacity disabled:opacity-60
                       flex items-center justify-center gap-2"
-                    style={{ backgroundColor: '#1E3A5F' }}
+                    style={{ backgroundColor: '#01411C' }}
                   >
                     {sending ? (
                       <>

@@ -335,7 +335,7 @@ export default function AdminSettings({ adminName, adminEmail }: Props) {
   ];
 
   return (
-    <div className="min-h-full bg-[#f5f7fa]">
+    <div className="min-h-full bg-[#f0f7f3]">
 
       {/* ── Top bar ── */}
       <div className="bg-white border-b border-border px-6 py-3
@@ -401,7 +401,7 @@ export default function AdminSettings({ adminName, adminEmail }: Props) {
                     ${isActive
                       ? 'text-white'
                       : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}
-                  style={isActive ? { backgroundColor: '#1E3A5F' } : {}}
+                  style={isActive ? { backgroundColor: '#01411C' } : {}}
                 >
                   <Icon className="h-4 w-4 shrink-0" />
                   {item.label}
@@ -807,7 +807,7 @@ export default function AdminSettings({ adminName, adminEmail }: Props) {
                     },
                     {
                       role: 'Patient',
-                      color: 'bg-violet-50 text-violet-700',
+                      color: 'bg-emerald-50 text-emerald-700',
                       permissions: [
                         'View own appointments',
                         'View own prescriptions',
@@ -863,7 +863,7 @@ export default function AdminSettings({ adminName, adminEmail }: Props) {
                   className="h-10 px-6 rounded-xl text-sm font-bold text-white
                     hover:opacity-90 transition-opacity disabled:opacity-60
                     disabled:cursor-not-allowed flex items-center gap-2"
-                  style={{ backgroundColor: '#1E3A5F' }}
+                  style={{ backgroundColor: '#01411C' }}
                 >
                   {isPending && <Loader2 className="h-4 w-4 animate-spin" />}
                   Save Changes

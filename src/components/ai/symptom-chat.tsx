@@ -80,8 +80,8 @@ export default function SymptomChat({ patientName }: { patientName: string }) {
             {/* Avatar */}
             <div className={`h-8 w-8 rounded-full flex items-center justify-center shrink-0 ${
               msg.role === 'user'
-                ? 'bg-blue-100 text-blue-600'
-                : 'bg-violet-100 text-violet-600'
+                ? 'bg-emerald-100 text-emerald-700'
+                : 'bg-emerald-100 text-emerald-700'
             }`}>
               {msg.role === 'user' ? (
                 <span className="text-xs font-bold">{patientName[0]}</span>
@@ -104,7 +104,7 @@ export default function SymptomChat({ patientName }: { patientName: string }) {
         {/* Loading indicator */}
         {loading && (
           <div className="flex gap-2.5">
-            <div className="h-8 w-8 rounded-full bg-violet-100 text-violet-600 flex items-center justify-center shrink-0">
+            <div className="h-8 w-8 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
               <Sparkles className="h-4 w-4" />
             </div>
             <div className="bg-white border border-border rounded-2xl px-4 py-3 flex items-center gap-2">

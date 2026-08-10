@@ -17,7 +17,7 @@ import { isValidPakistaniPhone, pakistaniPhoneMessage } from '@/lib/validators/p
 type Strength = { label: string; score: number; color: string };
 
 function getPasswordStrength(password: string): Strength {
-  if (!password) return { label: '', score: 0, color: 'bg-gray-200' };
+  if (!password) return { label: '', score: 0, color: 'bg-muted' };
 
   let score = 0;
   if (password.length >= 8) score++;
@@ -225,7 +225,7 @@ export default function RegisterPage() {
               className="mt-1 w-full h-[44px]"
             />
             {password && (
-              <div className="mt-2 h-1.5 w-full rounded-full bg-gray-100 overflow-hidden">
+              <div className="mt-2 h-1.5 w-full rounded-full bg-muted overflow-hidden">
                 <div
                   className={`h-full rounded-full transition-all duration-300 ${strength.color}`}
                   style={{ width: `${(strength.score / 3) * 100}%` }}

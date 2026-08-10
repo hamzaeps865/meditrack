@@ -14,7 +14,7 @@ export default async function PatientDoctorsPage() {
   const ratingMap = await getDoctorRatingSummaries(doctors.map((d) => d.id));
 
   return (
-    <div className="min-h-full bg-[#f5f7fa]">
+    <div className="min-h-full bg-[#f0f7f3]">
       <div className="px-6 py-8 max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-6">

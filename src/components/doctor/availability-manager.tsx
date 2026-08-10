@@ -428,7 +428,7 @@ export default function AvailabilityManager({ doctorId, initialWindows }: Props)
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {/* Standard Policy */}
         <div className="rounded-2xl p-5 text-white"
-          style={{ backgroundColor: '#1E3A5F' }}>
+          style={{ backgroundColor: '#01411C' }}>
           <div className="h-8 w-8 rounded-full bg-white/10 flex items-center
             justify-center mb-3">
             <Info className="h-4 w-4 text-white" />

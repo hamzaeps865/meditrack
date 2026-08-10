@@ -15,12 +15,12 @@ import { eq } from 'drizzle-orm';
 import EditPatientButton from '@/components/receptionist/edit-patient-button';
 
 const statusStyles: Record<string, string> = {
-  scheduled:   'bg-blue-50 text-blue-700',
+  scheduled:   'bg-emerald-50 text-emerald-700',
   checked_in:  'bg-amber-50 text-amber-700',
   in_progress: 'bg-orange-50 text-orange-700',
   completed:   'bg-emerald-50 text-emerald-700',
   cancelled:   'bg-red-50 text-red-600',
-  no_show:     'bg-gray-100 text-gray-500',
+  no_show:     'bg-muted text-emerald-800/60',
 };
 
 const statusLabels: Record<string, string> = {
@@ -312,7 +312,7 @@ export default async function PatientDetailPage({
         {/* Right column */}
         <div className="space-y-4">
           {/* Registration summary */}
-          <div className="rounded-xl p-5 text-primary-foreground" style={{ backgroundColor: '#1E3A5F' }}>
+          <div className="rounded-xl p-5 text-primary-foreground" style={{ backgroundColor: '#01411C' }}>
             <p className="text-xs font-semibold uppercase tracking-wide opacity-70 mb-3">
               Registration Summary
             </p>
@@ -370,10 +370,10 @@ export default async function PatientDetailPage({
                 className="h-28 w-full relative"
                 style={{
                   backgroundImage:
-                    'linear-gradient(135deg, #dbe4ee 25%, transparent 25%), linear-gradient(225deg, #dbe4ee 25%, transparent 25%), linear-gradient(45deg, #dbe4ee 25%, transparent 25%), linear-gradient(315deg, #dbe4ee 25%, #eef1f5 25%)',
+                    'linear-gradient(135deg, #d9e8df 25%, transparent 25%), linear-gradient(225deg, #d9e8df 25%, transparent 25%), linear-gradient(45deg, #d9e8df 25%, transparent 25%), linear-gradient(315deg, #d9e8df 25%, #eaf2ed 25%)',
                   backgroundPosition: '20px 0, 20px 0, 0 0, 0 0',
                   backgroundSize: '20px 20px',
-                  backgroundColor: '#eef1f5',
+                  backgroundColor: '#eaf2ed',
                 }}
               >
                 <div className="absolute inset-0 flex items-center justify-center">

@@ -46,12 +46,12 @@ const statusConfig: Record<string, {
   rowBg?: string;
   strikethrough?: boolean;
 }> = {
-  scheduled:   { badge: 'bg-blue-100 text-blue-700',    label: 'Scheduled' },
+  scheduled:   { badge: 'bg-emerald-100 text-emerald-700',    label: 'Scheduled' },
   checked_in:  { badge: 'bg-amber-100 text-amber-700',  label: 'Checked-in',  rowBg: 'bg-primary/5' },
   in_progress: { badge: 'bg-orange-100 text-orange-700',label: 'In Progress', rowBg: 'bg-orange-50' },
   completed:   { badge: 'bg-emerald-100 text-emerald-700', label: 'Completed', strikethrough: true },
   cancelled:   { badge: 'bg-red-100 text-red-600',      label: 'Cancelled',   strikethrough: true },
-  no_show:     { badge: 'bg-gray-100 text-gray-500',    label: 'No-show',     strikethrough: true },
+  no_show:     { badge: 'bg-muted text-emerald-800/60',    label: 'No-show',     strikethrough: true },
 };
 
 const reasonIcons: Record<string, string> = {
@@ -216,14 +216,14 @@ export default async function DoctorDashboard() {
 
         <div className="flex items-center gap-2">
           <NotificationBell />
-          <button
-            type="button"
+          <Link
+            href="/doctor/settings"
             aria-label="Settings"
             className="h-9 w-9 flex items-center justify-center rounded-full
               text-muted-foreground hover:bg-muted transition-colors"
           >
             <Settings className="h-4 w-4" />
-          </button>
+          </Link>
 
           <div className="flex items-center gap-2.5 pl-3 ml-1 border-l border-border">
             <div className="text-right hidden sm:block">
@@ -266,14 +266,14 @@ export default async function DoctorDashboard() {
           </p>
         </div>
 
-        <button
-          type="button"
+        <Link
+          href="/doctor/appointments"
           className="flex items-center gap-2 h-9 px-4 rounded-lg border border-border
             bg-card text-sm font-medium text-foreground hover:bg-muted transition-colors"
         >
-          <Printer className="h-4 w-4 text-muted-foreground" />
+          <Calendar className="h-4 w-4 text-muted-foreground" />
           Daily Schedule
-        </button>
+        </Link>
       </div>
 
       {/* ── Main grid ── */}

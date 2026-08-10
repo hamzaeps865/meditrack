@@ -29,7 +29,7 @@ export default async function AdminBillingPage() {
   };
 
   return (
-    <div className="min-h-full bg-[#f5f7fa]">
+    <div className="min-h-full bg-[#f0f7f3]">
       <div className="bg-white border-b border-border px-6 py-3 flex items-center justify-between gap-4">
         <div className="flex items-center gap-2">
           <Receipt className="h-4 w-4 text-primary" />
@@ -61,15 +61,15 @@ export default async function AdminBillingPage() {
             <p className="text-xs text-muted-foreground mt-0.5">Outstanding</p>
           </div>
           <div className="bg-white rounded-2xl border border-border p-5 shadow-sm">
-            <div className="h-10 w-10 rounded-xl bg-blue-50 flex items-center justify-center mb-3">
-              <Receipt className="h-5 w-5 text-blue-600" />
+            <div className="h-10 w-10 rounded-xl bg-emerald-50 flex items-center justify-center mb-3">
+              <Receipt className="h-5 w-5 text-emerald-700" />
             </div>
             <p className="text-2xl font-bold text-foreground">{summary.totalInvoices}</p>
             <p className="text-xs text-muted-foreground mt-0.5">Total Invoices</p>
           </div>
           <div className="bg-white rounded-2xl border border-border p-5 shadow-sm">
-            <div className="h-10 w-10 rounded-xl bg-violet-50 flex items-center justify-center mb-3">
-              <CheckCircle2 className="h-5 w-5 text-violet-600" />
+            <div className="h-10 w-10 rounded-xl bg-emerald-50 flex items-center justify-center mb-3">
+              <CheckCircle2 className="h-5 w-5 text-emerald-700" />
             </div>
             <p className="text-2xl font-bold text-foreground">{summary.paidCount}</p>
             <p className="text-xs text-muted-foreground mt-0.5">Paid Invoices</p>

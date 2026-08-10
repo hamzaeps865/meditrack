@@ -61,7 +61,7 @@ export default function ProfileSwitcher({
       >
         <div className="flex items-center gap-2 min-w-0">
           <div className={`h-6 w-6 rounded-full flex items-center justify-center shrink-0
-            ${active?.isManaged ? 'bg-violet-100 text-violet-700' : 'bg-primary/10 text-primary'}`}>
+            ${active?.isManaged ? 'bg-emerald-100 text-emerald-700' : 'bg-primary/10 text-primary'}`}>
             {active?.isManaged ? <Users className="h-3 w-3" /> : <User className="h-3 w-3" />}
           </div>
           <div className="min-w-0">
@@ -94,7 +94,7 @@ export default function ProfileSwitcher({
                   hover:bg-muted transition-colors ${isActive ? 'bg-primary/5' : ''}`}
               >
                 <div className={`h-6 w-6 rounded-full flex items-center justify-center shrink-0
-                  ${p.isManaged ? 'bg-violet-100 text-violet-700' : 'bg-primary/10 text-primary'}`}>
+                  ${p.isManaged ? 'bg-emerald-100 text-emerald-700' : 'bg-primary/10 text-primary'}`}>
                   {p.isManaged ? <Users className="h-3 w-3" /> : <User className="h-3 w-3" />}
                 </div>
                 <div className="flex-1 min-w-0">

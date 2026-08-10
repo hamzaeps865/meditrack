@@ -260,7 +260,7 @@ export default function AddDoctorModal({ onClose }: Props) {
             className="h-12 rounded-xl text-sm font-bold text-white transition-colors
               disabled:opacity-60 disabled:cursor-not-allowed
               flex items-center justify-center gap-2"
-            style={{ backgroundColor: '#1E3A5F' }}
+            style={{ backgroundColor: '#01411C' }}
           >
             {isPending && <Loader2 className="h-4 w-4 animate-spin" />}
             Save Doctor

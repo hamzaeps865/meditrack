@@ -255,7 +255,7 @@ export default function PatientSettingsForm({
               className="h-10 px-6 rounded-xl text-sm font-bold text-white
                 hover:opacity-90 transition-opacity disabled:opacity-60
                 flex items-center gap-2"
-              style={{ backgroundColor: '#1E3A5F' }}
+              style={{ backgroundColor: '#01411C' }}
             >
               {isPendingProfile && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
               {isPendingProfile ? 'Saving...' : 'Save Profile'}
@@ -314,7 +314,7 @@ export default function PatientSettingsForm({
                       className={`h-full rounded-full transition-all duration-300 ${
                         newPw.length < 6   ? 'w-1/4 bg-red-400'   :
                         newPw.length < 8   ? 'w-2/4 bg-amber-400' :
-                        newPw.length < 12  ? 'w-3/4 bg-blue-400'  :
+                        newPw.length < 12  ? 'w-3/4 bg-emerald-400'  :
                                              'w-full bg-emerald-400'
                       }`}
                     />
@@ -322,7 +322,7 @@ export default function PatientSettingsForm({
                   <p className={`text-[10px] mt-0.5 ${
                     newPw.length < 6   ? 'text-red-500'   :
                     newPw.length < 8   ? 'text-amber-500' :
-                    newPw.length < 12  ? 'text-blue-500'  :
+                    newPw.length < 12  ? 'text-emerald-600'  :
                                          'text-emerald-500'
                   }`}>
                     {newPw.length < 6  ? 'Too short' :
@@ -352,7 +352,7 @@ export default function PatientSettingsForm({
               className="h-10 px-6 rounded-xl text-sm font-bold text-white
                 hover:opacity-90 transition-opacity disabled:opacity-50
                 flex items-center gap-2"
-              style={{ backgroundColor: '#1E3A5F' }}
+              style={{ backgroundColor: '#01411C' }}
             >
               {isPendingPw && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
               {isPendingPw ? 'Changing...' : 'Change Password'}
@@ -391,7 +391,7 @@ export default function PatientSettingsForm({
                 className={`h-6 w-11 rounded-full flex items-center px-0.5 shrink-0
                   transition-colors duration-200
                   ${pref.value ? 'justify-end' : 'justify-start bg-muted'}`}
-                style={pref.value ? { backgroundColor: '#1E3A5F' } : undefined}
+                style={pref.value ? { backgroundColor: '#01411C' } : undefined}
               >
                 <div className="h-5 w-5 rounded-full bg-white shadow-sm transition-transform" />
               </button>

@@ -143,7 +143,7 @@ export default function NewAppointmentForm({ doctors, adminName }: Props) {
   const selectedDoctor = doctors.find((d) => d.id === doctorId);
 
   return (
-    <div className="min-h-full bg-[#f5f7fa]">
+    <div className="min-h-full bg-[#f0f7f3]">
 
       {/* ── Top bar ── */}
       <div className="bg-white border-b border-border px-6 py-3
@@ -442,7 +442,7 @@ export default function NewAppointmentForm({ doctors, adminName }: Props) {
               className="h-11 px-8 rounded-xl text-sm font-bold text-white
                 hover:opacity-90 transition-all disabled:opacity-60
                 disabled:cursor-not-allowed flex items-center gap-2"
-              style={{ backgroundColor: '#1E3A5F' }}
+              style={{ backgroundColor: '#01411C' }}
             >
               {success ? (
                 <>

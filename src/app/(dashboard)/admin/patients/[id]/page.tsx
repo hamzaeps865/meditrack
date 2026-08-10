@@ -24,12 +24,12 @@ function getInitials(name: string | null | undefined) {
 }
 
 const statusStyles: Record<string, string> = {
-  scheduled:   'bg-blue-50 text-blue-700',
+  scheduled:   'bg-emerald-50 text-emerald-700',
   checked_in:  'bg-amber-50 text-amber-700',
   in_progress: 'bg-orange-50 text-orange-700',
   completed:   'bg-emerald-50 text-emerald-700',
   cancelled:   'bg-red-50 text-red-600',
-  no_show:     'bg-gray-100 text-gray-500',
+  no_show:     'bg-muted text-emerald-800/60',
 };
 
 const statusLabels: Record<string, string> = {
@@ -112,7 +112,7 @@ export default async function AdminPatientProfilePage({
     : [];
 
   return (
-    <div className="min-h-full bg-[#f5f7fa]">
+    <div className="min-h-full bg-[#f0f7f3]">
 
       {/* ── Top bar ── */}
       <div className="bg-white border-b border-border px-6 py-3
@@ -195,7 +195,7 @@ export default async function AdminPatientProfilePage({
             <Link href={`/admin/appointments/new?patientId=${id}`}
               className="flex items-center gap-1.5 h-9 px-4 rounded-xl text-sm
                 font-bold text-white hover:opacity-90 transition-opacity"
-              style={{ backgroundColor: '#1E3A5F' }}>
+              style={{ backgroundColor: '#01411C' }}>
               Book Appointment
             </Link>
           </div>
@@ -442,7 +442,7 @@ export default async function AdminPatientProfilePage({
 
             {/* Registration Summary */}
             <div className="rounded-2xl p-5 text-white"
-              style={{ backgroundColor: '#1E3A5F' }}>
+              style={{ backgroundColor: '#01411C' }}>
               <p className="text-[10px] font-semibold uppercase tracking-widest
                 text-white/60 mb-3">
                 Registration Summary

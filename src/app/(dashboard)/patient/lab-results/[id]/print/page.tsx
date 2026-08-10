@@ -19,7 +19,7 @@ export default async function PatientLabReportPrintPage({ params }: { params: Pr
   if (!order || !order.result) redirect('/patient/lab-results');
 
   return (
-    <div className="min-h-screen bg-white text-gray-900 p-8 print:p-0">
+    <div className="min-h-screen bg-white text-foreground p-8 print:p-0">
       <PrintTrigger />
       <style>{`
         @media print {
@@ -29,33 +29,33 @@ export default async function PatientLabReportPrintPage({ params }: { params: Pr
       `}</style>
 
       <div className="max-w-3xl mx-auto space-y-6">
-        <div className="flex items-center justify-between border-b border-gray-200 pb-4">
+        <div className="flex items-center justify-between border-b border-emerald-100 pb-4">
           <div className="flex items-center gap-3">
-            <FlaskConical className="h-8 w-8 text-blue-700" />
+            <FlaskConical className="h-8 w-8 text-emerald-700" />
             <div>
               <h1 className="text-2xl font-bold">MediTrack</h1>
-              <p className="text-xs text-gray-500">Lab Report</p>
+              <p className="text-xs text-emerald-800/60">Lab Report</p>
             </div>
           </div>
-          <div className="text-right text-xs text-gray-500">
+          <div className="text-right text-xs text-emerald-800/60">
             <p>Printed: {format(new Date(), 'MMM d, yyyy')}</p>
             <p>Report ID: {order.id.slice(0, 8).toUpperCase()}</p>
           </div>
         </div>
 
-        <div className="rounded-xl border border-gray-200 p-4">
-          <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Test</p>
+        <div className="rounded-xl border border-emerald-100 p-4">
+          <p className="text-xs font-semibold uppercase tracking-wide text-emerald-800/60">Test</p>
           <p className="text-lg font-semibold">{order.testName}</p>
         </div>
 
-        <div className="rounded-xl border border-gray-200 p-4">
-          <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Result</p>
+        <div className="rounded-xl border border-emerald-100 p-4">
+          <p className="text-xs font-semibold uppercase tracking-wide text-emerald-800/60">Result</p>
           <p className="mt-2 text-sm leading-7 whitespace-pre-wrap">{order.result}</p>
         </div>
 
         {order.instructions && (
-          <div className="rounded-xl border border-gray-200 p-4">
-            <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Instructions</p>
+          <div className="rounded-xl border border-emerald-100 p-4">
+            <p className="text-xs font-semibold uppercase tracking-wide text-emerald-800/60">Instructions</p>
             <p className="mt-2 text-sm">{order.instructions}</p>
           </div>
         )}

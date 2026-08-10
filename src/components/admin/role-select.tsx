@@ -8,12 +8,12 @@ type Role = 'admin' | 'doctor' | 'receptionist' | 'patient' | 'nurse' | 'pharmac
 
 const roleColors: Record<Role, string> = {
   admin:        'bg-red-100 text-red-700',
-  doctor:       'bg-violet-100 text-violet-700',
+  doctor:       'bg-emerald-100 text-emerald-700',
   receptionist: 'bg-amber-100 text-amber-700',
-  patient:      'bg-blue-100 text-blue-700',
-  nurse:        'bg-teal-100 text-teal-700',
+  patient:      'bg-emerald-100 text-emerald-700',
+  nurse:        'bg-emerald-100 text-emerald-700',
   pharmacist:   'bg-emerald-100 text-emerald-700',
-  lab:          'bg-cyan-100 text-cyan-700',
+  lab:          'bg-emerald-100 text-emerald-700',
 };
 
 interface RoleSelectProps {
@@ -53,9 +53,9 @@ export default function RoleSelect({ userId, currentRole, isSelf }: RoleSelectPr
         onChange={handleChange}
         disabled={isPending || isSelf}
         title={isSelf ? "You can't change your own role" : 'Change role'}
-        className="text-sm border rounded-md px-2 py-1 bg-white text-gray-700
+        className="text-sm border rounded-md px-2 py-1 bg-white text-foreground
           disabled:opacity-40 disabled:cursor-not-allowed
-          focus:outline-none focus:ring-2 focus:ring-cyan-500"
+          focus:outline-none focus:ring-2 focus:ring-emerald-500"
       >
         <option value="patient">Patient</option>
         <option value="receptionist">Receptionist</option>
@@ -67,7 +67,7 @@ export default function RoleSelect({ userId, currentRole, isSelf }: RoleSelectPr
       </select>
 
       {isPending && (
-        <span className="text-xs text-gray-400 animate-pulse">Saving...</span>
+        <span className="text-xs text-muted-foreground animate-pulse">Saving...</span>
       )}
     </div>
   );

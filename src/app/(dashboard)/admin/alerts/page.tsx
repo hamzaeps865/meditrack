@@ -26,7 +26,7 @@ export default async function AdminAlertsPage() {
   }));
 
   return (
-    <div className="min-h-full bg-[#f5f7fa]">
+    <div className="min-h-full bg-[#f0f7f3]">
       {/* Top bar */}
       <div className="bg-white border-b border-border px-6 py-3 flex items-center justify-between gap-4">
         <div className="flex items-center gap-2">

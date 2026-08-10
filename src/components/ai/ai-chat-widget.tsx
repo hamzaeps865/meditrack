@@ -72,14 +72,14 @@ export default function AiChatWidget({ patientName }: { patientName: string }) {
           type="button"
           onClick={() => setOpen(true)}
           className="fixed bottom-6 right-6 z-50 h-14 w-14 rounded-full
-            bg-gradient-to-br from-violet-500 to-violet-600 text-white
+            bg-gradient-to-br from-emerald-600 to-emerald-700 text-white
             shadow-lg hover:shadow-xl hover:scale-105 transition-all
             flex items-center justify-center group"
           aria-label="Open AI Assistant"
         >
           <Sparkles className="h-6 w-6" />
           {/* Pulse ring */}
-          <span className="absolute inset-0 rounded-full bg-violet-400 animate-ping opacity-20" />
+          <span className="absolute inset-0 rounded-full bg-emerald-400 animate-ping opacity-20" />
           {/* Badge */}
           <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-emerald-500
             border-2 border-white flex items-center justify-center">
@@ -94,7 +94,7 @@ export default function AiChatWidget({ patientName }: { patientName: string }) {
           bg-white rounded-2xl shadow-2xl border border-border flex flex-col overflow-hidden">
           
           {/* Header */}
-          <div className="bg-gradient-to-r from-violet-500 to-violet-600 px-4 py-3 flex items-center justify-between">
+          <div className="bg-gradient-to-r from-emerald-600 to-emerald-700 px-4 py-3 flex items-center justify-between">
             <div className="flex items-center gap-2.5">
               <div className="h-8 w-8 rounded-full bg-white/20 flex items-center justify-center">
                 <Sparkles className="h-4 w-4 text-white" />
@@ -117,11 +117,11 @@ export default function AiChatWidget({ patientName }: { patientName: string }) {
           </div>
 
           {/* Messages */}
-          <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-3 space-y-3 bg-gray-50">
+          <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-3 space-y-3 bg-emerald-50/30">
             {messages.map((msg, i) => (
               <div key={i} className={`flex gap-2 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}>
                 <div className={`h-7 w-7 rounded-full flex items-center justify-center shrink-0 ${
-                  msg.role === 'user' ? 'bg-blue-100 text-blue-600' : 'bg-violet-100 text-violet-600'
+                  msg.role === 'user' ? 'bg-emerald-100 text-emerald-700' : 'bg-emerald-100 text-emerald-700'
                 }`}>
                   {msg.role === 'user' ? (
                     <span className="text-[10px] font-bold">{patientName[0]}</span>
@@ -131,7 +131,7 @@ export default function AiChatWidget({ patientName }: { patientName: string }) {
                 </div>
                 <div className={`max-w-[78%] rounded-2xl px-3.5 py-2 ${
                   msg.role === 'user'
-                    ? 'bg-violet-500 text-white rounded-tr-sm'
+                    ? 'bg-emerald-600 text-white rounded-tr-sm'
                     : 'bg-white border border-border text-foreground rounded-tl-sm'
                 }`}>
                   <p className="text-xs whitespace-pre-line leading-relaxed">{msg.content}</p>
@@ -142,14 +142,14 @@ export default function AiChatWidget({ patientName }: { patientName: string }) {
             {/* Loading */}
             {loading && (
               <div className="flex gap-2">
-                <div className="h-7 w-7 rounded-full bg-violet-100 text-violet-600 flex items-center justify-center shrink-0">
+                <div className="h-7 w-7 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
                   <Sparkles className="h-3.5 w-3.5" />
                 </div>
                 <div className="bg-white border border-border rounded-2xl rounded-tl-sm px-3.5 py-2.5">
                   <div className="flex items-center gap-1">
-                    <span className="h-1.5 w-1.5 rounded-full bg-violet-400 animate-bounce" style={{ animationDelay: '0ms' }} />
-                    <span className="h-1.5 w-1.5 rounded-full bg-violet-400 animate-bounce" style={{ animationDelay: '150ms' }} />
-                    <span className="h-1.5 w-1.5 rounded-full bg-violet-400 animate-bounce" style={{ animationDelay: '300ms' }} />
+                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-bounce" style={{ animationDelay: '0ms' }} />
+                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-bounce" style={{ animationDelay: '150ms' }} />
+                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-bounce" style={{ animationDelay: '300ms' }} />
                   </div>
                 </div>
               </div>
@@ -165,7 +165,7 @@ export default function AiChatWidget({ patientName }: { patientName: string }) {
                       key={s}
                       type="button"
                       onClick={() => handleSend(s)}
-                      className="px-2.5 py-1 rounded-full border border-border bg-white text-[11px] font-medium text-foreground hover:bg-violet-50 hover:border-violet-300 transition-all"
+                      className="px-2.5 py-1 rounded-full border border-border bg-white text-[11px] font-medium text-foreground hover:bg-emerald-50 hover:border-emerald-300 transition-all"
                     >
                       {s}
                     </button>
@@ -189,14 +189,14 @@ export default function AiChatWidget({ patientName }: { patientName: string }) {
                 }}
                 placeholder="Describe your symptoms..."
                 rows={1}
-                className="flex-1 px-3 py-2 rounded-xl border border-border bg-gray-50 text-xs text-foreground placeholder:text-muted-foreground/60 resize-none focus:outline-none focus:ring-2 focus:ring-violet-400/20"
+                className="flex-1 px-3 py-2 rounded-xl border border-border bg-emerald-50/30 text-xs text-foreground placeholder:text-muted-foreground/60 resize-none focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
                 style={{ minHeight: '36px', maxHeight: '80px' }}
               />
               <button
                 type="button"
                 onClick={() => handleSend()}
                 disabled={!input.trim() || loading}
-                className="h-9 w-9 rounded-xl bg-violet-500 text-white flex items-center justify-center hover:bg-violet-600 disabled:opacity-50 shrink-0 transition-colors"
+                className="h-9 w-9 rounded-xl bg-emerald-600 text-white flex items-center justify-center hover:bg-emerald-700 disabled:opacity-50 shrink-0 transition-colors"
               >
                 {loading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Send className="h-3.5 w-3.5" />}
               </button>
@@ -207,7 +207,7 @@ export default function AiChatWidget({ patientName }: { patientName: string }) {
               </p>
               <Link
                 href="/patient/appointments/new"
-                className="text-[9px] font-semibold text-violet-600 hover:underline flex items-center gap-0.5"
+                className="text-[9px] font-semibold text-emerald-700 hover:underline flex items-center gap-0.5"
               >
                 <Stethoscope className="h-2.5 w-2.5" />
                 Book
