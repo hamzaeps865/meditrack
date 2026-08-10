@@ -64,7 +64,7 @@
    Error:      #DC2626 / #FEF2F2
 */
 :root {
-  --radius: 0.5rem;
+  --radius: 0rem;
 
   /* Surfaces */
   --background:    #F0F7F3;
@@ -112,7 +112,7 @@
 
 /* ─── Dark mode — Pakistan green for dark surfaces 🇵🇰 ───────────────────────*/
 .dark {
-  --radius: 0.5rem;
+  --radius: 0rem;
 
   /* Surfaces */
   --background:    #1C1C1E;
