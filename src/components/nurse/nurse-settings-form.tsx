@@ -6,6 +6,8 @@ import { updateOwnNurseProfile } from '@/server/actions/nurse-self.actions';
 import { Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 export default function NurseSettingsForm({
   initialName,
   initialEmail,
@@ -17,11 +19,21 @@ export default function NurseSettingsForm({
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [name, setName] = useState(initialName);
+  const [email, setEmail] = useState(initialEmail);
 
   function handleSaveProfile() {
+    if (!name.trim()) {
+      toast.error('Name is required.');
+      return;
+    }
+    if (!emailRegex.test(email.trim())) {
+      toast.error('Please enter a valid email address.');
+      return;
+    }
+
     startTransition(async () => {
       try {
-        await updateOwnNurseProfile({ name });
+        await updateOwnNurseProfile({ name: name.trim(), email: email.trim() });
         toast.success('Profile updated.');
         router.refresh();
       } catch (err) {
@@ -45,8 +57,8 @@ export default function NurseSettingsForm({
             <input className={inputCls} value={name} onChange={(e) => setName(e.target.value)} />
           </div>
           <div>
-            <label className={labelCls}>Email (read-only)</label>
-            <input className={`${inputCls} bg-muted/50 cursor-not-allowed`} value={initialEmail} disabled />
+            <label className={labelCls}>Email</label>
+            <input className={inputCls} value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" />
           </div>
           <button
             type="button"

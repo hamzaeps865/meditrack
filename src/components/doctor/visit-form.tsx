@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useTransition, useRef } from 'react';
+import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { createVisit, updateVisit } from '@/server/actions/visits.actions';
 import { createPrescription } from '@/server/actions/prescriptions.actions';
@@ -8,11 +8,14 @@ import { createLabOrders } from '@/server/actions/lab-orders.actions';
 import { updateAppointmentStatus, scheduleFollowUp } from '@/server/actions/appointments.actions';
 import { Plus, Trash2, Loader2, AlertCircle, Download, FlaskConical } from 'lucide-react';
 import MedicineSearch from '@/components/doctor/medicine-search';
+import DrugCheckButton from '@/components/ai/drug-check-button';
+import NotesGeneratorButton from '@/components/ai/notes-generator-button';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 interface PrescriptionRow {
   id: string; // local key only
+  medicineId?: string;
   medicineName: string;
   dosage: string;
   frequency: string;
@@ -44,6 +47,7 @@ interface VisitFormProps {
   existingPrescriptionItems?: {
     id: string;
     prescriptionId: string;
+    medicineId: string | null;
     medicineName: string;
     dosage: string;
     frequency: string;
@@ -91,6 +95,7 @@ export default function VisitForm({
     existingPrescriptionItems.length > 0
       ? existingPrescriptionItems.map((item) => ({
           id:           item.id,
+          medicineId:   item.medicineId ?? undefined,
           medicineName: item.medicineName,
           dosage:       item.dosage,
           frequency:    item.frequency,
@@ -141,7 +146,9 @@ export default function VisitForm({
   }
 
   function updateRxRow(id: string, field: keyof PrescriptionRow, value: string) {
-    setRxRows((prev) => prev.map((r) => r.id === id ? { ...r, [field]: value } : r));
+    setRxRows((prev) => prev.map((r) => r.id === id
+      ? { ...r, [field]: value, ...(field === 'medicineName' ? { medicineId: undefined } : {}) }
+      : r));
   }
 
   // ── Save draft ──────────────────────────────────────────────────────────────
@@ -196,12 +203,13 @@ export default function VisitForm({
     startTransition(async () => {
       try {
         // 1. Upsert the visit record
+        let visitId = existingVisit?.id;
         if (!existingVisit) {
           if (!complaint.trim()) {
             setError('Chief complaint is required before completing the visit.');
             return;
           }
-          await createVisit({
+          const visit = await createVisit({
             appointmentId,
             patientId,
             chiefComplaint: complaint,
@@ -211,8 +219,9 @@ export default function VisitForm({
             vitalsTemp:     temp      || undefined,
             vitalsWeight:   weight    || undefined,
           });
+          visitId = visit.id;
         } else {
-          await updateVisit(existingVisit.id, {
+          const visit = await updateVisit(existingVisit.id, {
             chiefComplaint: complaint || undefined,
             diagnosis:      diagnosis || undefined,
             notes:          notes     || undefined,
@@ -220,15 +229,17 @@ export default function VisitForm({
             vitalsTemp:     temp      || undefined,
             vitalsWeight:   weight    || undefined,
           });
+          visitId = visit.id;
         }
 
         // 2. Save prescriptions (only new rows with medicine name filled)
         // We need the visit id — refetch or use existingVisit.id
         const validRxRows = rxRows.filter((r) => r.medicineName.trim());
-        if (validRxRows.length > 0 && existingVisit?.id) {
+        if (validRxRows.length > 0 && visitId) {
           await createPrescription({
-            visitId: existingVisit.id,
+            visitId,
             items: validRxRows.map((r) => ({
+              medicineId:   r.medicineId,
               medicineName: r.medicineName,
               dosage:       r.dosage   || '—',
               frequency:    r.frequency || '—',
@@ -240,9 +251,9 @@ export default function VisitForm({
 
         // 3. Save lab orders (only rows with a test name filled)
         const validLabRows = labRows.filter((r) => r.testName.trim());
-        if (validLabRows.length > 0 && existingVisit?.id) {
+        if (validLabRows.length > 0 && visitId) {
           await createLabOrders({
-            visitId: existingVisit.id,
+            visitId,
             orders: validLabRows.map((r) => ({
               testName: r.testName,
               instructions: r.instructions || undefined,
@@ -371,13 +382,26 @@ export default function VisitForm({
         </div>
 
         <div>
-          <label className="block text-xs font-medium text-muted-foreground mb-1.5">
-            Clinical Notes
-          </label>
+          <div className="flex items-center justify-between mb-1.5">
+            <label className="block text-xs font-medium text-muted-foreground">
+              Clinical Notes
+            </label>
+            {!isReadOnly && (
+              <NotesGeneratorButton
+                chiefComplaint={complaint}
+                vitalsBp={bp}
+                vitalsTemp={temp}
+                vitalsWeight={weight}
+                diagnosis={diagnosis}
+                medicines={rxRows.map((r) => r.medicineName).filter((m) => m.trim())}
+                onGenerate={(generated) => setNotes(generated)}
+              />
+            )}
+          </div>
           <textarea
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
-            placeholder="Detailed objective and subjective findings..."
+            placeholder="Detailed objective and subjective findings... (or click AI Generate Notes above)"
             rows={5}
             disabled={isReadOnly}
             className="w-full px-3 py-2.5 rounded-lg border border-border bg-muted/30
@@ -457,7 +481,9 @@ export default function VisitForm({
                             value={row.medicineName}
                             onChange={(val) => updateRxRow(row.id, 'medicineName', val)}
                             onSelect={(medicineId, displayName) => {
-                              updateRxRow(row.id, 'medicineName', displayName);
+                              setRxRows((prev) => prev.map((r) => r.id === row.id
+                                ? { ...r, medicineId, medicineName: displayName }
+                                : r));
                             }}
                           />
                         </td>
@@ -497,6 +523,13 @@ export default function VisitForm({
                 ))}
               </tbody>
             </table>
+          </div>
+        )}
+
+        {/* AI Drug Interaction Check */}
+        {!isReadOnly && rxRows.filter((r) => r.medicineName.trim()).length >= 2 && (
+          <div className="mt-3 flex justify-end">
+            <DrugCheckButton medicines={rxRows.map((r) => r.medicineName).filter((m) => m.trim())} />
           </div>
         )}
       </section>

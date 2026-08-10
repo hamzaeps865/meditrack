@@ -1,6 +1,7 @@
 import { auth } from '@/server/auth';
 import { redirect } from 'next/navigation';
 import Sidebar from '@/components/layout/sidebar';
+import AiChatWidget from '@/components/ai/ai-chat-widget';
 import { getSwitchableProfiles, getActivePatient } from '@/server/actions/active-patient';
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -34,6 +35,11 @@ export default async function DashboardLayout({ children }: { children: React.Re
       <main className="flex-1 overflow-y-auto p-6">
         {children}
       </main>
+
+      {/* AI Chat Widget — only for patients */}
+      {session.user.role === 'patient' && (
+        <AiChatWidget patientName={session.user.name ?? 'Patient'} />
+      )}
     </div>
   );
 }

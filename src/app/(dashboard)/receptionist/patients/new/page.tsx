@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { createPatientSchema, type CreatePatientInput } from '@/lib/validators/patient';
 import { createPatient } from '@/server/actions/patients.actions';
+import { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
@@ -12,13 +13,15 @@ import { toast } from 'sonner';
 
 export default function NewPatientPage() {
   const router = useRouter();
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<CreatePatientInput>({
     resolver: zodResolver(createPatientSchema),
   });
 
   async function onSubmit(values: CreatePatientInput) {
     try {
-      await createPatient(values);
+      await createPatient({ ...values, password, confirmPassword });
       toast.success('Patient created successfully');
       router.push('/receptionist/patients');
     } catch {

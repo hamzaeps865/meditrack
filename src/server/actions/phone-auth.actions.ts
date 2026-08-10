@@ -5,13 +5,16 @@ import { otpCodes, users } from '@/server/db/schema';
 import { eq, and, desc } from 'drizzle-orm';
 import { z } from 'zod';
 import { addMinutes } from 'date-fns';
+import { isValidPakistaniPhone, pakistaniPhoneMessage } from '@/lib/validators/phone';
 
 // ─── Phone OTP Authentication ─────────────────────────────────────────────────
 // In-app OTP flow (free — no SMS provider needed for testing).
 // The generated code is returned to the client so it can be shown in a toast.
 // Later this can be plugged into a real SMS gateway.
 
-const phoneSchema = z.string().min(7, 'Valid phone number required').max(20);
+const phoneSchema = z.string().trim().min(7, pakistaniPhoneMessage).max(20).refine((value) => isValidPakistaniPhone(value), {
+  message: pakistaniPhoneMessage,
+});
 
 /**
  * Generate and store a 4-digit OTP for the given phone number.

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Search, HelpCircle, Shield,
   SlidersHorizontal, BarChart2,
@@ -89,6 +89,7 @@ export default function HelpPage() {
   const [message,     setMessage]       = useState('');
   const [sent,        setSent]          = useState(false);
   const [sending,     setSending]       = useState(false);
+  const [isSearching, setIsSearching]   = useState(false);
 
   function toggleFaq(key: string) {
     setOpenFaqs((prev) => {
@@ -115,6 +116,17 @@ export default function HelpPage() {
       setSending(false);
     }
   }
+
+  useEffect(() => {
+    if (!searchQuery.trim()) {
+      setIsSearching(false);
+      return;
+    }
+
+    setIsSearching(true);
+    const timer = window.setTimeout(() => setIsSearching(false), 180);
+    return () => window.clearTimeout(timer);
+  }, [searchQuery]);
 
   // Filter FAQs by search
   const filteredFaqs = FAQS.map((section) => ({
@@ -145,6 +157,8 @@ export default function HelpPage() {
             text-muted-foreground" />
           <input
             type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Global search..."
             className="w-full h-9 pl-9 pr-4 rounded-full border border-border bg-muted/40
               text-sm text-foreground placeholder:text-muted-foreground
@@ -187,6 +201,11 @@ export default function HelpPage() {
                 shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/20
                 transition-colors"
             />
+            {searchQuery && (
+              <p className="mt-2 text-xs text-muted-foreground">
+                {isSearching ? 'Searching...' : filteredFaqs.length === 0 ? 'No matching help articles found.' : `${filteredFaqs.length} section${filteredFaqs.length === 1 ? '' : 's'} found.`}
+              </p>
+            )}
           </div>
         </div>
 

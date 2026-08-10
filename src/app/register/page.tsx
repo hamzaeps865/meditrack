@@ -11,6 +11,7 @@ import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { registerUser } from '@/server/actions/auth.actions';
 import { toast } from 'sonner';
+import { isValidPakistaniPhone, pakistaniPhoneMessage } from '@/lib/validators/phone';
 
 // --- Password strength helper -------------------------------------------
 type Strength = { label: string; score: number; color: string };
@@ -50,6 +51,11 @@ export default function RegisterPage() {
     const dob = form.get('dob') as string;
     const gender = form.get('gender') as string;
     const phone = form.get('phone') as string;
+
+    if (!isValidPakistaniPhone(phone)) {
+      toast.error(pakistaniPhoneMessage);
+      return;
+    }
 
     if (password !== confirm) {
       toast.error('Passwords do not match');

@@ -281,7 +281,6 @@ function DispensingTab({ pending, inventory }: { pending: PendingItem[]; invento
       try {
         await dispensePrescriptionItem({
           prescriptionItemId: item.id,
-          medicineId: item.medicineId ?? inventory.find((b) => b.id === batchId)?.medicineId ?? '',
           inventoryBatchId: batchId,
           quantity: qty,
         });

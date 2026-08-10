@@ -91,6 +91,7 @@ export default async function AppointmentDetailPage({
   let existingPrescriptionItems: {
     id: string;
     prescriptionId: string;
+    medicineId: string | null;
     medicineName: string;
     dosage: string;
     frequency: string;

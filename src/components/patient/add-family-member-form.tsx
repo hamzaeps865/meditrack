@@ -2,39 +2,37 @@
 
 import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
-import { createFamilyMember } from '@/server/actions/family.actions';
+import { createFamilyMember, updateFamilyMember } from '@/server/actions/family.actions';
 import { Plus, Loader2, X } from 'lucide-react';
 import { toast } from 'sonner';
 
-export default function AddFamilyMemberForm({ onClose }: { onClose: () => void }) {
+type Member = { id: string; name: string; dob: string; gender: 'male' | 'female' | 'other'; phone: string; bloodGroup: string | null; allergies: string | null; city: string | null; emergencyContact: string | null };
+export default function AddFamilyMemberForm({ onClose, member }: { onClose: () => void; member?: Member | null }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
-  const [name, setName] = useState('');
-  const [dob, setDob] = useState('');
-  const [gender, setGender] = useState<'male' | 'female' | 'other'>('male');
-  const [bloodGroup, setBloodGroup] = useState('');
-  const [allergies, setAllergies] = useState('');
-  const [emergencyContact, setEmergencyContact] = useState('');
-  const [city, setCity] = useState('');
+  const [name, setName] = useState(member?.name ?? ''); const [dob, setDob] = useState(member?.dob ?? '');
+  const [gender, setGender] = useState<'male' | 'female' | 'other'>(member?.gender ?? 'male'); const [phone, setPhone] = useState(member?.phone ?? '');
+  const [bloodGroup, setBloodGroup] = useState(member?.bloodGroup ?? ''); const [allergies, setAllergies] = useState(member?.allergies ?? '');
+  const [emergencyContact, setEmergencyContact] = useState(member?.emergencyContact ?? ''); const [city, setCity] = useState(member?.city ?? '');
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!name.trim() || !dob) {
-      toast.error('Name and date of birth are required.');
+    if (!name.trim() || !dob || !/^\+?[0-9]{10,15}$/.test(phone.trim())) {
+      toast.error('Enter a name, date of birth, and valid 10–15 digit phone number.');
       return;
     }
     startTransition(async () => {
       try {
-        await createFamilyMember({
-          name,
+        const input = { name: name.trim(),
           dob,
           gender,
+          phone: phone.trim(),
           bloodGroup: bloodGroup || undefined,
           allergies: allergies || undefined,
           emergencyContact: emergencyContact || undefined,
-          city: city || undefined,
-        });
-        toast.success(`${name} added to your family.`);
+          city: city || undefined };
+        if (member) await updateFamilyMember(member.id, input); else await createFamilyMember(input);
+        toast.success(`${name} ${member ? 'updated' : 'added to your family'}.`);
         router.refresh();
         onClose();
       } catch (err) {
@@ -53,7 +51,7 @@ export default function AddFamilyMemberForm({ onClose }: { onClose: () => void }
         <div className="flex items-center justify-between px-5 py-4 border-b border-border sticky top-0 bg-white">
           <div className="flex items-center gap-2">
             <Plus className="h-4 w-4 text-primary" />
-            <h3 className="text-base font-bold text-foreground">Add Family Member</h3>
+            <h3 className="text-base font-bold text-foreground">{member ? 'Edit Family Member' : 'Add Family Member'}</h3>
           </div>
           <button
             type="button"
@@ -75,6 +73,7 @@ export default function AddFamilyMemberForm({ onClose }: { onClose: () => void }
               <input type="date" className={inputCls} value={dob} onChange={(e) => setDob(e.target.value)} required />
             </div>
           </div>
+          <div><label className={labelCls}>Phone Number *</label><input type="tel" pattern="\+?[0-9]{10,15}" title="10–15 digits, optionally starting with +" className={inputCls} value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="e.g. +923001234567" required /></div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
@@ -117,7 +116,7 @@ export default function AddFamilyMemberForm({ onClose }: { onClose: () => void }
             </button>
             <button type="submit" disabled={isPending} className="h-10 px-5 rounded-lg bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-colors disabled:opacity-60 disabled:cursor-not-allowed flex items-center gap-2">
               {isPending && <Loader2 className="h-4 w-4 animate-spin" />}
-              Add Member
+              {member ? 'Save Changes' : 'Add Member'}
             </button>
           </div>
         </form>

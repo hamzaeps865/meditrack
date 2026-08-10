@@ -72,6 +72,7 @@ export type UpdateVisitInput = z.infer<typeof updateVisitSchema>;
 // Each prescription has 1+ line items (SRS §FR-5).
 
 export const prescriptionItemSchema = z.object({
+  medicineId: z.string().uuid('Invalid medicine ID').optional(),
   medicineName: z
     .string({ message: 'Medicine name is required' })
     .min(1)

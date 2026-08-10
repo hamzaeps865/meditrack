@@ -62,6 +62,7 @@ export async function createPrescription(input: unknown) {
       .values(
         data.items.map((item) => ({
           prescriptionId: prescription.id,
+          medicineId: item.medicineId ?? null,
           medicineName: item.medicineName,
           dosage: item.dosage,
           frequency: item.frequency,
@@ -95,6 +96,13 @@ export async function getPrescriptionsByVisit(visitId: string) {
   // Verify visit exists and enforce ownership for doctor role
   if (session.user.role === 'doctor') {
     await assertDoctorOwnsVisit(visitId, session.user.role);
+  } else if (session.user.role === 'patient') {
+    const [visit] = await db
+      .select({ patientId: visits.patientId })
+      .from(visits)
+      .where(eq(visits.id, visitId));
+    if (!visit) throw new Error('Visit not found.');
+    await assertPatientOwnsPatientRecord(visit.patientId, session);
   }
 
   // Fetch all prescriptions for the visit
@@ -183,6 +191,15 @@ export async function getPrescriptionById(id: string) {
     .where(eq(prescriptions.id, prescriptionId));
 
   if (!prescription) throw new Error('Prescription not found.');
+
+  if (session.user.role === 'patient') {
+    const [visit] = await db
+      .select({ patientId: visits.patientId })
+      .from(visits)
+      .where(eq(visits.id, prescription.visitId));
+    if (!visit) throw new Error('Visit not found.');
+    await assertPatientOwnsPatientRecord(visit.patientId, session);
+  }
 
   const items = await db
     .select()

@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import { sendOtp, verifyOtp } from '@/server/actions/phone-auth.actions';
+import { isValidPakistaniPhone, pakistaniPhoneMessage } from '@/lib/validators/phone';
 
 type LoginMode = 'email' | 'phone';
 
@@ -46,8 +47,8 @@ export default function LoginPage() {
   }
 
   async function handleSendOtp() {
-    if (!phone.trim() || phone.trim().length < 7) {
-      toast.error('Enter a valid phone number');
+    if (!isValidPakistaniPhone(phone)) {
+      toast.error(pakistaniPhoneMessage);
       return;
     }
     setSendingOtp(true);

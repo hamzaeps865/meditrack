@@ -11,6 +11,7 @@ const BCRYPT_ROUNDS = 12;
 
 const updateProfileSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters').max(255).trim(),
+  email: z.string().email('Enter a valid email address').max(255).trim().optional(),
 });
 
 const changePasswordSchema = z.object({
@@ -21,7 +22,16 @@ const changePasswordSchema = z.object({
 export async function updateOwnNurseProfile(input: unknown) {
   const session = await requireRole(['nurse', 'admin', 'pharmacist', 'lab']);
   const data = updateProfileSchema.parse(input);
-  await db.update(users).set({ name: data.name }).where(eq(users.id, session.user.id));
+
+  const normalizedEmail = data.email?.trim().toLowerCase();
+  if (normalizedEmail) {
+    const [existing] = await db.select({ id: users.id }).from(users).where(eq(users.email, normalizedEmail));
+    if (existing && existing.id !== session.user.id) {
+      throw new Error('This email address is already in use.');
+    }
+  }
+
+  await db.update(users).set({ name: data.name, ...(normalizedEmail ? { email: normalizedEmail } : {}) }).where(eq(users.id, session.user.id));
   return { success: true };
 }
 

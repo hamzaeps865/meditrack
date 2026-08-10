@@ -8,6 +8,9 @@ import {
   AlertCircle, Heart, Bell,
 } from 'lucide-react';
 import { updateOwnProfile, changeOwnPassword } from '@/server/actions/patient-self.actions';
+import { isValidPakistaniPhone, pakistaniPhoneMessage } from '@/lib/validators/phone';
+
+const phoneRegex = /^\+?[0-9]{10,15}$/;
 
 // ─── Styles ───────────────────────────────────────────────────────────────────
 
@@ -84,10 +87,11 @@ export default function PatientSettingsForm({
   initialPhone,
   initialAddress,
   initialEmergencyContact,
-  email,
+  email: initialEmail,
 }: Props) {
   // Profile state
   const [name,             setName]             = useState(initialName);
+  const [email,            setEmail]            = useState(initialEmail);
   const [phone,            setPhone]            = useState(initialPhone);
   const [address,          setAddress]          = useState(initialAddress);
   const [emergencyContact, setEmergencyContact] = useState(initialEmergencyContact);
@@ -107,15 +111,41 @@ export default function PatientSettingsForm({
   const [smsReminders,   setSmsReminders]   = useState(false);
 
   // ── Profile save ────────────────────────────────────────────────────────────
+  function validateProfileInput() {
+    if (phone.trim() && !isValidPakistaniPhone(phone)) {
+      setProfileMsg({ type: 'error', text: pakistaniPhoneMessage });
+      return false;
+    }
+
+    if (!email.trim()) {
+      setProfileMsg({ type: 'error', text: 'Email address is required.' });
+      return false;
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+      setProfileMsg({ type: 'error', text: 'Please enter a valid email address.' });
+      return false;
+    }
+
+    return true;
+  }
+
   async function handleProfileSave(e: React.FormEvent) {
     e.preventDefault();
     setProfileMsg(null);
+
+    if (!validateProfileInput()) {
+      setTimeout(() => setProfileMsg(null), 4000);
+      return;
+    }
+
     startProfile(async () => {
       try {
-        await updateOwnProfile({ name, phone, address, emergencyContact });
+        await updateOwnProfile({ name, email: email.trim(), phone, address, emergencyContact });
         setProfileMsg({ type: 'success', text: 'Profile updated successfully.' });
-      } catch (err: any) {
-        setProfileMsg({ type: 'error', text: err?.message ?? 'Failed to save profile.' });
+      } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : 'Failed to save profile.';
+        setProfileMsg({ type: 'error', text: message });
       }
       setTimeout(() => setProfileMsg(null), 4000);
     });
@@ -135,8 +165,9 @@ export default function PatientSettingsForm({
         setPwMsg({ type: 'success', text: 'Password changed successfully.' });
         setCurrentPw('');
         setNewPw('');
-      } catch (err: any) {
-        setPwMsg({ type: 'error', text: err?.message ?? 'Failed to change password.' });
+      } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : 'Failed to change password.';
+        setPwMsg({ type: 'error', text: message });
       }
       setTimeout(() => setPwMsg(null), 4000);
     });
@@ -178,12 +209,14 @@ export default function PatientSettingsForm({
                 <input
                   type="email"
                   value={email}
-                  disabled
-                  className={`${inputCls} pl-9 cursor-not-allowed opacity-60`}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="you@example.com"
+                  required
+                  className={`${inputCls} pl-9`}
                 />
               </div>
               <p className="text-[10px] text-muted-foreground mt-1">
-                Email address cannot be changed directly.
+                This email is used for sign-in and account updates.
               </p>
             </Field>
             <Field label="Emergency Contact">

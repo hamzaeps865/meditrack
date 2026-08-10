@@ -1,7 +1,7 @@
 'use server';
 
 import { db } from '@/server/db';
-import { appointments, doctors, patients } from '@/server/db/schema';
+import { appointments, doctors, patients, doctorAvailability } from '@/server/db/schema';
 import {
   requireRole,
   assertDoctorOwnsResource,
@@ -13,6 +13,22 @@ import {
   appointmentIdSchema,
 } from '@/lib/validators/appointment';
 import { eq, and } from 'drizzle-orm';
+
+const DAY_NAMES = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'] as const;
+
+function isWithinAvailability(
+  scheduledAt: Date,
+  windows: { startTime: string; endTime: string }[],
+) {
+  const minuteOfDay = scheduledAt.getUTCHours() * 60 + scheduledAt.getUTCMinutes();
+  return windows.some((window) => {
+    const [startHour, startMinute] = window.startTime.slice(0, 5).split(':').map(Number);
+    const [endHour, endMinute] = window.endTime.slice(0, 5).split(':').map(Number);
+    const start = startHour * 60 + startMinute;
+    const end = endHour * 60 + endMinute;
+    return minuteOfDay >= start && minuteOfDay + 30 <= end;
+  });
+}
 
 // ─── Book Appointment ─────────────────────────────────────────────────────────
 // The core concurrency-safe booking action (SRS §FR-3, §6).
@@ -31,11 +47,24 @@ export async function bookAppointment(input: unknown) {
   const session = await requireRole(['admin', 'receptionist', 'patient']);
 
   const data = bookAppointmentSchema.parse(input);
+  const scheduledAt = new Date(data.scheduledAt);
 
   // Patients can only book for themselves — verify they own the patient record
   // (matched by email, since there is no patients.user_id FK yet).
   if (session.user.role === 'patient') {
     await assertPatientOwnsPatientRecord(data.patientId, session);
+  }
+
+  const dayOfWeek = DAY_NAMES[scheduledAt.getUTCDay()];
+  const windows = await db
+    .select({ startTime: doctorAvailability.startTime, endTime: doctorAvailability.endTime })
+    .from(doctorAvailability)
+    .where(and(
+      eq(doctorAvailability.doctorId, data.doctorId),
+      eq(doctorAvailability.dayOfWeek, dayOfWeek),
+    ));
+  if (!isWithinAvailability(scheduledAt, windows)) {
+    throw new Error('The selected time is outside this doctor\'s availability. Please choose an available slot.');
   }
 
   try {
@@ -47,7 +76,7 @@ export async function bookAppointment(input: unknown) {
       .where(
         and(
           eq(appointments.doctorId, data.doctorId),
-          eq(appointments.scheduledAt, new Date(data.scheduledAt)),
+          eq(appointments.scheduledAt, scheduledAt),
         ),
       );
 
@@ -60,7 +89,7 @@ export async function bookAppointment(input: unknown) {
       .values({
         patientId: data.patientId,
         doctorId: data.doctorId,
-        scheduledAt: new Date(data.scheduledAt),
+        scheduledAt,
         reason: data.reason ?? null,
         createdBy: session.user.id,
       })

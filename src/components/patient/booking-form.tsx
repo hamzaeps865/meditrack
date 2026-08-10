@@ -48,7 +48,9 @@ function buildSlots(
   dateStr: string,
 ): string[] {
   if (!dateStr) return [];
-  const date    = new Date(dateStr);
+  // Date-only strings are interpreted as UTC by JavaScript. Use midday local
+  // time so the selected calendar day never shifts when deriving its weekday.
+  const date    = new Date(`${dateStr}T12:00:00`);
   const dayName = DAY_JS_TO_NAME[date.getDay()];
   const windows = availability.filter((a) => a.dayOfWeek === dayName);
   if (windows.length === 0) return [];
@@ -105,7 +107,10 @@ export default function PatientBookingForm({
     if (!date)     { setError('Please select a date.');   return; }
     if (!slot)     { setError('Please select a time slot.'); return; }
 
-    const scheduledAt = new Date(`${date}T${slot}:00`).toISOString();
+    // Appointment availability is stored as the clinic's weekly wall-clock
+    // schedule. Preserve the chosen date and time exactly for server-side
+    // schedule validation instead of applying the browser's timezone offset.
+    const scheduledAt = `${date}T${slot}:00.000Z`;
 
     startTransition(async () => {
       try {

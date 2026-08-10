@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation';
 import { db } from '@/server/db';
 import { invoices } from '@/server/db/schema';
 import { getActivePatient } from '@/server/actions/active-patient';
-import { eq } from 'drizzle-orm';
+import { and, eq, gt } from 'drizzle-orm';
 import NotificationBell from '@/components/shared/notification-bell';
 import { format } from 'date-fns';
 import { Receipt, TrendingUp, AlertCircle, Download } from 'lucide-react';
@@ -23,7 +23,7 @@ export default async function PatientBillingPage() {
   const patientInvoices = await db
     .select()
     .from(invoices)
-    .where(eq(invoices.patientId, active.id));
+    .where(and(eq(invoices.patientId, active.id), gt(invoices.amount, 0)));
 
   const totalPaid = patientInvoices.filter((i) => i.status === 'paid').reduce((s, i) => s + i.amount, 0);
   const totalOutstanding = patientInvoices.filter((i) => i.status === 'pending').reduce((s, i) => s + i.amount, 0);
