@@ -19,7 +19,7 @@ export default async function PatientDoctorDetailPage({ params }: { params: Prom
 
   if (!doctor) {
     return (
-      <div className="min-h-full bg-[#f5f7fa] flex items-center justify-center">
+      <div className="min-h-full bg-[#f0f7f3] flex items-center justify-center">
         <div className="text-center">
           <Stethoscope className="h-10 w-10 text-muted-foreground opacity-30 mx-auto mb-3" />
           <p className="text-sm font-medium text-foreground">Doctor not found.</p>
@@ -45,7 +45,7 @@ export default async function PatientDoctorDetailPage({ params }: { params: Prom
   }));
 
   return (
-    <div className="min-h-full bg-[#f5f7fa]">
+    <div className="min-h-full bg-[#f0f7f3]">
       <div className="px-6 py-8 max-w-3xl mx-auto">
         {/* Back link */}
         <Link href="/patient/doctors" className="text-xs text-muted-foreground hover:text-foreground mb-4 inline-block">

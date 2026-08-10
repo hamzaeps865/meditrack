@@ -54,10 +54,10 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-/* ─── Light mode — Locked MediTrack Palette ──────────────────────────────────
-   Primary:    #1E3A5F  deep clinical slate-blue
-   Accent:     #0F9B8E  muted teal (success/confirmation only)
-   Background: #F8FAFC  off-white
+/* ─── Light mode — Pakistan Independence Day Palette 🇵🇰 ─────────────────────
+   Primary:    #01411C  Pakistan flag green
+   Accent:     #0a5c3a  lighter flag green (hovers/links)
+   Background: #F0F7F3  subtle green-tinted off-white
    Surface:    #FFFFFF
    Border:     #E2E8F0
    Text:       #0F172A / #64748B
@@ -67,58 +67,50 @@
   --radius: 0.5rem;
 
   /* Surfaces */
-  --background:    #F8FAFC;
+  --background:    #F0F7F3;
   --foreground:    #0F172A;
   --card:          #FFFFFF;
   --card-foreground: #0F172A;
   --popover:       #FFFFFF;
   --popover-foreground: #0F172A;
 
-  /* Primary — deep slate-blue */
-  --primary:          #1E3A5F;
+  /* Primary — Pakistan flag green */
+  --primary:          #01411C;
   --primary-foreground: #FFFFFF;
 
-  /* Secondary — light slate */
-  --secondary:          #F1F5F9;
+  /* Secondary — light green-tinted */
+  --secondary:          #E8F0EC;
   --secondary-foreground: #0F172A;
 
   /* Muted */
-  --muted:            #F1F5F9;
+  --muted:            #E8F0EC;
   --muted-foreground: #64748B;
 
-  /* Accent — muted teal (success / confirmation only) */
-  --accent:           #0F9B8E;
+  /* Accent — lighter flag green */
+  --accent:           #0a5c3a;
   --accent-foreground: #FFFFFF;
 
-  /* Destructive — desaturated red */
+  /* Destructive — red */
   --destructive:            #DC2626;
   --destructive-foreground: #FFFFFF;
 
   /* Border & inputs */
   --border: #E2E8F0;
   --input:  #E2E8F0;
-  --ring:   #1E3A5F;
+  --ring:   #01411C;
 
-  /* Sidebar — slightly deeper surface */
+  /* Sidebar — white surface with green branding */
   --sidebar:                    #FFFFFF;
   --sidebar-foreground:         #0F172A;
-  --sidebar-primary:            #1E3A5F;
+  --sidebar-primary:            #01411C;
   --sidebar-primary-foreground: #FFFFFF;
-  --sidebar-accent:             #F1F5F9;
-  --sidebar-accent-foreground:  #1E3A5F;
+  --sidebar-accent:             #E8F0EC;
+  --sidebar-accent-foreground:  #01411C;
   --sidebar-border:             #E2E8F0;
-  --sidebar-ring:               #1E3A5F;
+  --sidebar-ring:               #01411C;
 }
 
-/* ─── Dark mode — Matching design system exactly ──────────────────────────────
-   Primary:    #1E3A5F (consistent)
-   Secondary:  #6E7789 (blue-grey)
-   Tertiary:   #503300 (warm brown for labels/tags)
-   Neutral:    #77777A (mid grey)
-   Background: #1C1C1E (deep charcoal)
-   Surface:    #2A2A2D (cards/panels)
-   Border:     #3A3A3D (subtle)
-*/
+/* ─── Dark mode — Pakistan green for dark surfaces 🇵🇰 ───────────────────────*/
 .dark {
   --radius: 0.5rem;
 
@@ -130,11 +122,11 @@
   --popover:       #2A2A2D;
   --popover-foreground: #F5F5F7;
 
-  /* Primary — lighter blue for contrast on dark bg */
-  --primary:          #B8C5D6;
-  --primary-foreground: #1C1C1E;
+  /* Primary — lighter green for contrast on dark bg */
+  --primary:          #0a7a4f;
+  --primary-foreground: #FFFFFF;
 
-  /* Secondary — matches design system #6E7789 */
+  /* Secondary */
   --secondary:          #6E7789;
   --secondary-foreground: #F5F5F7;
 
@@ -142,9 +134,9 @@
   --muted:            #3A3A3D;
   --muted-foreground: #A8A8AB;
 
-  /* Accent — softer teal for dark mode */
-  --accent:           #5ECEC0;
-  --accent-foreground: #1C1C1E;
+  /* Accent — softer green for dark mode */
+  --accent:           #2d9d6e;
+  --accent-foreground: #FFFFFF;
 
   /* Destructive */
   --destructive:            #F87171;
@@ -153,17 +145,17 @@
   /* Border & inputs */
   --border: #3A3A3D;
   --input:  #3A3A3D;
-  --ring:   #B8C5D6;
+  --ring:   #0a7a4f;
 
-  /* Sidebar — slightly lighter surface */
+  /* Sidebar */
   --sidebar:                    #2A2A2D;
   --sidebar-foreground:         #F5F5F7;
-  --sidebar-primary:            #B8C5D6;
-  --sidebar-primary-foreground: #1C1C1E;
+  --sidebar-primary:            #0a7a4f;
+  --sidebar-primary-foreground: #FFFFFF;
   --sidebar-accent:             #3A3A3D;
   --sidebar-accent-foreground:  #F5F5F7;
   --sidebar-border:             #3A3A3D;
-  --sidebar-ring:               #B8C5D6;
+  --sidebar-ring:               #0a7a4f;
 }
 
 /* ─── Base styles ────────────────────────────────────────────────────────────*/

@@ -94,16 +94,16 @@ async function getRecentAuditLogs() {
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 const statusStyles: Record<string, string> = {
-  scheduled:   'bg-gray-100 text-gray-600',
-  checked_in:  'bg-blue-50 text-blue-700',
+  scheduled:   'bg-muted text-muted-foreground',
+  checked_in:  'bg-emerald-50 text-emerald-700',
   in_progress: 'bg-amber-50 text-amber-700',
   completed:   'bg-emerald-50 text-emerald-700',
   cancelled:   'bg-red-50 text-red-600',
-  no_show:     'bg-gray-100 text-gray-500',
+  no_show:     'bg-muted text-emerald-800/60',
 };
 
 const auditActionStyle: Record<string, { bg: string; icon: typeof Eye }> = {
-  view:   { bg: 'bg-blue-50 text-blue-600',    icon: Eye },
+  view:   { bg: 'bg-emerald-50 text-emerald-700',    icon: Eye },
   create: { bg: 'bg-emerald-50 text-emerald-600', icon: PlusCircle },
   update: { bg: 'bg-amber-50 text-amber-600',  icon: ClipboardEdit },
   delete: { bg: 'bg-red-50 text-red-600',      icon: Trash2 },
@@ -135,8 +135,8 @@ export default async function AdminDashboard() {
       caption:      'Active registered patients',
       captionColor: 'text-muted-foreground',
       icon:         Users,
-      iconColor:    'text-blue-600',
-      iconBg:       'bg-blue-50',
+      iconColor:    'text-emerald-700',
+      iconBg:       'bg-emerald-50',
       href:         '/admin/patients',
     },
     {
@@ -145,8 +145,8 @@ export default async function AdminDashboard() {
       caption:      format(new Date(), 'EEEE, MMM d'),
       captionColor: 'text-muted-foreground',
       icon:         Calendar,
-      iconColor:    'text-indigo-600',
-      iconBg:       'bg-indigo-50',
+      iconColor:    'text-emerald-700',
+      iconBg:       'bg-emerald-50',
       href:         '/admin/appointments',
     },
     {

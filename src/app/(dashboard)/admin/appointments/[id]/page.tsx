@@ -22,12 +22,12 @@ function getInitials(name: string | null | undefined) {
 }
 
 const statusConfig: Record<string, { badge: string; label: string; dot: string }> = {
-  scheduled:   { badge: 'bg-blue-100 text-blue-700',       label: 'Scheduled',   dot: 'bg-blue-500'    },
+  scheduled:   { badge: 'bg-emerald-100 text-emerald-700',       label: 'Scheduled',   dot: 'bg-emerald-500'    },
   checked_in:  { badge: 'bg-amber-100 text-amber-700',     label: 'Checked-in',  dot: 'bg-amber-500'   },
   in_progress: { badge: 'bg-orange-100 text-orange-700',   label: 'In Progress', dot: 'bg-orange-500'  },
   completed:   { badge: 'bg-emerald-100 text-emerald-700', label: 'Completed',   dot: 'bg-emerald-500' },
   cancelled:   { badge: 'bg-red-100 text-red-600',         label: 'Cancelled',   dot: 'bg-red-500'     },
-  no_show:     { badge: 'bg-gray-100 text-gray-500',       label: 'No-show',     dot: 'bg-gray-400'    },
+  no_show:     { badge: 'bg-muted text-emerald-800/60',       label: 'No-show',     dot: 'bg-muted-foreground'    },
 };
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
@@ -124,7 +124,7 @@ export default async function AdminAppointmentDetailPage({
     : [];
 
   return (
-    <div className="min-h-full bg-[#f5f7fa]">
+    <div className="min-h-full bg-[#f0f7f3]">
 
       {/* ── Top bar ── */}
       <div className="bg-white border-b border-border px-6 py-3

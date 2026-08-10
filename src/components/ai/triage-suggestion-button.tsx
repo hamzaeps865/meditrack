@@ -68,7 +68,7 @@ export default function TriageSuggestionButton({
   const severityConfig: Record<string, { icon: typeof ShieldCheck; color: string; bg: string }> = {
     CRITICAL: { icon: Zap, color: 'text-rose-600', bg: 'bg-rose-50 border-rose-200' },
     URGENT:   { icon: AlertTriangle, color: 'text-orange-600', bg: 'bg-orange-50 border-orange-200' },
-    STANDARD: { icon: ShieldCheck, color: 'text-blue-600', bg: 'bg-blue-50 border-blue-200' },
+    STANDARD: { icon: ShieldCheck, color: 'text-emerald-700', bg: 'bg-emerald-50 border-emerald-200' },
     LOW:      { icon: ShieldCheck, color: 'text-emerald-600', bg: 'bg-emerald-50 border-emerald-200' },
   };
 
@@ -78,7 +78,7 @@ export default function TriageSuggestionButton({
         type="button"
         onClick={handleSuggest}
         disabled={loading}
-        className="inline-flex items-center gap-1.5 h-8 px-3 rounded-lg border border-violet-200 text-xs font-semibold text-violet-600 hover:bg-violet-50 transition-colors"
+        className="inline-flex items-center gap-1.5 h-8 px-3 rounded-lg border border-emerald-200 text-xs font-semibold text-emerald-700 hover:bg-emerald-50 transition-colors"
       >
         <Sparkles className="h-3 w-3" />
         AI Triage Suggestion
@@ -89,8 +89,8 @@ export default function TriageSuggestionButton({
           <div className="bg-white rounded-2xl shadow-xl border border-border w-full max-w-md max-h-[80vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between px-5 py-4 border-b border-border sticky top-0 bg-white">
               <div className="flex items-center gap-2">
-                <div className="h-7 w-7 rounded-full bg-violet-100 flex items-center justify-center">
-                  <Sparkles className="h-3.5 w-3.5 text-violet-600" />
+                <div className="h-7 w-7 rounded-full bg-emerald-100 flex items-center justify-center">
+                  <Sparkles className="h-3.5 w-3.5 text-emerald-700" />
                 </div>
                 <h3 className="text-sm font-bold text-foreground">AI Triage Suggestion</h3>
               </div>

@@ -25,7 +25,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
   }
 
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="flex h-screen bg-emerald-50/30">
       <Sidebar
         role={session.user.role}
         userName={session.user.name}

@@ -33,7 +33,7 @@ export default function NewPatientPage() {
     <div className="max-w-2xl mx-auto">
       <div className="mb-6">
         <h1 className="text-2xl font-bold">New Patient</h1>
-        <p className="text-gray-500 text-sm">Fill in the patient's details below</p>
+        <p className="text-emerald-800/60 text-sm">Fill in the patient's details below</p>
       </div>
 
       <div className="bg-white rounded-xl border p-6">
@@ -90,7 +90,7 @@ export default function NewPatientPage() {
           </div>
 
           <div className="flex gap-3 pt-2">
-            <Button type="submit" className="bg-cyan-700 hover:bg-cyan-800" disabled={isSubmitting}>
+            <Button type="submit" className="bg-emerald-700 hover:bg-emerald-800" disabled={isSubmitting}>
               {isSubmitting ? 'Saving...' : 'Save Patient'}
             </Button>
             <Button type="button" variant="outline" onClick={() => router.back()}>

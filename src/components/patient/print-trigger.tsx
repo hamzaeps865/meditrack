@@ -19,7 +19,7 @@ export default function PrintTrigger() {
       <button
         type="button"
         onClick={() => window.print()}
-        className="flex items-center gap-2 h-11 px-5 rounded-xl bg-blue-700 text-white text-sm font-semibold shadow-lg hover:bg-blue-800 transition-colors"
+        className="flex items-center gap-2 h-11 px-5 rounded-xl bg-emerald-700 text-white text-sm font-semibold shadow-lg hover:bg-emerald-800 transition-colors"
       >
         <Printer className="h-4 w-4" />
         Save as PDF

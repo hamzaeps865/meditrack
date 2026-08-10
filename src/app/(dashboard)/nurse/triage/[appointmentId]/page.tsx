@@ -50,7 +50,7 @@ export default async function TriagePage({ params }: { params: Promise<{ appoint
   const age = Math.floor(ageMs / (365.25 * 24 * 60 * 60 * 1000));
 
   return (
-    <div className="min-h-full bg-[#f5f7fa]">
+    <div className="min-h-full bg-[#f0f7f3]">
       {/* Top bar */}
       <div className="bg-white border-b border-border px-6 py-3 flex items-center justify-between gap-4">
         <Link href="/nurse" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
@@ -64,14 +64,14 @@ export default async function TriagePage({ params }: { params: Promise<{ appoint
         {/* Patient header card */}
         <div className="bg-white rounded-2xl border border-border p-5 shadow-sm mb-5">
           <div className="flex items-start gap-4">
-            <div className="h-12 w-12 rounded-full bg-teal-100 text-teal-700 flex items-center justify-center text-sm font-bold shrink-0">
+            <div className="h-12 w-12 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-sm font-bold shrink-0">
               {appt.patientName.split(' ').map((p) => p[0]).slice(0, 2).join('').toUpperCase()}
             </div>
             <div className="flex-1">
               <div className="flex items-center gap-2 flex-wrap">
                 <h1 className="text-lg font-bold text-foreground">{appt.patientName}</h1>
                 {appt.isWalkIn && (
-                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-violet-100 text-violet-700">WALK-IN</span>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700">WALK-IN</span>
                 )}
               </div>
               <p className="text-sm text-muted-foreground capitalize mt-0.5">
@@ -97,7 +97,7 @@ export default async function TriagePage({ params }: { params: Promise<{ appoint
         {existingTriage && (
           <div className="bg-white rounded-2xl border border-border p-5 shadow-sm mb-5">
             <div className="flex items-center gap-2 mb-3">
-              <HeartPulse className="h-4 w-4 text-teal-600" />
+              <HeartPulse className="h-4 w-4 text-emerald-700" />
               <h2 className="text-sm font-bold text-foreground">Previous Triage</h2>
             </div>
             <div className="grid grid-cols-2 gap-3 text-sm">

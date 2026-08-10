@@ -42,13 +42,13 @@ export default async function PatientSettingsPage() {
   }
 
   return (
-    <div className="min-h-full bg-[#f5f7fa]">
+    <div className="min-h-full bg-[#f0f7f3]">
       {/* Top bar */}
       <div className="bg-white border-b border-border px-6 py-3 flex items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <div
             className="h-8 w-8 rounded-full flex items-center justify-center shrink-0"
-            style={{ background: 'linear-gradient(135deg, #1E3A5F, #2d6a9f)' }}
+            style={{ background: 'linear-gradient(135deg, #01411C, #0a5c3a)' }}
           >
             <span className="text-white text-xs font-bold">
               {userRow?.name
@@ -72,7 +72,7 @@ export default async function PatientSettingsPage() {
         {/* Page header */}
         <div className="flex items-center gap-3 mb-6">
           <div className="h-10 w-10 rounded-xl flex items-center justify-center"
-            style={{ background: 'linear-gradient(135deg, #1E3A5F, #2d6a9f)' }}>
+            style={{ background: 'linear-gradient(135deg, #01411C, #0a5c3a)' }}>
             <Settings className="h-5 w-5 text-white" />
           </div>
           <div>

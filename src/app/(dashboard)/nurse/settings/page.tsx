@@ -21,11 +21,11 @@ export default async function NurseSettingsPage() {
   if (!userRow) redirect('/login');
 
   return (
-    <div className="min-h-full bg-[#f5f7fa]">
+    <div className="min-h-full bg-[#f0f7f3]">
       <div className="bg-white border-b border-border px-6 py-3 flex items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <div className="h-8 w-8 rounded-full bg-teal-100 flex items-center justify-center shrink-0">
-            <User className="h-4 w-4 text-teal-600" />
+          <div className="h-8 w-8 rounded-full bg-emerald-100 flex items-center justify-center shrink-0">
+            <User className="h-4 w-4 text-emerald-700" />
           </div>
           <div className="hidden sm:block">
             <p className="text-sm font-semibold text-foreground leading-none">{session.user.name}</p>

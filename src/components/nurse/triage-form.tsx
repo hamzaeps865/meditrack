@@ -19,7 +19,7 @@ interface TriageFormProps {
 const severityOptions = [
   { value: 'critical', label: 'Critical', desc: 'Life-threatening, needs immediate attention', bg: 'bg-rose-50', border: 'border-rose-300', text: 'text-rose-700', dot: 'bg-rose-500' },
   { value: 'urgent', label: 'Urgent', desc: 'Serious, should be seen soon', bg: 'bg-orange-50', border: 'border-orange-300', text: 'text-orange-700', dot: 'bg-orange-500' },
-  { value: 'standard', label: 'Standard', desc: 'Routine consultation', bg: 'bg-blue-50', border: 'border-blue-300', text: 'text-blue-700', dot: 'bg-blue-500' },
+  { value: 'standard', label: 'Standard', desc: 'Routine consultation', bg: 'bg-emerald-50', border: 'border-emerald-300', text: 'text-emerald-700', dot: 'bg-emerald-500' },
   { value: 'low', label: 'Low', desc: 'Minor / follow-up', bg: 'bg-emerald-50', border: 'border-emerald-300', text: 'text-emerald-700', dot: 'bg-emerald-500' },
 ] as const;
 

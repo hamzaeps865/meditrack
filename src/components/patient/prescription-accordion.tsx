@@ -70,7 +70,7 @@ export default function PrescriptionAccordion({ prescriptions }: Props) {
                 <div
                   className="h-10 w-10 rounded-xl flex items-center justify-center shrink-0
                     text-xs font-bold text-white"
-                  style={{ background: 'linear-gradient(135deg, #1E3A5F, #2d6a9f)' }}
+                  style={{ background: 'linear-gradient(135deg, #01411C, #0a5c3a)' }}
                 >
                   {rx.doctorName ? getInitials(rx.doctorName) : <Pill className="h-4 w-4" />}
                 </div>
@@ -101,7 +101,7 @@ export default function PrescriptionAccordion({ prescriptions }: Props) {
               <div className="flex items-center gap-2 shrink-0">
                 {rx.items.length > 0 && (
                   <span className="hidden sm:flex items-center gap-1 px-2.5 py-1 rounded-full
-                    bg-blue-50 text-blue-700 text-[10px] font-bold border border-blue-100">
+                    bg-emerald-50 text-emerald-700 text-[10px] font-bold border border-emerald-100">
                     <Pill className="h-3 w-3" />
                     {rx.items.length}
                   </span>
@@ -139,7 +139,7 @@ export default function PrescriptionAccordion({ prescriptions }: Props) {
                       )}
                       {rx.vitalsWeight && (
                         <div className="flex items-center gap-1.5">
-                          <Weight className="h-3.5 w-3.5 text-blue-400" />
+                          <Weight className="h-3.5 w-3.5 text-emerald-500" />
                           <span className="text-xs text-foreground font-medium">{rx.vitalsWeight}</span>
                           <span className="text-[10px] text-muted-foreground">Weight</span>
                         </div>
@@ -188,9 +188,9 @@ export default function PrescriptionAccordion({ prescriptions }: Props) {
                           className="flex items-start gap-3 p-3 rounded-xl bg-muted/30
                             border border-border/60 hover:bg-muted/50 transition-colors"
                         >
-                          <div className="h-8 w-8 rounded-lg bg-blue-50 flex items-center
+                          <div className="h-8 w-8 rounded-lg bg-emerald-50 flex items-center
                             justify-center shrink-0">
-                            <Pill className="h-3.5 w-3.5 text-blue-600" />
+                            <Pill className="h-3.5 w-3.5 text-emerald-700" />
                           </div>
                           <div className="flex-1 min-w-0">
                             <p className="text-sm font-semibold text-foreground">

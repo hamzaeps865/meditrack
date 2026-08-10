@@ -27,12 +27,12 @@ function getInitials(name: string | null | undefined) {
 }
 
 const statusBadgeConfig: Record<string, { label: string; badge: string; dot: string }> = {
-  scheduled:   { label: 'Scheduled',   badge: 'bg-blue-50 text-blue-700 border-blue-200',         dot: 'bg-blue-400' },
+  scheduled:   { label: 'Scheduled',   badge: 'bg-emerald-50 text-emerald-700 border-emerald-200',         dot: 'bg-emerald-400' },
   checked_in:  { label: 'Waiting',     badge: 'bg-amber-50 text-amber-700 border-amber-200',       dot: 'bg-amber-400' },
   in_progress: { label: 'In Visit',    badge: 'bg-orange-50 text-orange-700 border-orange-200',    dot: 'bg-orange-400' },
   completed:   { label: 'Completed',   badge: 'bg-emerald-50 text-emerald-700 border-emerald-200', dot: 'bg-emerald-400' },
   cancelled:   { label: 'Cancelled',   badge: 'bg-red-50 text-red-600 border-red-200',             dot: 'bg-red-400' },
-  no_show:     { label: 'No-show',     badge: 'bg-gray-50 text-gray-500 border-gray-200',          dot: 'bg-gray-400' },
+  no_show:     { label: 'No-show',     badge: 'bg-emerald-50/30 text-emerald-800/60 border-emerald-100',          dot: 'bg-muted-foreground' },
 };
 
 export default async function ReceptionistDashboardPage() {
@@ -102,14 +102,14 @@ export default async function ReceptionistDashboardPage() {
   });
 
   return (
-    <div className="min-h-full bg-[#f5f7fa]">
+    <div className="min-h-full bg-[#f0f7f3]">
 
       {/* ── Top Bar ── */}
       <div className="bg-white border-b border-border px-6 py-3 flex items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <div
             className="h-8 w-8 rounded-full flex items-center justify-center shrink-0 text-white text-xs font-bold"
-            style={{ background: 'linear-gradient(135deg, #1E3A5F, #2d6a9f)' }}
+            style={{ background: 'linear-gradient(135deg, #01411C, #0a5c3a)' }}
           >
             {getInitials(session.user.name)}
           </div>
@@ -153,7 +153,7 @@ export default async function ReceptionistDashboardPage() {
             <Link
               href="/receptionist/appointments"
               className="h-9 px-4 rounded-xl text-xs font-bold text-white flex items-center gap-1.5 hover:opacity-90 transition-opacity shadow-sm"
-              style={{ backgroundColor: '#1E3A5F' }}
+              style={{ backgroundColor: '#01411C' }}
             >
               <CalendarPlus className="h-3.5 w-3.5" />
               Manage Schedule
@@ -169,8 +169,8 @@ export default async function ReceptionistDashboardPage() {
             value={totalToday}
             subtitle="Appointments on record"
             icon={Calendar}
-            color="text-blue-600"
-            bg="bg-blue-50"
+            color="text-emerald-700"
+            bg="bg-emerald-50"
           />
 
           <MetricCard
@@ -233,7 +233,7 @@ export default async function ReceptionistDashboardPage() {
                       <div className="flex items-center gap-3 min-w-0">
                         <div
                           className="h-9 w-9 rounded-full flex items-center justify-center text-xs font-bold text-white shrink-0"
-                          style={{ background: 'linear-gradient(135deg, #1E3A5F, #2d6a9f)' }}
+                          style={{ background: 'linear-gradient(135deg, #01411C, #0a5c3a)' }}
                         >
                           {getInitials(appt.patientName)}
                         </div>
@@ -338,8 +338,8 @@ export default async function ReceptionistDashboardPage() {
                 title="Book / Reschedule"
                 subtitle="Manage clinic appointments"
                 icon={CalendarPlus}
-                bg="bg-blue-50"
-                color="text-blue-600"
+                bg="bg-emerald-50"
+                color="text-emerald-700"
               />
 
               <ShortcutLink
@@ -347,8 +347,8 @@ export default async function ReceptionistDashboardPage() {
                 title="Search Patient Records"
                 subtitle="Lookup medical profiles"
                 icon={Search}
-                bg="bg-purple-50"
-                color="text-purple-600"
+                bg="bg-emerald-50"
+                color="text-emerald-700"
               />
             </div>
 

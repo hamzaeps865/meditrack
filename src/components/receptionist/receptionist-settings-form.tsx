@@ -164,7 +164,7 @@ export default function ReceptionistSettingsForm({
                 ${isActive
                   ? 'text-white font-semibold'
                   : 'text-muted-foreground hover:bg-muted/40 hover:text-foreground'}`}
-              style={isActive ? { backgroundColor: '#1E3A5F' } : {}}
+              style={isActive ? { backgroundColor: '#01411C' } : {}}
             >
               <Icon className="h-4 w-4 shrink-0" />
               {tab.label}
@@ -249,7 +249,7 @@ export default function ReceptionistSettingsForm({
                   className="h-10 px-6 rounded-xl text-sm font-bold text-white
                     hover:opacity-90 transition-opacity disabled:opacity-60
                     flex items-center gap-2"
-                  style={{ backgroundColor: '#1E3A5F' }}
+                  style={{ backgroundColor: '#01411C' }}
                 >
                   {isPendingProfile && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
                   {isPendingProfile ? 'Saving...' : 'Save Profile'}
@@ -319,7 +319,7 @@ export default function ReceptionistSettingsForm({
                     onClick={() => setSoundAlerts((v) => !v)}
                     className={`h-6 w-11 rounded-full flex items-center px-0.5 shrink-0 transition-colors
                       ${soundAlerts ? 'justify-end' : 'justify-start bg-muted'}`}
-                    style={soundAlerts ? { backgroundColor: '#1E3A5F' } : undefined}
+                    style={soundAlerts ? { backgroundColor: '#01411C' } : undefined}
                   >
                     <div className="h-5 w-5 rounded-full bg-white shadow-sm" />
                   </button>
@@ -337,7 +337,7 @@ export default function ReceptionistSettingsForm({
                     onClick={() => setAutoConfirmCheckin((v) => !v)}
                     className={`h-6 w-11 rounded-full flex items-center px-0.5 shrink-0 transition-colors
                       ${autoConfirmCheckin ? 'justify-end' : 'justify-start bg-muted'}`}
-                    style={autoConfirmCheckin ? { backgroundColor: '#1E3A5F' } : undefined}
+                    style={autoConfirmCheckin ? { backgroundColor: '#01411C' } : undefined}
                   >
                     <div className="h-5 w-5 rounded-full bg-white shadow-sm" />
                   </button>
@@ -356,7 +356,7 @@ export default function ReceptionistSettingsForm({
                   type="submit"
                   className="h-10 px-6 rounded-xl text-sm font-bold text-white
                     hover:opacity-90 transition-opacity"
-                  style={{ backgroundColor: '#1E3A5F' }}
+                  style={{ backgroundColor: '#01411C' }}
                 >
                   Save Preferences
                 </button>
@@ -369,8 +369,8 @@ export default function ReceptionistSettingsForm({
         {activeTab === 'security' && (
           <div className="bg-white rounded-2xl border border-border p-6 shadow-sm">
             <div className="flex items-center gap-3 mb-5 pb-4 border-b border-border">
-              <div className="h-9 w-9 rounded-xl bg-blue-50 flex items-center justify-center">
-                <Lock className="h-4.5 w-4.5 text-blue-600" style={{ width: '1.125rem', height: '1.125rem' }} />
+              <div className="h-9 w-9 rounded-xl bg-emerald-50 flex items-center justify-center">
+                <Lock className="h-4.5 w-4.5 text-emerald-700" style={{ width: '1.125rem', height: '1.125rem' }} />
               </div>
               <div>
                 <h2 className="text-base font-bold text-foreground">Password & Account Security</h2>
@@ -425,7 +425,7 @@ export default function ReceptionistSettingsForm({
                           className={`h-full rounded-full transition-all duration-300 ${
                             newPw.length < 6   ? 'w-1/4 bg-red-400'   :
                             newPw.length < 8   ? 'w-2/4 bg-amber-400' :
-                            newPw.length < 12  ? 'w-3/4 bg-blue-400'  :
+                            newPw.length < 12  ? 'w-3/4 bg-emerald-400'  :
                                                  'w-full bg-emerald-400'
                           }`}
                         />
@@ -435,9 +435,9 @@ export default function ReceptionistSettingsForm({
                 </Field>
               </div>
 
-              <div className="flex items-center gap-2 rounded-xl bg-blue-50/70 border border-blue-100 px-3.5 py-2.5">
-                <ShieldCheck className="h-4 w-4 text-blue-600 shrink-0" />
-                <p className="text-xs text-blue-700">
+              <div className="flex items-center gap-2 rounded-xl bg-emerald-50/70 border border-emerald-100 px-3.5 py-2.5">
+                <ShieldCheck className="h-4 w-4 text-emerald-700 shrink-0" />
+                <p className="text-xs text-emerald-700">
                   Password changes take effect immediately across all active login sessions.
                 </p>
               </div>
@@ -451,7 +451,7 @@ export default function ReceptionistSettingsForm({
                   className="h-10 px-6 rounded-xl text-sm font-bold text-white
                     hover:opacity-90 transition-opacity disabled:opacity-50
                     flex items-center gap-2"
-                  style={{ backgroundColor: '#1E3A5F' }}
+                  style={{ backgroundColor: '#01411C' }}
                 >
                   {isPendingPw && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
                   {isPendingPw ? 'Updating...' : 'Update Password'}
@@ -465,8 +465,8 @@ export default function ReceptionistSettingsForm({
         {activeTab === 'notifications' && (
           <div className="bg-white rounded-2xl border border-border p-6 shadow-sm">
             <div className="flex items-center gap-3 mb-5 pb-4 border-b border-border">
-              <div className="h-9 w-9 rounded-xl bg-purple-50 flex items-center justify-center">
-                <Bell className="h-4.5 w-4.5 text-purple-600" style={{ width: '1.125rem', height: '1.125rem' }} />
+              <div className="h-9 w-9 rounded-xl bg-emerald-50 flex items-center justify-center">
+                <Bell className="h-4.5 w-4.5 text-emerald-700" style={{ width: '1.125rem', height: '1.125rem' }} />
               </div>
               <div>
                 <h2 className="text-base font-bold text-foreground">Notification Preferences</h2>
@@ -507,7 +507,7 @@ export default function ReceptionistSettingsForm({
                     onClick={() => item.set((v) => !v)}
                     className={`h-6 w-11 rounded-full flex items-center px-0.5 shrink-0 transition-colors
                       ${item.val ? 'justify-end' : 'justify-start bg-muted'}`}
-                    style={item.val ? { backgroundColor: '#1E3A5F' } : undefined}
+                    style={item.val ? { backgroundColor: '#01411C' } : undefined}
                   >
                     <div className="h-5 w-5 rounded-full bg-white shadow-sm" />
                   </button>
@@ -526,7 +526,7 @@ export default function ReceptionistSettingsForm({
                   type="submit"
                   className="h-10 px-6 rounded-xl text-sm font-bold text-white
                     hover:opacity-90 transition-opacity"
-                  style={{ backgroundColor: '#1E3A5F' }}
+                  style={{ backgroundColor: '#01411C' }}
                 >
                   Save Notification Settings
                 </button>

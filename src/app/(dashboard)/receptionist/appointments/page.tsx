@@ -27,12 +27,12 @@ function buildTimeSlots() {
 const statusStyles: Record<string, {
   bg: string; border: string; badge: string; label: string; dot: string;
 }> = {
-  scheduled:   { bg: 'bg-blue-50',    border: 'border-l-blue-400',    badge: 'bg-blue-100 text-blue-700',    label: 'Scheduled',   dot: 'bg-blue-400' },
+  scheduled:   { bg: 'bg-emerald-50',    border: 'border-l-emerald-400',    badge: 'bg-emerald-100 text-emerald-700',    label: 'Scheduled',   dot: 'bg-emerald-400' },
   checked_in:  { bg: 'bg-amber-50',   border: 'border-l-amber-400',   badge: 'bg-amber-100 text-amber-700',  label: 'Checked In',  dot: 'bg-amber-400' },
   in_progress: { bg: 'bg-orange-50',  border: 'border-l-orange-400',  badge: 'bg-orange-100 text-orange-700',label: 'In Progress', dot: 'bg-orange-400' },
   completed:   { bg: 'bg-emerald-50', border: 'border-l-emerald-400', badge: 'bg-emerald-100 text-emerald-700', label: 'Completed', dot: 'bg-emerald-400' },
   cancelled:   { bg: 'bg-red-50',     border: 'border-l-red-400',     badge: 'bg-red-100 text-red-600',      label: 'Cancelled',   dot: 'bg-red-400' },
-  no_show:     { bg: 'bg-gray-50',    border: 'border-l-gray-300',    badge: 'bg-gray-100 text-gray-500',    label: 'No Show',     dot: 'bg-gray-300' },
+  no_show:     { bg: 'bg-emerald-50/30',    border: 'border-l-muted-foreground/40',    badge: 'bg-muted text-emerald-800/60',    label: 'No Show',     dot: 'bg-muted-foreground/60' },
 };
 
 function slotIndexForTime(date: Date): number {
@@ -161,7 +161,7 @@ export default async function AppointmentsPage({
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {[
           { label: 'Total Today',  value: totalToday,     color: 'text-foreground' },
-          { label: 'Scheduled',    value: scheduledToday, color: 'text-blue-600' },
+          { label: 'Scheduled',    value: scheduledToday, color: 'text-emerald-700' },
           { label: 'Checked In',   value: checkedIn,      color: 'text-amber-600' },
           { label: 'Completed',    value: completedToday, color: 'text-emerald-600' },
         ].map((s) => (

@@ -43,7 +43,7 @@ export default async function AdminDoctorAvailabilityPage({
   const doctorName = doctorRow.name ?? 'Unknown';
 
   return (
-    <div className="min-h-full bg-[#f5f7fa]">
+    <div className="min-h-full bg-[#f0f7f3]">
 
       {/* ── Top bar ── */}
       <div className="bg-white border-b border-border px-6 py-3

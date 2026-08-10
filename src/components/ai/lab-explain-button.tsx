@@ -52,7 +52,7 @@ export default function LabExplainButton({
       <button
         type="button"
         onClick={handleExplain}
-        className="inline-flex items-center gap-1 text-xs font-semibold text-violet-600 hover:text-violet-700"
+        className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-700 hover:text-emerald-700"
       >
         <Sparkles className="h-3 w-3" />
         Explain in Simple Language
@@ -70,8 +70,8 @@ export default function LabExplainButton({
             {/* Header */}
             <div className="flex items-center justify-between px-5 py-4 border-b border-border sticky top-0 bg-white">
               <div className="flex items-center gap-2">
-                <div className="h-7 w-7 rounded-full bg-violet-100 flex items-center justify-center">
-                  <Sparkles className="h-3.5 w-3.5 text-violet-600" />
+                <div className="h-7 w-7 rounded-full bg-emerald-100 flex items-center justify-center">
+                  <Sparkles className="h-3.5 w-3.5 text-emerald-700" />
                 </div>
                 <h3 className="text-sm font-bold text-foreground">AI Explanation</h3>
               </div>

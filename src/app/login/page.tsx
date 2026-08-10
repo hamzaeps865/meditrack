@@ -230,7 +230,7 @@ export default function LoginPage() {
                 </>
               ) : (
                 <>
-                  <div className="bg-blue-50 border border-blue-200 rounded-lg px-3 py-2 text-xs text-blue-700 text-center">
+                  <div className="bg-emerald-50 border border-emerald-200 rounded-lg px-3 py-2 text-xs text-emerald-700 text-center">
                     Enter the 4-digit code sent to <strong>{phone}</strong>
                   </div>
                   <div>

@@ -32,13 +32,13 @@ export default async function ReceptionistSettingsPage() {
   }
 
   return (
-    <div className="min-h-full bg-[#f5f7fa]">
+    <div className="min-h-full bg-[#f0f7f3]">
       {/* ── Top bar ── */}
       <div className="bg-white border-b border-border px-6 py-3 flex items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <div
             className="h-8 w-8 rounded-full flex items-center justify-center shrink-0 text-white text-xs font-bold"
-            style={{ background: 'linear-gradient(135deg, #1E3A5F, #2d6a9f)' }}
+            style={{ background: 'linear-gradient(135deg, #01411C, #0a5c3a)' }}
           >
             {getInitials(userName)}
           </div>
@@ -60,7 +60,7 @@ export default async function ReceptionistSettingsPage() {
         <div className="flex items-center gap-3">
           <div
             className="h-10 w-10 rounded-2xl flex items-center justify-center shrink-0"
-            style={{ background: 'linear-gradient(135deg, #1E3A5F, #2d6a9f)' }}
+            style={{ background: 'linear-gradient(135deg, #01411C, #0a5c3a)' }}
           >
             <Settings className="h-5 w-5 text-white" />
           </div>
@@ -78,7 +78,7 @@ export default async function ReceptionistSettingsPage() {
             <div className="flex items-center gap-4">
               <div
                 className="h-14 w-14 rounded-2xl flex items-center justify-center text-lg font-bold text-white shrink-0"
-                style={{ background: 'linear-gradient(135deg, #1E3A5F, #2d6a9f)' }}
+                style={{ background: 'linear-gradient(135deg, #01411C, #0a5c3a)' }}
               >
                 {getInitials(userName)}
               </div>

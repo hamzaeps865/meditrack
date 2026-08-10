@@ -47,12 +47,12 @@ const statusConfig: Record<string, {
   dot: string;
   icon: typeof Calendar;
 }> = {
-  scheduled:   { label: 'Scheduled',   badge: 'bg-blue-50 text-blue-700 border-blue-200',         dot: 'bg-blue-400',    icon: Calendar     },
+  scheduled:   { label: 'Scheduled',   badge: 'bg-emerald-50 text-emerald-700 border-emerald-200',         dot: 'bg-emerald-400',    icon: Calendar     },
   checked_in:  { label: 'Checked-in',  badge: 'bg-amber-50 text-amber-700 border-amber-200',       dot: 'bg-amber-400',   icon: UserCheck    },
   in_progress: { label: 'In Progress', badge: 'bg-orange-50 text-orange-700 border-orange-200',    dot: 'bg-orange-400',  icon: Clock        },
   completed:   { label: 'Completed',   badge: 'bg-emerald-50 text-emerald-700 border-emerald-200', dot: 'bg-emerald-400', icon: CheckCircle2 },
   cancelled:   { label: 'Cancelled',   badge: 'bg-red-50 text-red-600 border-red-200',             dot: 'bg-red-400',     icon: XCircle      },
-  no_show:     { label: 'No-show',     badge: 'bg-gray-50 text-gray-500 border-gray-200',          dot: 'bg-gray-400',    icon: AlertCircle  },
+  no_show:     { label: 'No-show',     badge: 'bg-emerald-50/30 text-emerald-800/60 border-emerald-100',          dot: 'bg-muted-foreground',    icon: AlertCircle  },
 };
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
@@ -158,9 +158,9 @@ export default async function PatientAppointmentsPage() {
 
         {/* ── Managing-as indicator (family profile) ── */}
         {active?.isManaged && (
-          <div className="bg-violet-50 border border-violet-200 rounded-xl px-4 py-2.5 flex items-center gap-2">
+          <div className="bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-2.5 flex items-center gap-2">
             <span className="text-sm">👤</span>
-            <p className="text-sm text-violet-700">
+            <p className="text-sm text-emerald-700">
               Viewing appointments for <strong>{active.name}</strong>
             </p>
           </div>
@@ -177,7 +177,7 @@ export default async function PatientAppointmentsPage() {
           <Link
             href="/patient/appointments/new"
             className="h-10 px-4 rounded-xl text-sm font-bold text-white flex items-center gap-2 hover:opacity-90 transition-opacity shadow-sm"
-            style={{ backgroundColor: '#1E3A5F' }}
+            style={{ backgroundColor: '#01411C' }}
           >
             <CalendarDays className="h-4 w-4" />
             Book Appointment
@@ -190,8 +190,8 @@ export default async function PatientAppointmentsPage() {
             icon={CalendarDays}
             label="Upcoming"
             value={upcoming.length}
-            color="text-blue-600"
-            bg="bg-blue-50"
+            color="text-emerald-700"
+            bg="bg-emerald-50"
           />
           <StatCard
             icon={CheckCircle2}
@@ -254,7 +254,7 @@ export default async function PatientAppointmentsPage() {
           <div
             className="rounded-2xl overflow-hidden text-white"
             style={{
-              background: 'linear-gradient(135deg, #1E3A5F 0%, #2d5280 60%, #1E3A5F 100%)',
+              background: 'linear-gradient(135deg, #01411C 0%, #0a5c3a 60%, #01411C 100%)',
             }}
           >
             {/* gradient shimmer line */}
@@ -364,11 +364,11 @@ export default async function PatientAppointmentsPage() {
 
 function PatientShell({ name, children }: { name?: string | null; children: React.ReactNode }) {
   return (
-    <div className="min-h-full bg-[#f5f7fa]">
+    <div className="min-h-full bg-[#f0f7f3]">
       <div className="bg-white border-b border-border px-6 py-3 flex items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <div className="h-8 w-8 rounded-full flex items-center justify-center shrink-0"
-            style={{ background: 'linear-gradient(135deg, #1E3A5F, #2d6a9f)' }}>
+            style={{ background: 'linear-gradient(135deg, #01411C, #0a5c3a)' }}>
             <span className="text-white text-xs font-bold">
               {name ? name.split(' ').map((p) => p[0]).slice(0, 2).join('').toUpperCase() : '?'}
             </span>
@@ -463,7 +463,7 @@ function AppointmentRow({
       {appt.doctorName && (
         <div className="h-9 w-9 rounded-full flex items-center justify-center shrink-0
           text-xs font-bold text-white"
-          style={{ background: 'linear-gradient(135deg, #1E3A5F, #2d6a9f)' }}>
+          style={{ background: 'linear-gradient(135deg, #01411C, #0a5c3a)' }}>
           {getInitials(appt.doctorName)}
         </div>
       )}

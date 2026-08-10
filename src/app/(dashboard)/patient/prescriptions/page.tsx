@@ -124,8 +124,8 @@ export default async function PatientPrescriptionsPage() {
         {enriched.length > 0 && (
           <div className="grid grid-cols-3 gap-3">
             <div className="bg-white rounded-2xl border border-border p-4 shadow-sm">
-              <div className="h-9 w-9 rounded-xl bg-blue-50 flex items-center justify-center mb-3">
-                <Pill className="h-4.5 w-4.5 text-blue-600" style={{ width: '1.125rem', height: '1.125rem' }} />
+              <div className="h-9 w-9 rounded-xl bg-emerald-50 flex items-center justify-center mb-3">
+                <Pill className="h-4.5 w-4.5 text-emerald-700" style={{ width: '1.125rem', height: '1.125rem' }} />
               </div>
               <p className="text-2xl font-bold text-foreground leading-none">{enriched.length}</p>
               <p className="text-xs text-muted-foreground mt-1 font-medium">Prescriptions</p>
@@ -138,8 +138,8 @@ export default async function PatientPrescriptionsPage() {
               <p className="text-xs text-muted-foreground mt-1 font-medium">Medicines Total</p>
             </div>
             <div className="bg-white rounded-2xl border border-border p-4 shadow-sm">
-              <div className="h-9 w-9 rounded-xl bg-purple-50 flex items-center justify-center mb-3">
-                <Stethoscope className="h-4.5 w-4.5 text-purple-600" style={{ width: '1.125rem', height: '1.125rem' }} />
+              <div className="h-9 w-9 rounded-xl bg-emerald-50 flex items-center justify-center mb-3">
+                <Stethoscope className="h-4.5 w-4.5 text-emerald-700" style={{ width: '1.125rem', height: '1.125rem' }} />
               </div>
               <p className="text-2xl font-bold text-foreground leading-none">{uniqueDoctors}</p>
               <p className="text-xs text-muted-foreground mt-1 font-medium">Doctor{uniqueDoctors !== 1 ? 's' : ''}</p>
@@ -171,11 +171,11 @@ export default async function PatientPrescriptionsPage() {
 
 function PatientShell({ name, children }: { name?: string | null; children: React.ReactNode }) {
   return (
-    <div className="min-h-full bg-[#f5f7fa]">
+    <div className="min-h-full bg-[#f0f7f3]">
       <div className="bg-white border-b border-border px-6 py-3 flex items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <div className="h-8 w-8 rounded-full flex items-center justify-center shrink-0"
-            style={{ background: 'linear-gradient(135deg, #1E3A5F, #2d6a9f)' }}>
+            style={{ background: 'linear-gradient(135deg, #01411C, #0a5c3a)' }}>
             <span className="text-white text-xs font-bold">
               {name ? name.split(' ').map((p) => p[0]).slice(0, 2).join('').toUpperCase() : '?'}
             </span>

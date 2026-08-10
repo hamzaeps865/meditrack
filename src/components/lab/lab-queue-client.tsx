@@ -63,13 +63,13 @@ export default function LabQueueClient({ queue }: { queue: QueueItem[] }) {
   const priorityConfig: Record<string, { bg: string; text: string; icon: typeof Clock }> = {
     stat:    { bg: 'bg-rose-50',  text: 'text-rose-600',  icon: Zap },
     urgent:  { bg: 'bg-orange-50', text: 'text-orange-600', icon: Zap },
-    routine: { bg: 'bg-blue-50',  text: 'text-blue-600',  icon: Clock },
+    routine: { bg: 'bg-emerald-50',  text: 'text-emerald-700',  icon: Clock },
   };
 
   const statusConfig: Record<string, { label: string; cls: string }> = {
     ordered:          { label: 'Awaiting Sample', cls: 'bg-amber-50 text-amber-700' },
-    sample_collected: { label: 'Sample Collected', cls: 'bg-blue-50 text-blue-700' },
-    in_progress:      { label: 'In Progress', cls: 'bg-violet-50 text-violet-700' },
+    sample_collected: { label: 'Sample Collected', cls: 'bg-emerald-50 text-emerald-700' },
+    in_progress:      { label: 'In Progress', cls: 'bg-emerald-50 text-emerald-700' },
   };
 
   return (
@@ -149,9 +149,9 @@ export default function LabQueueClient({ queue }: { queue: QueueItem[] }) {
             </div>
             <div className="p-5 space-y-4">
               {resultModal.referenceRange && (
-                <div className="bg-blue-50 border border-blue-200 rounded-lg px-3 py-2">
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-blue-600 mb-1">Reference Range</p>
-                  <p className="text-xs text-blue-800 whitespace-pre-line">{resultModal.referenceRange}</p>
+                <div className="bg-emerald-50 border border-emerald-200 rounded-lg px-3 py-2">
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-emerald-700 mb-1">Reference Range</p>
+                  <p className="text-xs text-emerald-800 whitespace-pre-line">{resultModal.referenceRange}</p>
                 </div>
               )}
               <div>
