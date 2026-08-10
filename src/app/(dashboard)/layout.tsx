@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation';
 import Sidebar from '@/components/layout/sidebar';
 import AiChatWidget from '@/components/ai/ai-chat-widget';
 import { getSwitchableProfiles, getActivePatient } from '@/server/actions/active-patient';
+import { getSystemSetting } from '@/server/actions/settings.actions';
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
  const session = await auth();
@@ -24,6 +25,13 @@ export default async function DashboardLayout({ children }: { children: React.Re
   }
  }
 
+ let clinicLogo: string | null = null;
+ try {
+  clinicLogo = await getSystemSetting('clinic_logo');
+ } catch {
+  // Non-critical — default logo icon will render
+ }
+
  return (
   <div className="flex h-screen bg-emerald-50/30">
    <Sidebar
@@ -31,6 +39,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
     userName={session.user.name}
     profiles={profiles}
     activePatientId={activePatientId}
+    clinicLogo={clinicLogo}
    />
    <main className="flex-1 overflow-y-auto p-6">
     {children}
