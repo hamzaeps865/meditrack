@@ -284,3 +284,17 @@ export async function deleteDoctor(doctorId: string) {
   revalidatePath(`/admin/doctors/${doctorId}`);
   return { success: true };
 }
+
+// ─── Toggle Accepting Bookings (doctor only) ─────────────────────────────────
+
+export async function toggleAcceptingBookings() {
+  const session = await requireRole(['doctor']);
+  const [doctor] = await db
+    .select()
+    .from(doctors)
+    .where(eq(doctors.userId, session.user.id));
+  if (!doctor) throw new Error('Doctor profile not found.');
+  // For now this is a stub — just return success. A proper implementation
+  // would add an isAcceptingBookings boolean column to the doctors table.
+  return { success: true, acceptingBookings: true };
+}

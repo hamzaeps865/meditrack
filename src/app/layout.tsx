@@ -4,30 +4,30 @@ import "./globals.css";
 import { Toaster } from 'sonner';
 
 const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+ variable: "--font-inter",
+ subsets: ["latin"],
+ weight: ["400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
-  title: "MediTrack — Clinic Management",
-  description: "Patient & Appointment Management System",
+ title: "MediTrack — Clinic Management",
+ description: "Patient & Appointment Management System",
 };
 
 export default function RootLayout({
-  children,
+ children,
 }: Readonly<{
-  children: React.ReactNode;
+ children: React.ReactNode;
 }>) {
-  return (
-    <html
-      lang="en"
-      className={`${inter.variable} h-full antialiased`}
-    >
-      <body className="min-h-full flex flex-col">
-        {children}
-        <Toaster richColors position="top-right" />
-      </body>
-    </html>
-  );
+ return (
+  <html
+   lang="en"
+   className={`${inter.variable} h-full antialiased`}
+  >
+   <body className="min-h-full flex flex-col">
+    {children}
+    <Toaster richColors position="top-right" />
+   </body>
+  </html>
+ );
 }

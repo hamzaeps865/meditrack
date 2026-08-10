@@ -84,7 +84,15 @@ export default function RescheduleModal({
         toast.error(err instanceof Error ? err.message : 'Failed to reschedule appointment.');
       }
     });
-  }
+    toast.success('Appointment rescheduled.');
+    setOpen(false);
+    setNewDateTime('');
+    router.refresh();
+   } catch (err) {
+    toast.error(err instanceof Error ? err.message : 'Failed to reschedule.');
+   }
+  });
+ }
 
   const selectedDateObj = newDateTime ? new Date(newDateTime) : null;
 

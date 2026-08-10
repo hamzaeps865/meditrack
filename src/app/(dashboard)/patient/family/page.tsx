@@ -8,67 +8,67 @@ import { Users, UserPlus } from 'lucide-react';
 import { format } from 'date-fns';
 
 export default async function FamilyPage() {
-  const session = await auth();
-  if (!session || session.user.role !== 'patient') redirect('/login');
+ const session = await auth();
+ if (!session || session.user.role !== 'patient') redirect('/login');
 
-  const [members, active] = await Promise.all([
-    getFamilyMembers(),
-    getActivePatient(),
-  ]);
+ const [members, active] = await Promise.all([
+  getFamilyMembers(),
+  getActivePatient(),
+ ]);
 
-  return (
-    <div className="min-h-full bg-[#f0f7f3]">
-      {/* Top bar */}
-      <div className="bg-white border-b border-border px-6 py-3 flex items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-            <Users className="h-4 w-4 text-primary" />
-          </div>
-          <div className="hidden sm:block">
-            <p className="text-sm font-semibold text-foreground leading-none">{session.user.name}</p>
-            <p className="text-[10px] text-muted-foreground mt-0.5 uppercase tracking-wide">Family Management</p>
-          </div>
-        </div>
-        <NotificationBell />
-      </div>
-
-      <div className="px-6 py-8 max-w-3xl mx-auto">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h1 className="text-2xl font-bold text-foreground">Family Members</h1>
-            <p className="text-sm text-muted-foreground mt-1">
-              Manage health profiles for your spouse, children, and parents.
-            </p>
-          </div>
-        </div>
-
-        {/* Active profile indicator */}
-        {active?.isManaged && (
-          <div className="bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-3 mb-5 flex items-center gap-2">
-            <Users className="h-4 w-4 text-emerald-700 shrink-0" />
-            <p className="text-sm text-emerald-700">
-              You are currently viewing as <strong>{active.name}</strong>.
-              Use the profile switcher (top of sidebar) to switch back to your profile.
-            </p>
-          </div>
-        )}
-
-        {/* Members list + add button (client component handles the modal) */}
-        <FamilyMembersList
-          members={members.map((m) => ({
-            id: m.id,
-            name: m.name,
-            phone: m.phone,
-            dob: m.dob,
-            gender: m.gender,
-            bloodGroup: m.bloodGroup,
-            allergies: m.allergies,
-            city: m.city,
-            emergencyContact: m.emergencyContact,
-          }))}
-        />
-      </div>
+ return (
+  <div className="min-h-full bg-[#f0f7f3]">
+   {/* Top bar */}
+   <div className="bg-white border-b border-border px-6 py-3 flex items-center justify-between gap-4">
+    <div className="flex items-center gap-3">
+     <div className="h-8 w-8 bg-primary/10 flex items-center justify-center shrink-0">
+      <Users className="h-4 w-4 text-primary" />
+     </div>
+     <div className="hidden sm:block">
+      <p className="text-sm font-semibold text-foreground leading-none">{session.user.name}</p>
+      <p className="text-[10px] text-muted-foreground mt-0.5 uppercase tracking-wide">Family Management</p>
+     </div>
     </div>
-  );
+    <NotificationBell />
+   </div>
+
+   <div className="px-6 py-8 max-w-3xl mx-auto">
+    {/* Header */}
+    <div className="flex items-center justify-between mb-6">
+     <div>
+      <h1 className="text-2xl font-bold text-foreground">Family Members</h1>
+      <p className="text-sm text-muted-foreground mt-1">
+       Manage health profiles for your spouse, children, and parents.
+      </p>
+     </div>
+    </div>
+
+    {/* Active profile indicator */}
+    {active?.isManaged && (
+     <div className="bg-emerald-50 border border-emerald-200 px-4 py-3 mb-5 flex items-center gap-2">
+      <Users className="h-4 w-4 text-emerald-700 shrink-0" />
+      <p className="text-sm text-emerald-700">
+       You are currently viewing as <strong>{active.name}</strong>.
+       Use the profile switcher (top of sidebar) to switch back to your profile.
+      </p>
+     </div>
+    )}
+
+    {/* Members list + add button (client component handles the modal) */}
+    <FamilyMembersList
+     members={members.map((m) => ({
+      id: m.id,
+      name: m.name,
+      phone: m.phone,
+      dob: m.dob,
+      gender: m.gender,
+      bloodGroup: m.bloodGroup,
+      allergies: m.allergies,
+      city: m.city,
+      emergencyContact: m.emergencyContact,
+     }))}
+    />
+   </div>
+  </div>
+ );
 }
