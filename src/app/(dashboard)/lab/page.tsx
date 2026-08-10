@@ -24,11 +24,11 @@ export default async function LabDashboardPage() {
   }));
 
   return (
-    <div className="min-h-full bg-[#f5f7fa]">
+    <div className="min-h-full bg-[#f0f7f3]">
       <div className="bg-white border-b border-border px-6 py-3 flex items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <div className="h-8 w-8 rounded-full bg-cyan-100 flex items-center justify-center shrink-0">
-            <FlaskConical className="h-4 w-4 text-cyan-600" />
+          <div className="h-8 w-8 rounded-full bg-emerald-100 flex items-center justify-center shrink-0">
+            <FlaskConical className="h-4 w-4 text-emerald-700" />
           </div>
           <div className="hidden sm:block">
             <p className="text-sm font-semibold text-foreground leading-none">{session.user.name}</p>
@@ -61,8 +61,8 @@ export default async function LabDashboardPage() {
             <p className="text-xs text-muted-foreground mt-0.5">Completed</p>
           </div>
           <div className="bg-white rounded-2xl border border-border p-4 shadow-sm">
-            <div className="h-9 w-9 rounded-xl bg-blue-50 flex items-center justify-center mb-2">
-              <FlaskConical className="h-4 w-4 text-blue-600" />
+            <div className="h-9 w-9 rounded-xl bg-emerald-50 flex items-center justify-center mb-2">
+              <FlaskConical className="h-4 w-4 text-emerald-700" />
             </div>
             <p className="text-2xl font-bold text-foreground">{summary.total}</p>
             <p className="text-xs text-muted-foreground mt-0.5">Total Tests</p>

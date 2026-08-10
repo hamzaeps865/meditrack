@@ -33,7 +33,7 @@ export default function HealthInsightsButton() {
       <button
         type="button"
         onClick={handleGenerate}
-        className="inline-flex items-center gap-1.5 h-10 px-4 rounded-xl bg-gradient-to-r from-violet-500 to-violet-600 text-white text-sm font-semibold hover:opacity-90 transition-opacity shadow-sm"
+        className="inline-flex items-center gap-1.5 h-10 px-4 rounded-xl bg-gradient-to-r from-emerald-600 to-emerald-700 text-white text-sm font-semibold hover:opacity-90 transition-opacity shadow-sm"
       >
         <Sparkles className="h-4 w-4" />
         AI Health Insights
@@ -44,7 +44,7 @@ export default function HealthInsightsButton() {
           <div className="bg-white rounded-2xl shadow-xl border border-border w-full max-w-lg max-h-[85vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between px-5 py-4 border-b border-border sticky top-0 bg-white">
               <div className="flex items-center gap-2">
-                <div className="h-7 w-7 rounded-full bg-gradient-to-r from-violet-500 to-violet-600 flex items-center justify-center">
+                <div className="h-7 w-7 rounded-full bg-gradient-to-r from-emerald-600 to-emerald-700 flex items-center justify-center">
                   <Sparkles className="h-3.5 w-3.5 text-white" />
                 </div>
                 <h3 className="text-sm font-bold text-foreground">AI Health Insights</h3>
@@ -57,7 +57,7 @@ export default function HealthInsightsButton() {
             <div className="p-5">
               {loading ? (
                 <div className="flex flex-col items-center justify-center py-12 gap-2 text-muted-foreground">
-                  <Loader2 className="h-6 w-6 animate-spin text-violet-500" />
+                  <Loader2 className="h-6 w-6 animate-spin text-emerald-600" />
                   <span className="text-sm">AI is analyzing your health data...</span>
                 </div>
               ) : insights ? (

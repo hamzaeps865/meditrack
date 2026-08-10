@@ -37,7 +37,7 @@ export default async function AdminPharmacyPage() {
   }));
 
   return (
-    <div className="min-h-full bg-[#f5f7fa]">
+    <div className="min-h-full bg-[#f0f7f3]">
       {/* Top bar */}
       <div className="bg-white border-b border-border px-6 py-3 flex items-center justify-between gap-4">
         <div className="flex items-center gap-2">
@@ -59,8 +59,8 @@ export default async function AdminPharmacyPage() {
         {/* Summary cards */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
           <div className="bg-white rounded-2xl border border-border p-5 shadow-sm">
-            <div className="h-10 w-10 rounded-xl bg-blue-50 flex items-center justify-center mb-3">
-              <Pill className="h-5 w-5 text-blue-600" />
+            <div className="h-10 w-10 rounded-xl bg-emerald-50 flex items-center justify-center mb-3">
+              <Pill className="h-5 w-5 text-emerald-700" />
             </div>
             <p className="text-2xl font-bold text-foreground">{summary.totalMedicines}</p>
             <p className="text-xs text-muted-foreground mt-0.5">Medicines in Catalog</p>

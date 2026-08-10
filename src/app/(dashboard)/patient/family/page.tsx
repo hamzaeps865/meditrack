@@ -17,7 +17,7 @@ export default async function FamilyPage() {
   ]);
 
   return (
-    <div className="min-h-full bg-[#f5f7fa]">
+    <div className="min-h-full bg-[#f0f7f3]">
       {/* Top bar */}
       <div className="bg-white border-b border-border px-6 py-3 flex items-center justify-between gap-4">
         <div className="flex items-center gap-3">
@@ -45,9 +45,9 @@ export default async function FamilyPage() {
 
         {/* Active profile indicator */}
         {active?.isManaged && (
-          <div className="bg-violet-50 border border-violet-200 rounded-xl px-4 py-3 mb-5 flex items-center gap-2">
-            <Users className="h-4 w-4 text-violet-600 shrink-0" />
-            <p className="text-sm text-violet-700">
+          <div className="bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-3 mb-5 flex items-center gap-2">
+            <Users className="h-4 w-4 text-emerald-700 shrink-0" />
+            <p className="text-sm text-emerald-700">
               You are currently viewing as <strong>{active.name}</strong>.
               Use the profile switcher (top of sidebar) to switch back to your profile.
             </p>

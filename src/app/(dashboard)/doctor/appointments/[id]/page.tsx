@@ -25,12 +25,12 @@ function getInitials(name: string | null | undefined) {
 }
 
 const statusConfig: Record<string, { label: string; badge: string }> = {
-  scheduled:   { label: 'Scheduled',   badge: 'bg-blue-100 text-blue-700' },
+  scheduled:   { label: 'Scheduled',   badge: 'bg-emerald-100 text-emerald-700' },
   checked_in:  { label: 'Checked-in',  badge: 'bg-amber-100 text-amber-700' },
   in_progress: { label: 'In-Progress', badge: 'bg-primary text-primary-foreground' },
   completed:   { label: 'Completed',   badge: 'bg-emerald-100 text-emerald-700' },
   cancelled:   { label: 'Cancelled',   badge: 'bg-red-100 text-red-600' },
-  no_show:     { label: 'No-show',     badge: 'bg-gray-100 text-gray-500' },
+  no_show:     { label: 'No-show',     badge: 'bg-muted text-emerald-800/60' },
 };
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
@@ -156,7 +156,7 @@ export default async function AppointmentDetailPage({
     : [];
 
   return (
-    <div className="min-h-full bg-[#f5f7fa]">
+    <div className="min-h-full bg-[#f0f7f3]">
 
       {/* ── Top bar ── */}
       <div className="bg-white border-b border-border px-6 py-3
@@ -291,7 +291,7 @@ export default async function AppointmentDetailPage({
                     triageData.severity === 'critical' ? 'bg-rose-100 text-rose-700' :
                     triageData.severity === 'urgent' ? 'bg-orange-100 text-orange-700' :
                     triageData.severity === 'low' ? 'bg-emerald-100 text-emerald-700' :
-                    'bg-blue-100 text-blue-700'
+                    'bg-emerald-100 text-emerald-700'
                   }`}>
                     {triageData.severity.toUpperCase()}
                   </span>

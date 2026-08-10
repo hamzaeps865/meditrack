@@ -27,7 +27,7 @@ export default async function DoctorAvailabilityPage() {
   const doctorName = session.user.name ?? 'Doctor';
 
   return (
-    <div className="min-h-full bg-[#f5f7fa]">
+    <div className="min-h-full bg-[#f0f7f3]">
 
       {/* ── Top bar ── */}
       <div className="bg-white border-b border-border px-6 py-3

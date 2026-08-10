@@ -16,7 +16,7 @@ export default async function PatientVisitsPage() {
   const visits = await getVisitsByPatient(active.id);
 
   return (
-    <div className="min-h-full bg-[#f5f7fa]">
+    <div className="min-h-full bg-[#f0f7f3]">
       <div className="bg-white border-b border-border px-6 py-3 flex items-center justify-between">
         <p className="text-sm font-semibold text-foreground">My Visit History</p>
         <NotificationBell />
@@ -65,7 +65,7 @@ export default async function PatientVisitsPage() {
                     )}
                     {visit.vitalsWeight && (
                       <span className="text-xs flex items-center gap-1 px-2 py-1 rounded-lg bg-muted/40">
-                        <Weight className="h-3 w-3 text-blue-500" /> {visit.vitalsWeight}
+                        <Weight className="h-3 w-3 text-emerald-600" /> {visit.vitalsWeight}
                       </span>
                     )}
                   </div>

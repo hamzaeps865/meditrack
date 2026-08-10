@@ -41,7 +41,7 @@ const roleBadge: Record<string, string> = {
   admin:        'bg-primary/10 text-primary border border-primary/20',
   doctor:       'bg-emerald-50 text-emerald-700 border border-emerald-200',
   receptionist: 'bg-amber-50 text-amber-700 border border-amber-200',
-  patient:      'bg-violet-50 text-violet-700 border border-violet-200',
+  patient:      'bg-emerald-50 text-emerald-700 border border-emerald-200',
 };
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -167,7 +167,7 @@ export default async function AdminAuditLogsPage({
   }
 
   return (
-    <div className="min-h-full bg-[#f5f7fa]">
+    <div className="min-h-full bg-[#f0f7f3]">
 
       {/* ── Top bar ── */}
       <div className="bg-white border-b border-border px-6 py-3
@@ -326,7 +326,7 @@ export default async function AdminAuditLogsPage({
               type="submit"
               className="h-9 px-6 rounded-xl text-sm font-bold text-white
                 hover:opacity-90 transition-opacity flex items-center gap-2"
-              style={{ backgroundColor: '#1E3A5F' }}
+              style={{ backgroundColor: '#01411C' }}
             >
               <Filter className="h-3.5 w-3.5" />
               Apply

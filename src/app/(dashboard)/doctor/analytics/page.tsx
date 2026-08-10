@@ -36,10 +36,10 @@ export default async function DoctorAnalyticsPage() {
   const pctCompleted = total > 0 ? (completed / total) * 100 : 0;
   const pctCancelled = total > 0 ? (cancelled / total) * 100 : 0;
   const pctScheduled = total > 0 ? (scheduled / total) * 100 : 0;
-  const donutGradient = `conic-gradient(#10b981 0% ${pctCompleted}%, #f43f5e ${pctCompleted}% ${pctCompleted + pctCancelled}%, #3b82f6 ${pctCompleted + pctCancelled}% 100%)`;
+  const donutGradient = `conic-gradient(#10b981 0% ${pctCompleted}%, #f43f5e ${pctCompleted}% ${pctCompleted + pctCancelled}%, #01411C ${pctCompleted + pctCancelled}% 100%)`;
 
   return (
-    <div className="min-h-full bg-[#f5f7fa]">
+    <div className="min-h-full bg-[#f0f7f3]">
       {/* Top bar */}
       <div className="bg-white border-b border-border px-6 py-3 flex items-center justify-between gap-4">
         <div className="flex items-center gap-2">
@@ -60,10 +60,10 @@ export default async function DoctorAnalyticsPage() {
 
         {/* ── Stat cards ── */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-          <StatCard icon={Activity} label="Total Visits" value={data.totalVisits} color="text-blue-600" bg="bg-blue-50" />
+          <StatCard icon={Activity} label="Total Visits" value={data.totalVisits} color="text-emerald-700" bg="bg-emerald-50" />
           <StatCard icon={Users} label="Unique Patients" value={data.distinctPatients} color="text-emerald-600" bg="bg-emerald-50" />
           <StatCard icon={Star} label="Avg Rating" value={data.rating.average > 0 ? data.rating.average.toFixed(1) : '—'} color="text-amber-600" bg="bg-amber-50" />
-          <StatCard icon={CheckCircle2} label="Completion Rate" value={`${data.appointmentStats.completionRate}%`} color="text-violet-600" bg="bg-violet-50" />
+          <StatCard icon={CheckCircle2} label="Completion Rate" value={`${data.appointmentStats.completionRate}%`} color="text-emerald-700" bg="bg-emerald-50" />
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -94,7 +94,7 @@ export default async function DoctorAnalyticsPage() {
               </div>
               <div className="space-y-2 flex-1">
                 <Legend color="bg-emerald-500" label="Completed" value={completed} pct={pctCompleted} />
-                <Legend color="bg-blue-500" label="Scheduled" value={scheduled} pct={pctScheduled} />
+                <Legend color="bg-emerald-500" label="Scheduled" value={scheduled} pct={pctScheduled} />
                 <Legend color="bg-rose-500" label="Cancelled/No-show" value={cancelled} pct={pctCancelled} />
               </div>
             </div>
@@ -198,14 +198,14 @@ function TrendChart({ data, max }: { data: { day: string; label: string; count: 
       <svg viewBox={`0 0 ${w} ${h}`} className="w-full h-40" preserveAspectRatio="none">
         <defs>
           <linearGradient id="trendGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="rgb(59,130,246)" stopOpacity="0.3" />
-            <stop offset="100%" stopColor="rgb(59,130,246)" stopOpacity="0" />
+            <stop offset="0%" stopColor="rgb(1,65,28)" stopOpacity="0.3" />
+            <stop offset="100%" stopColor="rgb(1,65,28)" stopOpacity="0" />
           </linearGradient>
         </defs>
         <path d={areaPath} fill="url(#trendGrad)" />
-        <path d={linePath} fill="none" stroke="rgb(59,130,246)" strokeWidth="1.5" vectorEffect="non-scaling-stroke" />
+        <path d={linePath} fill="none" stroke="rgb(1,65,28)" strokeWidth="1.5" vectorEffect="non-scaling-stroke" />
         {points.map((p) => (
-          <circle key={p.day} cx={p.x} cy={p.y} r="1.5" fill="rgb(59,130,246)" vectorEffect="non-scaling-stroke" />
+          <circle key={p.day} cx={p.x} cy={p.y} r="1.5" fill="rgb(1,65,28)" vectorEffect="non-scaling-stroke" />
         ))}
       </svg>
       {/* X-axis labels */}

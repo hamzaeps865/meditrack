@@ -46,12 +46,12 @@ const statusConfig: Record<string, {
   rowBg?: string;
   strikethrough?: boolean;
 }> = {
-  scheduled:   { badge: 'bg-blue-100 text-blue-700',    label: 'Scheduled' },
+  scheduled:   { badge: 'bg-emerald-100 text-emerald-700',    label: 'Scheduled' },
   checked_in:  { badge: 'bg-amber-100 text-amber-700',  label: 'Checked-in',  rowBg: 'bg-primary/5' },
   in_progress: { badge: 'bg-orange-100 text-orange-700',label: 'In Progress', rowBg: 'bg-orange-50' },
   completed:   { badge: 'bg-emerald-100 text-emerald-700', label: 'Completed', strikethrough: true },
   cancelled:   { badge: 'bg-red-100 text-red-600',      label: 'Cancelled',   strikethrough: true },
-  no_show:     { badge: 'bg-gray-100 text-gray-500',    label: 'No-show',     strikethrough: true },
+  no_show:     { badge: 'bg-muted text-emerald-800/60',    label: 'No-show',     strikethrough: true },
 };
 
 const reasonIcons: Record<string, string> = {

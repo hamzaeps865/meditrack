@@ -23,12 +23,12 @@ function getInitials(name: string | null | undefined) {
 }
 
 const statusConfig: Record<string, { label: string; badge: string; dot: string }> = {
-  scheduled:   { label: 'Scheduled',   badge: 'bg-blue-100 text-blue-700',       dot: 'bg-blue-500'    },
+  scheduled:   { label: 'Scheduled',   badge: 'bg-emerald-100 text-emerald-700',       dot: 'bg-emerald-500'    },
   checked_in:  { label: 'Checked-in',  badge: 'bg-amber-100 text-amber-700',     dot: 'bg-amber-500'   },
   in_progress: { label: 'In Progress', badge: 'bg-orange-100 text-orange-700',   dot: 'bg-orange-500'  },
   completed:   { label: 'Completed',   badge: 'bg-emerald-100 text-emerald-700', dot: 'bg-emerald-500' },
   cancelled:   { label: 'Cancelled',   badge: 'bg-red-100 text-red-600',         dot: 'bg-red-500'     },
-  no_show:     { label: 'No-show',     badge: 'bg-gray-100 text-gray-500',       dot: 'bg-gray-400'    },
+  no_show:     { label: 'No-show',     badge: 'bg-muted text-emerald-800/60',       dot: 'bg-muted-foreground'    },
 };
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
@@ -115,7 +115,7 @@ export default async function ReceptionistAppointmentDetailPage({
     nextStatuses.push({
       label: 'Mark No-show',
       status: 'no_show',
-      style: 'bg-gray-200 text-gray-700 hover:bg-gray-300',
+      style: 'bg-muted text-foreground hover:bg-muted-foreground/60',
     });
     nextStatuses.push({
       label: 'Cancel',
@@ -132,7 +132,7 @@ export default async function ReceptionistAppointmentDetailPage({
   }
 
   return (
-    <div className="min-h-full bg-[#f5f7fa]">
+    <div className="min-h-full bg-[#f0f7f3]">
 
       {/* ── Top bar ── */}
       <div className="bg-white border-b border-border px-6 py-3

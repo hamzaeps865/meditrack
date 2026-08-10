@@ -23,12 +23,12 @@ const statusConfig: Record<string, {
   rowHighlight?: boolean;
   dim?: boolean;
 }> = {
-  scheduled:   { dot: 'bg-blue-500',    label: 'Scheduled',   badge: 'text-blue-600 font-semibold' },
+  scheduled:   { dot: 'bg-emerald-500',    label: 'Scheduled',   badge: 'text-emerald-700 font-semibold' },
   checked_in:  { dot: 'bg-amber-400',   label: 'Checked-in',  badge: 'bg-amber-50 text-amber-600 border border-amber-200 rounded-full px-2.5 py-0.5 text-xs font-semibold', rowHighlight: true },
   in_progress: { dot: 'bg-primary',     label: 'In-Progress', badge: 'bg-primary text-primary-foreground rounded-full px-2.5 py-0.5 text-xs font-semibold', rowHighlight: true },
   completed:   { dot: 'bg-emerald-500', label: 'Completed',   badge: 'text-emerald-600 font-semibold' },
   cancelled:   { dot: 'bg-red-400',     label: 'Cancelled',   badge: 'bg-red-50 text-red-500 border border-red-200 rounded-full px-2.5 py-0.5 text-xs font-semibold', dim: true },
-  no_show:     { dot: 'bg-gray-400',    label: 'No-show',     badge: 'text-gray-400 font-semibold', dim: true },
+  no_show:     { dot: 'bg-muted-foreground',    label: 'No-show',     badge: 'text-muted-foreground font-semibold', dim: true },
 };
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -122,7 +122,7 @@ export default async function DoctorAppointmentsPage({
   const doctorName = session.user.name ?? 'Doctor';
 
   return (
-    <div className="min-h-full bg-[#f5f7fa]">
+    <div className="min-h-full bg-[#f0f7f3]">
 
       {/* ── Top bar ── */}
       <div className="bg-white border-b border-border px-6 py-3 flex items-center justify-between gap-4">

@@ -24,7 +24,7 @@ export default async function PatientReportsPage() {
 
   if (!patientId) {
     return (
-      <div className="min-h-full bg-[#f5f7fa] flex items-center justify-center px-6">
+      <div className="min-h-full bg-[#f0f7f3] flex items-center justify-center px-6">
         <div className="bg-white rounded-2xl border border-border p-8 text-center max-w-sm shadow-sm">
           <User className="h-8 w-8 text-muted-foreground opacity-30 mx-auto mb-3" />
           <p className="text-sm font-medium text-foreground">No patient profile found</p>
@@ -44,7 +44,7 @@ export default async function PatientReportsPage() {
   ]);
 
   return (
-    <div className="min-h-full bg-[#f5f7fa]">
+    <div className="min-h-full bg-[#f0f7f3]">
       <div className="px-6 py-8 max-w-3xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
@@ -60,7 +60,7 @@ export default async function PatientReportsPage() {
               href="/patient-reports-print"
               target="_blank"
               className="h-10 px-4 rounded-xl text-sm font-bold text-white flex items-center gap-2 hover:opacity-90 transition-opacity shadow-sm"
-              style={{ backgroundColor: '#1E3A5F' }}
+              style={{ backgroundColor: '#01411C' }}
             >
               <FileDown className="h-4 w-4" />
               Download PDF
@@ -95,9 +95,9 @@ export default async function PatientReportsPage() {
           <div className="space-y-5">
             {/* Quick stats */}
             <div className="grid grid-cols-3 gap-3">
-              <StatTile icon={Calendar} label="Appointments" value={reportData.appointmentStats.total} color="text-blue-600" bg="bg-blue-50" />
+              <StatTile icon={Calendar} label="Appointments" value={reportData.appointmentStats.total} color="text-emerald-700" bg="bg-emerald-50" />
               <StatTile icon={Activity} label="Visits" value={reportData.visits.length} color="text-emerald-600" bg="bg-emerald-50" />
-              <StatTile icon={Pill} label="Prescriptions" value={reportData.prescriptions.length} color="text-violet-600" bg="bg-violet-50" />
+              <StatTile icon={Pill} label="Prescriptions" value={reportData.prescriptions.length} color="text-emerald-700" bg="bg-emerald-50" />
             </div>
 
             {/* Vitals trend */}

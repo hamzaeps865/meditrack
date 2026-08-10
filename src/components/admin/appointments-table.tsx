@@ -54,12 +54,12 @@ type TimeFilter = 'today' | 'week' | 'month' | 'custom';
 const statusConfig: Record<string, {
   label: string; badge: string; dot?: string;
 }> = {
-  scheduled:   { label: 'Scheduled',   badge: 'text-blue-600 font-semibold',                          dot: 'bg-blue-400' },
+  scheduled:   { label: 'Scheduled',   badge: 'text-emerald-700 font-semibold',                          dot: 'bg-emerald-400' },
   checked_in:  { label: 'Checked-in',  badge: 'bg-amber-100 text-amber-700 rounded-full px-2.5 py-0.5 text-xs font-semibold' },
-  in_progress: { label: 'In-progress', badge: 'bg-gray-200 text-gray-700 rounded-md px-2 py-0.5 text-xs font-semibold' },
+  in_progress: { label: 'In-progress', badge: 'bg-muted text-foreground rounded-md px-2 py-0.5 text-xs font-semibold' },
   completed:   { label: 'Completed',   badge: 'text-emerald-600 font-semibold',                       dot: 'bg-emerald-400' },
   cancelled:   { label: 'Cancelled',   badge: 'text-red-500 font-semibold italic',                    dot: 'bg-red-400' },
-  no_show:     { label: 'No-show',     badge: 'text-gray-400 font-semibold' },
+  no_show:     { label: 'No-show',     badge: 'text-muted-foreground font-semibold' },
 };
 
 function getInitials(name: string | null | undefined) {
@@ -148,7 +148,7 @@ export default function AppointmentsTable({
       sub:     '+12% vs last month',
       subColor:'text-emerald-600',
       icon:    CalendarDays,
-      iconBg:  'bg-blue-50 text-blue-500',
+      iconBg:  'bg-emerald-50 text-emerald-600',
     },
     {
       label:   'Completed',
@@ -179,7 +179,7 @@ export default function AppointmentsTable({
   ];
 
   return (
-    <div className="min-h-full bg-[#f5f7fa]">
+    <div className="min-h-full bg-[#f0f7f3]">
 
       {/* ── Top bar ── */}
       <div className="bg-white border-b border-border px-6 py-3
@@ -321,7 +321,7 @@ export default function AppointmentsTable({
               type="button"
               className="flex items-center gap-2 h-9 px-4 rounded-xl text-white
                 text-sm font-semibold hover:opacity-90 transition-opacity"
-              style={{ backgroundColor: '#1E3A5F' }}
+              style={{ backgroundColor: '#01411C' }}
             >
               <Plus className="h-4 w-4" />
               Book Appointment
@@ -558,7 +558,7 @@ export default function AppointmentsTable({
                             (doc.apptThisMonth / Math.max(...utilization.map((u) => u.apptThisMonth), 1)) * 100,
                             100,
                           )}%`,
-                          background: 'linear-gradient(90deg, #1E3A5F, #ef4444)',
+                          background: 'linear-gradient(90deg, #01411C, #ef4444)',
                         }}
                       />
                     </div>
@@ -570,7 +570,7 @@ export default function AppointmentsTable({
 
           {/* Efficiency Insight */}
           <div className="rounded-2xl p-6 flex flex-col justify-between text-white"
-            style={{ backgroundColor: '#1E3A5F' }}>
+            style={{ backgroundColor: '#01411C' }}>
             <div>
               <div className="h-9 w-9 rounded-full bg-white/10 flex items-center
                 justify-center mb-4">
@@ -586,7 +586,7 @@ export default function AppointmentsTable({
             <button
               type="button"
               className="mt-6 w-full h-10 rounded-xl bg-white text-sm font-bold
-                text-[#1E3A5F] hover:bg-white/90 transition-colors"
+                text-[#01411C] hover:bg-white/90 transition-colors"
             >
               Run Portal Campaign
             </button>

@@ -19,10 +19,10 @@ function NotifIcon({ type }: { type: NotificationItem['type'] }) {
     case 'cancelled':    return <XCircle    className={`${cls} text-red-500`}    />;
     case 'new_patient':  return <UserPlus   className={`${cls} text-emerald-500`}/>;
     case 'audit':        return <ShieldAlert className={`${cls} text-red-500`}   />;
-    case 'appointment':  return <Calendar   className={`${cls} text-blue-500`}   />;
+    case 'appointment':  return <Calendar   className={`${cls} text-emerald-600`}   />;
     case 'pharmacy':     return <Pill       className={`${cls} text-emerald-500`} />;
-    case 'prescription': return <Package    className={`${cls} text-violet-500`}  />;
-    case 'lab':          return <FlaskConical className={`${cls} text-cyan-500`} />;
+    case 'prescription': return <Package    className={`${cls} text-emerald-600`}  />;
+    case 'lab':          return <FlaskConical className={`${cls} text-emerald-600`} />;
     default:             return <Info       className={`${cls} text-muted-foreground`} />;
   }
 }
@@ -34,11 +34,11 @@ const dotColor: Record<NotificationItem['type'], string> = {
   cancelled:   'bg-red-400',
   new_patient: 'bg-emerald-400',
   audit:       'bg-red-500',
-  appointment: 'bg-blue-400',
+  appointment: 'bg-emerald-400',
   system:      'bg-muted-foreground',
   pharmacy:    'bg-emerald-400',
-  prescription: 'bg-violet-400',
-  lab:         'bg-cyan-400',
+  prescription: 'bg-emerald-400',
+  lab:         'bg-emerald-400',
 };
 
 // ─── Component ────────────────────────────────────────────────────────────────

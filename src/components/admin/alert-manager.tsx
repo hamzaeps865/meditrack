@@ -20,7 +20,7 @@ interface AlertItem {
 }
 
 const severityConfig: Record<string, { bg: string; border: string; text: string; label: string }> = {
-  low:      { bg: 'bg-blue-50',    border: 'border-blue-200',    text: 'text-blue-700',    label: 'Low' },
+  low:      { bg: 'bg-emerald-50',    border: 'border-emerald-200',    text: 'text-emerald-700',    label: 'Low' },
   medium:   { bg: 'bg-amber-50',   border: 'border-amber-200',   text: 'text-amber-700',   label: 'Medium' },
   high:     { bg: 'bg-orange-50',  border: 'border-orange-200',  text: 'text-orange-700',  label: 'High' },
   critical: { bg: 'bg-rose-50',    border: 'border-rose-200',    text: 'text-rose-700',    label: 'Critical' },
@@ -179,7 +179,7 @@ export default function AlertManager({ alerts: initial }: { alerts: AlertItem[] 
                       </span>
                     )}
                     {alert.city ? (
-                      <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 flex items-center gap-0.5">
+                      <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 flex items-center gap-0.5">
                         <MapPin className="h-2.5 w-2.5" /> {alert.city}
                       </span>
                     ) : (

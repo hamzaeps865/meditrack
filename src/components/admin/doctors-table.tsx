@@ -37,12 +37,12 @@ interface Props {
 const PAGE_SIZE = 10;
 
 const avatarPalette = [
-  'bg-blue-100 text-blue-700',
-  'bg-violet-100 text-violet-700',
+  'bg-emerald-100 text-emerald-700',
+  'bg-emerald-100 text-emerald-700',
   'bg-amber-100 text-amber-700',
   'bg-emerald-100 text-emerald-700',
   'bg-rose-100 text-rose-700',
-  'bg-cyan-100 text-cyan-700',
+  'bg-emerald-100 text-emerald-700',
 ];
 
 function getInitials(name: string | null | undefined) {
@@ -115,7 +115,7 @@ export default function DoctorsTable({ doctors: initialDoctors }: Props) {
   }
 
   return (
-    <div className="min-h-full bg-[#f5f7fa]">
+    <div className="min-h-full bg-[#f0f7f3]">
 
       {/* ── Top bar ── */}
       <div className="bg-white border-b border-border px-6 py-3

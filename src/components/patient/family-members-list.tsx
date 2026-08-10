@@ -44,9 +44,9 @@ export default function FamilyMembersList({ members }: { members: Member[] }) {
   }
 
   const genderColor: Record<string, string> = {
-    male: 'bg-blue-100 text-blue-700',
+    male: 'bg-emerald-100 text-emerald-700',
     female: 'bg-pink-100 text-pink-700',
-    other: 'bg-violet-100 text-violet-700',
+    other: 'bg-emerald-100 text-emerald-700',
   };
 
   return (
@@ -81,7 +81,7 @@ export default function FamilyMembersList({ members }: { members: Member[] }) {
               <div key={m.id} className="bg-white rounded-2xl border border-border p-5 shadow-sm">
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 rounded-full bg-violet-100 text-violet-700 flex items-center justify-center text-sm font-bold shrink-0">
+                    <div className="h-10 w-10 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-sm font-bold shrink-0">
                       {m.name.split(' ').map((p) => p[0]).slice(0, 2).join('').toUpperCase()}
                     </div>
                     <div>

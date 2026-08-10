@@ -24,7 +24,7 @@ export default async function PatientLabResultsPage() {
   };
 
   return (
-    <div className="min-h-full bg-[#f5f7fa]">
+    <div className="min-h-full bg-[#f0f7f3]">
       <div className="bg-white border-b border-border px-6 py-3 flex items-center justify-between">
         <p className="text-sm font-semibold text-foreground">Lab Results</p>
         <NotificationBell />

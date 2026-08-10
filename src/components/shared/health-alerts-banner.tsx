@@ -17,7 +17,7 @@ interface AlertData {
 }
 
 const severityStyle: Record<string, { bg: string; border: string; icon: typeof ShieldAlert; iconColor: string }> = {
-  low:      { bg: 'bg-blue-50',     border: 'border-blue-300',     icon: Megaphone,   iconColor: 'text-blue-600' },
+  low:      { bg: 'bg-emerald-50',     border: 'border-emerald-300',     icon: Megaphone,   iconColor: 'text-emerald-700' },
   medium:   { bg: 'bg-amber-50',    border: 'border-amber-300',    icon: ShieldAlert, iconColor: 'text-amber-600' },
   high:     { bg: 'bg-orange-50',   border: 'border-orange-300',   icon: ShieldAlert, iconColor: 'text-orange-600' },
   critical: { bg: 'bg-rose-50',     border: 'border-rose-300',     icon: ShieldAlert, iconColor: 'text-rose-600' },

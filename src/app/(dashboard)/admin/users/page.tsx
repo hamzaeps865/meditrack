@@ -19,7 +19,7 @@ export default async function UsersPage() {
     <div>
       <div className="mb-6">
         <h1 className="text-2xl font-bold">User Management</h1>
-        <p className="text-gray-500 text-sm mt-1">
+        <p className="text-emerald-800/60 text-sm mt-1">
           {allUsers.length} registered users — assign roles to grant access
         </p>
       </div>
@@ -43,8 +43,8 @@ export default async function UsersPage() {
                     {user.name}
                   </div>
                 </TableCell>
-                <TableCell className="text-gray-500">{user.email}</TableCell>
-                <TableCell className="text-gray-500 text-sm">
+                <TableCell className="text-emerald-800/60">{user.email}</TableCell>
+                <TableCell className="text-emerald-800/60 text-sm">
                   {format(new Date(user.createdAt), 'MMM dd, yyyy')}
                 </TableCell>
                 <TableCell>

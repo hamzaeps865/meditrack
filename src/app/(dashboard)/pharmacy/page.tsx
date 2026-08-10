@@ -26,7 +26,7 @@ export default async function PharmacyDashboardPage() {
   const lowStockCount = inventory.filter((b) => b.quantityInStock <= 10).length;
 
   return (
-    <div className="min-h-full bg-[#f5f7fa]">
+    <div className="min-h-full bg-[#f0f7f3]">
       {/* Top bar */}
       <div className="bg-white border-b border-border px-6 py-3 flex items-center justify-between gap-4">
         <div className="flex items-center gap-3">
@@ -60,8 +60,8 @@ export default async function PharmacyDashboardPage() {
             <p className="text-xs text-muted-foreground mt-0.5">Pending Dispense</p>
           </div>
           <div className="bg-white rounded-2xl border border-border p-4 shadow-sm">
-            <div className="h-9 w-9 rounded-xl bg-blue-50 flex items-center justify-center mb-2">
-              <Package className="h-4 w-4 text-blue-600" />
+            <div className="h-9 w-9 rounded-xl bg-emerald-50 flex items-center justify-center mb-2">
+              <Package className="h-4 w-4 text-emerald-700" />
             </div>
             <p className="text-2xl font-bold text-foreground">{inventory.length}</p>
             <p className="text-xs text-muted-foreground mt-0.5">Stock Batches</p>

@@ -28,7 +28,7 @@ export default async function PatientReportPrintPage() {
   const generatedOn = format(new Date(), "MMMM d, yyyy 'at' h:mm a");
 
   return (
-    <div className="min-h-screen bg-white text-gray-900 p-8 print:p-0">
+    <div className="min-h-screen bg-white text-foreground p-8 print:p-0">
       <PrintTrigger />
 
       <style>{`
@@ -40,15 +40,15 @@ export default async function PatientReportPrintPage() {
 
       <div className="max-w-3xl mx-auto space-y-6">
         {/* Header */}
-        <div className="flex items-center justify-between border-b-2 border-gray-900 pb-4">
+        <div className="flex items-center justify-between border-b-2 border-emerald-900 pb-4">
           <div className="flex items-center gap-3">
-            <BriefcaseMedical className="h-8 w-8 text-blue-700" />
+            <BriefcaseMedical className="h-8 w-8 text-emerald-700" />
             <div>
               <h1 className="text-2xl font-bold">MediTrack</h1>
-              <p className="text-xs text-gray-500">Health Report</p>
+              <p className="text-xs text-emerald-800/60">Health Report</p>
             </div>
           </div>
-          <div className="text-right text-xs text-gray-500">
+          <div className="text-right text-xs text-emerald-800/60">
             <p>Generated: {generatedOn}</p>
             <p>Report ID: {patientRow.id.slice(0, 8).toUpperCase()}</p>
           </div>
@@ -57,17 +57,17 @@ export default async function PatientReportPrintPage() {
         {/* Patient info */}
         <div className="grid grid-cols-2 gap-4 text-sm">
           <div>
-            <p className="text-xs font-bold uppercase text-gray-500 mb-1">Patient</p>
+            <p className="text-xs font-bold uppercase text-emerald-800/60 mb-1">Patient</p>
             <p className="font-semibold">{patientRow.name}</p>
-            <p className="text-gray-600">
+            <p className="text-muted-foreground">
               {patientRow.dob ? `DOB: ${patientRow.dob}` : ''}
               {patientRow.gender ? ` · ${patientRow.gender}` : ''}
             </p>
           </div>
           <div>
-            <p className="text-xs font-bold uppercase text-gray-500 mb-1">Contact</p>
-            <p className="text-gray-600">{patientRow.phone}</p>
-            <p className="text-gray-600">
+            <p className="text-xs font-bold uppercase text-emerald-800/60 mb-1">Contact</p>
+            <p className="text-muted-foreground">{patientRow.phone}</p>
+            <p className="text-muted-foreground">
               {patientRow.bloodGroup ? `Blood: ${patientRow.bloodGroup}` : ''}
               {patientRow.allergies ? ` · Allergies: ${patientRow.allergies}` : ''}
             </p>
@@ -83,9 +83,9 @@ export default async function PatientReportPrintPage() {
               { label: 'Visits', value: reportData.visits.length },
               { label: 'Prescriptions', value: reportData.prescriptions.length },
             ].map((s) => (
-              <div key={s.label} className="border border-gray-200 rounded p-2">
+              <div key={s.label} className="border border-emerald-100 rounded p-2">
                 <p className="text-xl font-bold">{s.value}</p>
-                <p className="text-[10px] uppercase text-gray-500">{s.label}</p>
+                <p className="text-[10px] uppercase text-emerald-800/60">{s.label}</p>
               </div>
             ))}
           </div>
@@ -94,10 +94,10 @@ export default async function PatientReportPrintPage() {
         {/* Health score */}
         {healthScore && (
           <div>
-            <h2 className="text-sm font-bold uppercase text-gray-500 mb-2">Health Score</h2>
-            <div className="border border-gray-200 rounded p-3">
-              <span className="text-2xl font-bold text-blue-700">{healthScore.total}</span>
-              <span className="text-sm text-gray-600 ml-2">points · {healthScore.tier.name} Tier</span>
+            <h2 className="text-sm font-bold uppercase text-emerald-800/60 mb-2">Health Score</h2>
+            <div className="border border-emerald-100 rounded p-3">
+              <span className="text-2xl font-bold text-emerald-700">{healthScore.total}</span>
+              <span className="text-sm text-muted-foreground ml-2">points · {healthScore.tier.name} Tier</span>
             </div>
           </div>
         )}
@@ -105,12 +105,12 @@ export default async function PatientReportPrintPage() {
         {/* Visits */}
         {reportData && reportData.visits.length > 0 && (
           <div>
-            <h2 className="text-sm font-bold uppercase text-gray-500 mb-2 border-b border-gray-200 pb-1">
+            <h2 className="text-sm font-bold uppercase text-emerald-800/60 mb-2 border-b border-emerald-100 pb-1">
               Visit History ({reportData.visits.length})
             </h2>
             <table className="w-full text-xs border-collapse">
               <thead>
-                <tr className="border-b border-gray-300 text-left">
+                <tr className="border-b border-emerald-200 text-left">
                   <th className="py-1.5 pr-2">Date</th>
                   <th className="py-1.5 pr-2">Doctor</th>
                   <th className="py-1.5 pr-2">Complaint</th>
@@ -120,12 +120,12 @@ export default async function PatientReportPrintPage() {
               </thead>
               <tbody>
                 {reportData.visits.map((v) => (
-                  <tr key={v.id} className="border-b border-gray-100 align-top">
+                  <tr key={v.id} className="border-b border-emerald-50 align-top">
                     <td className="py-1.5 pr-2 whitespace-nowrap">{format(new Date(v.createdAt), 'MMM d, yyyy')}</td>
                     <td className="py-1.5 pr-2">{v.doctorName ?? '—'}</td>
                     <td className="py-1.5 pr-2">{v.chiefComplaint ?? '—'}</td>
                     <td className="py-1.5 pr-2">{v.diagnosis ?? '—'}</td>
-                    <td className="py-1.5 text-gray-600">
+                    <td className="py-1.5 text-muted-foreground">
                       {[v.vitalsBp, v.vitalsTemp, v.vitalsWeight].filter(Boolean).join(' / ') || '—'}
                     </td>
                   </tr>
@@ -138,19 +138,19 @@ export default async function PatientReportPrintPage() {
         {/* Prescriptions */}
         {reportData && reportData.prescriptions.length > 0 && (
           <div>
-            <h2 className="text-sm font-bold uppercase text-gray-500 mb-2 border-b border-gray-200 pb-1">
+            <h2 className="text-sm font-bold uppercase text-emerald-800/60 mb-2 border-b border-emerald-100 pb-1">
               Prescriptions ({reportData.prescriptions.length})
             </h2>
             <div className="space-y-3">
               {reportData.prescriptions.map((rx) => (
-                <div key={rx.id} className="border border-gray-200 rounded p-2 text-xs">
-                  <div className="flex justify-between border-b border-gray-100 pb-1 mb-1.5">
+                <div key={rx.id} className="border border-emerald-100 rounded p-2 text-xs">
+                  <div className="flex justify-between border-b border-emerald-50 pb-1 mb-1.5">
                     <span className="font-semibold">Dr. {rx.doctorName ?? 'Unknown'}</span>
-                    <span className="text-gray-500">{format(new Date(rx.createdAt), 'MMM d, yyyy')}</span>
+                    <span className="text-emerald-800/60">{format(new Date(rx.createdAt), 'MMM d, yyyy')}</span>
                   </div>
                   <table className="w-full">
                     <thead>
-                      <tr className="text-left text-gray-500">
+                      <tr className="text-left text-emerald-800/60">
                         <th className="py-0.5 pr-2">Medicine</th>
                         <th className="py-0.5 pr-2">Dosage</th>
                         <th className="py-0.5 pr-2">Frequency</th>
@@ -159,7 +159,7 @@ export default async function PatientReportPrintPage() {
                     </thead>
                     <tbody>
                       {rx.items.map((item) => (
-                        <tr key={item.id} className="border-t border-gray-50">
+                        <tr key={item.id} className="border-t border-emerald-50">
                           <td className="py-0.5 pr-2">{item.medicineName}</td>
                           <td className="py-0.5 pr-2">{item.dosage}</td>
                           <td className="py-0.5 pr-2">{item.frequency}</td>
@@ -175,7 +175,7 @@ export default async function PatientReportPrintPage() {
         )}
 
         {/* Footer */}
-        <div className="border-t border-gray-200 pt-4 text-center text-[10px] text-gray-400">
+        <div className="border-t border-emerald-100 pt-4 text-center text-[10px] text-muted-foreground">
           <p>This report was generated by MediTrack. It is a summary of records stored in the system</p>
           <p>and does not replace a doctor&apos;s assessment. · {generatedOn}</p>
         </div>

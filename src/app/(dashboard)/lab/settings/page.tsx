@@ -21,10 +21,10 @@ export default async function LabSettingsPage() {
   if (!userRow) redirect('/login');
 
   return (
-    <div className="min-h-full bg-[#f5f7fa]">
+    <div className="min-h-full bg-[#f0f7f3]">
       <div className="bg-white border-b border-border px-6 py-3 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <FlaskConical className="h-4 w-4 text-cyan-600" />
+          <FlaskConical className="h-4 w-4 text-emerald-700" />
           <p className="text-sm font-semibold text-foreground">Lab Settings</p>
         </div>
         <NotificationBell />

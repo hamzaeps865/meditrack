@@ -20,7 +20,7 @@ export default async function PatientLabReportPage({ params }: { params: Promise
   if (!order || !order.result) redirect('/patient/lab-results');
 
   return (
-    <div className="min-h-full bg-[#f5f7fa]">
+    <div className="min-h-full bg-[#f0f7f3]">
       <div className="bg-white border-b border-border px-6 py-3 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Link href="/patient/lab-results" className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline">

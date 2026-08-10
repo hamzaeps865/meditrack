@@ -53,7 +53,7 @@ export default function DrugCheckButton({
       <button
         type="button"
         onClick={handleCheck}
-        className="inline-flex items-center gap-1 text-xs font-semibold text-violet-600 hover:text-violet-700"
+        className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-700 hover:text-emerald-700"
       >
         <ShieldCheck className="h-3.5 w-3.5" />
         Check Drug Interactions
@@ -70,8 +70,8 @@ export default function DrugCheckButton({
           >
             <div className="flex items-center justify-between px-5 py-4 border-b border-border sticky top-0 bg-white">
               <div className="flex items-center gap-2">
-                <div className={`h-7 w-7 rounded-full flex items-center justify-center ${hasWarning ? 'bg-amber-100' : 'bg-violet-100'}`}>
-                  {hasWarning ? <AlertTriangle className="h-3.5 w-3.5 text-amber-600" /> : <ShieldCheck className="h-3.5 w-3.5 text-violet-600" />}
+                <div className={`h-7 w-7 rounded-full flex items-center justify-center ${hasWarning ? 'bg-amber-100' : 'bg-emerald-100'}`}>
+                  {hasWarning ? <AlertTriangle className="h-3.5 w-3.5 text-amber-600" /> : <ShieldCheck className="h-3.5 w-3.5 text-emerald-700" />}
                 </div>
                 <h3 className="text-sm font-bold text-foreground">AI Drug Interaction Check</h3>
               </div>

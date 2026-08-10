@@ -29,12 +29,12 @@ function calcAge(dob: string | null | undefined) {
 }
 
 const statusStyles: Record<string, string> = {
-  scheduled:   'bg-blue-50 text-blue-700',
+  scheduled:   'bg-emerald-50 text-emerald-700',
   checked_in:  'bg-amber-50 text-amber-700',
   in_progress: 'bg-orange-50 text-orange-700',
   completed:   'bg-emerald-50 text-emerald-700',
   cancelled:   'bg-red-50 text-red-600',
-  no_show:     'bg-gray-100 text-gray-500',
+  no_show:     'bg-muted text-emerald-800/60',
 };
 
 const statusLabels: Record<string, string> = {
@@ -163,7 +163,7 @@ export default async function DoctorPatientDetailPage({
   const doctorName = session.user.name ?? 'Doctor';
 
   return (
-    <div className="min-h-full bg-[#f5f7fa]">
+    <div className="min-h-full bg-[#f0f7f3]">
 
       {/* ── Top bar ── */}
       <div className="bg-white border-b border-border px-6 py-3
@@ -223,7 +223,7 @@ export default async function DoctorPatientDetailPage({
                 )}
               </p>
               {managerName && (
-                <p className="text-xs text-violet-600 mt-1.5 flex items-center gap-1">
+                <p className="text-xs text-emerald-700 mt-1.5 flex items-center gap-1">
                   👤 Managed by <strong>{managerName}</strong> (family head)
                 </p>
               )}
@@ -329,7 +329,7 @@ export default async function DoctorPatientDetailPage({
 
             {/* Patient summary card */}
             <div className="rounded-2xl p-4 text-white"
-              style={{ backgroundColor: '#1E3A5F' }}>
+              style={{ backgroundColor: '#01411C' }}>
               <p className="text-[10px] font-semibold uppercase tracking-widest
                 text-white/60 mb-3">
                 My Patient Summary

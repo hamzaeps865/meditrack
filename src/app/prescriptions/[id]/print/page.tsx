@@ -20,7 +20,7 @@ export default async function PrescriptionPrintPage({ params }: { params: Promis
     data = await getPrescriptionForPrint(id);
   } catch {
     return (
-      <div className="min-h-screen flex items-center justify-center text-gray-500">
+      <div className="min-h-screen flex items-center justify-center text-emerald-800/60">
         <p className="text-sm">Prescription not found or you don&apos;t have access.</p>
       </div>
     );
@@ -32,7 +32,7 @@ export default async function PrescriptionPrintPage({ params }: { params: Promis
     : null;
 
   return (
-    <div className="min-h-screen bg-white text-gray-900 p-8 print:p-0">
+    <div className="min-h-screen bg-white text-foreground p-8 print:p-0">
       <PrintTrigger />
 
       <style>{`
@@ -44,15 +44,15 @@ export default async function PrescriptionPrintPage({ params }: { params: Promis
 
       <div className="max-w-2xl mx-auto space-y-5">
         {/* Header */}
-        <div className="flex items-center justify-between border-b-2 border-gray-900 pb-4">
+        <div className="flex items-center justify-between border-b-2 border-emerald-900 pb-4">
           <div className="flex items-center gap-3">
-            <BriefcaseMedical className="h-8 w-8 text-blue-700" />
+            <BriefcaseMedical className="h-8 w-8 text-emerald-700" />
             <div>
               <h1 className="text-2xl font-bold">MediTrack</h1>
-              <p className="text-xs text-gray-500">Medical Prescription</p>
+              <p className="text-xs text-emerald-800/60">Medical Prescription</p>
             </div>
           </div>
-          <div className="text-right text-xs text-gray-500">
+          <div className="text-right text-xs text-emerald-800/60">
             <p>Rx #: {data.prescriptionId.slice(0, 8).toUpperCase()}</p>
             <p>{format(new Date(data.prescriptionCreatedAt), 'MMM d, yyyy')}</p>
           </div>
@@ -61,77 +61,77 @@ export default async function PrescriptionPrintPage({ params }: { params: Promis
         {/* Doctor info */}
         <div className="flex items-center justify-between text-sm">
           <div>
-            <p className="text-xs font-bold uppercase text-gray-500 mb-1">Prescribed By</p>
-            <p className="font-semibold text-gray-900">Dr. {data.doctor.name ?? 'Unknown'}</p>
+            <p className="text-xs font-bold uppercase text-emerald-800/60 mb-1">Prescribed By</p>
+            <p className="font-semibold text-foreground">Dr. {data.doctor.name ?? 'Unknown'}</p>
             {data.doctor.specialization && (
-              <p className="text-gray-600">{data.doctor.specialization}</p>
+              <p className="text-muted-foreground">{data.doctor.specialization}</p>
             )}
           </div>
           <div className="text-right">
-            <p className="text-xs font-bold uppercase text-gray-500 mb-1">Date</p>
-            <p className="font-semibold text-gray-900">{format(new Date(data.visitCreatedAt), 'EEEE, MMM d, yyyy')}</p>
+            <p className="text-xs font-bold uppercase text-emerald-800/60 mb-1">Date</p>
+            <p className="font-semibold text-foreground">{format(new Date(data.visitCreatedAt), 'EEEE, MMM d, yyyy')}</p>
           </div>
         </div>
 
         {/* Patient info */}
-        <div className="grid grid-cols-2 gap-4 border-t border-gray-200 pt-4 text-sm">
+        <div className="grid grid-cols-2 gap-4 border-t border-emerald-100 pt-4 text-sm">
           <div>
-            <p className="text-xs font-bold uppercase text-gray-500 mb-1">Patient</p>
-            <p className="font-semibold text-gray-900">{data.patient.name}</p>
-            <p className="text-gray-600 capitalize">
+            <p className="text-xs font-bold uppercase text-emerald-800/60 mb-1">Patient</p>
+            <p className="font-semibold text-foreground">{data.patient.name}</p>
+            <p className="text-muted-foreground capitalize">
               {data.patient.gender}{age !== null ? ` · ${age} yrs` : ''}
               {data.patient.bloodGroup ? ` · ${data.patient.bloodGroup}` : ''}
             </p>
           </div>
           <div>
-            <p className="text-xs font-bold uppercase text-gray-500 mb-1">Contact</p>
-            <p className="text-gray-600">{data.patient.phone}</p>
+            <p className="text-xs font-bold uppercase text-emerald-800/60 mb-1">Contact</p>
+            <p className="text-muted-foreground">{data.patient.phone}</p>
           </div>
         </div>
 
         {/* Diagnosis */}
         {data.diagnosis && (
-          <div className="border-t border-gray-200 pt-4">
-            <p className="text-xs font-bold uppercase text-gray-500 mb-1">Diagnosis</p>
-            <p className="text-sm text-gray-900">{data.diagnosis}</p>
+          <div className="border-t border-emerald-100 pt-4">
+            <p className="text-xs font-bold uppercase text-emerald-800/60 mb-1">Diagnosis</p>
+            <p className="text-sm text-foreground">{data.diagnosis}</p>
           </div>
         )}
 
         {/* Chief complaint */}
         {data.chiefComplaint && (
           <div>
-            <p className="text-xs font-bold uppercase text-gray-500 mb-1">Chief Complaint</p>
-            <p className="text-sm text-gray-900">{data.chiefComplaint}</p>
+            <p className="text-xs font-bold uppercase text-emerald-800/60 mb-1">Chief Complaint</p>
+            <p className="text-sm text-foreground">{data.chiefComplaint}</p>
           </div>
         )}
 
         {/* Rx symbol + medicines */}
-        <div className="border-t-2 border-gray-900 pt-4">
-          <p className="text-3xl font-serif font-bold text-gray-900 mb-3">℞</p>
+        <div className="border-t-2 border-emerald-900 pt-4">
+          <p className="text-3xl font-serif font-bold text-foreground mb-3">℞</p>
 
           {data.items.length === 0 ? (
-            <p className="text-sm text-gray-500 italic">No medicines prescribed.</p>
+            <p className="text-sm text-emerald-800/60 italic">No medicines prescribed.</p>
           ) : (
             <table className="w-full text-sm border-collapse">
               <thead>
-                <tr className="border-b-2 border-gray-300 text-left">
-                  <th className="py-2 pr-3 font-semibold text-gray-700">#</th>
-                  <th className="py-2 pr-3 font-semibold text-gray-700">Medicine</th>
-                  <th className="py-2 pr-3 font-semibold text-gray-700">Dosage</th>
-                  <th className="py-2 pr-3 font-semibold text-gray-700">Frequency</th>
-                  <th className="py-2 pr-3 font-semibold text-gray-700">Duration</th>
-                  <th className="py-2 font-semibold text-gray-700">Notes</th>
+                <tr className="border-b-2 border-emerald-200 text-left">
+                  <th className="py-2 pr-3 font-semibold text-foreground">#</th>
+                  <th className="py-2 pr-3 font-semibold text-foreground">Medicine</th>
+                  <th className="py-2 pr-3 font-semibold text-foreground">Dosage</th>
+                  <th className="py-2 pr-3 font-semibold text-foreground">Frequency</th>
+                  <th className="py-2 pr-3 font-semibold text-foreground">Duration</th>
+                  <th className="py-2 font-semibold text-foreground">Notes</th>
                 </tr>
               </thead>
               <tbody>
                 {data.items.map((item, i) => (
-                  <tr key={item.id} className="border-b border-gray-100 align-top">
-                    <td className="py-2 pr-3 text-gray-500">{i + 1}</td>
-                    <td className="py-2 pr-3 font-medium text-gray-900">{item.medicineName}</td>
-                    <td className="py-2 pr-3 text-gray-700">{item.dosage}</td>
-                    <td className="py-2 pr-3 text-gray-700">{item.frequency}</td>
-                    <td className="py-2 pr-3 text-gray-700">{item.duration}</td>
-                    <td className="py-2 text-gray-500">{item.notes || '—'}</td>
+                  <tr key={item.id} className="border-b border-emerald-50 align-top">
+                    <td className="py-2 pr-3 text-emerald-800/60">{i + 1}</td>
+                    <td className="py-2 pr-3 font-medium text-foreground">{item.medicineName}</td>
+                    <td className="py-2 pr-3 text-foreground">{item.dosage}</td>
+                    <td className="py-2 pr-3 text-foreground">{item.frequency}</td>
+                    <td className="py-2 pr-3 text-foreground">{item.duration}</td>
+                    <td className="py-2 text-emerald-800/60">{item.notes || '—'}</td>
                   </tr>
                 ))}
               </tbody>
@@ -141,15 +141,15 @@ export default async function PrescriptionPrintPage({ params }: { params: Promis
 
         {/* Signature line */}
         <div className="pt-12">
-          <div className="border-t border-gray-400 w-64 ml-auto"></div>
-          <p className="text-xs text-gray-500 text-right mt-1 w-64 ml-auto">
+          <div className="border-t border-emerald-300 w-64 ml-auto"></div>
+          <p className="text-xs text-emerald-800/60 text-right mt-1 w-64 ml-auto">
             Dr. {data.doctor.name ?? '—'}
             {data.doctor.specialization ? ` · ${data.doctor.specialization}` : ''}
           </p>
         </div>
 
         {/* Footer */}
-        <div className="border-t border-gray-200 pt-4 text-center text-[10px] text-gray-400">
+        <div className="border-t border-emerald-100 pt-4 text-center text-[10px] text-muted-foreground">
           <p>This prescription was generated by MediTrack on {generatedOn}.</p>
           <p>Verify all medicines with a licensed pharmacist before use.</p>
         </div>

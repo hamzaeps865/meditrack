@@ -140,7 +140,7 @@ export default function PatientBookingForm({
   }
 
   return (
-    <div className="min-h-full bg-[#f5f7fa]">
+    <div className="min-h-full bg-[#f0f7f3]">
 
       {/* Top bar */}
       <div className="bg-white border-b border-border px-6 py-3
@@ -347,7 +347,7 @@ export default function PatientBookingForm({
                 className="h-11 px-8 rounded-xl text-sm font-bold text-white
                   hover:opacity-90 transition-all disabled:opacity-50
                   disabled:cursor-not-allowed flex items-center gap-2"
-                style={{ backgroundColor: '#1E3A5F' }}
+                style={{ backgroundColor: '#01411C' }}
               >
                 {isPending && <Loader2 className="h-4 w-4 animate-spin" />}
                 Confirm Booking
