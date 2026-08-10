@@ -3,7 +3,7 @@ import { db } from '@/server/db';
 import { patients } from '@/server/db/schema';
 import { and, eq, isNull } from 'drizzle-orm';
 
-type Role = 'admin' | 'doctor' | 'receptionist' | 'patient' | 'nurse' | 'pharmacist';
+type Role = 'admin' | 'doctor' | 'receptionist' | 'patient' | 'nurse' | 'pharmacist' | 'lab';
 
 export class UnauthorizedError extends Error {
   constructor(message = 'Unauthorized') {

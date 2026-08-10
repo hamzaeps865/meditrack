@@ -15,3 +15,4 @@ export * from './invoices';
 export * from './medication-reminders';
 export * from './pharmacy';
 export * from './otp-codes';
+export * from './lab-test-catalog';

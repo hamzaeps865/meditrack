@@ -213,7 +213,7 @@ export async function getPharmacySummary() {
     .from(medicines);
 
   const [stockValue] = await db
-    .select({ total: sql<number>`coalesce(sum(${medicineInventory.quantityInStock} * ${medicineInventory.costPriceCents}), 0)` })
+    .select({ total: sql<number>`coalesce(sum(${medicineInventory.quantityInStock}::bigint * ${medicineInventory.costPriceCents}::bigint), 0)::numeric` })
     .from(medicineInventory);
 
   const lowStock = await getLowStockAlerts();

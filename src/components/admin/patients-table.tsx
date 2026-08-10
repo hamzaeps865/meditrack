@@ -1,6 +1,9 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useTransition } from 'react';
+import { useRouter } from 'next/navigation';
+import { softDeletePatient } from '@/server/actions/patients.actions';
+import { toast } from 'sonner';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import {
@@ -92,6 +95,8 @@ export default function PatientsTable({
   const [page,        setPage]        = useState(1);
   const [openMenu,    setOpenMenu]    = useState<string | null>(null);
   const [showModal,   setShowModal]   = useState(false);
+  const [isPending, startTransition] = useTransition();
+  const router = useRouter();
 
   const total = initialPatients.length;
 
@@ -400,7 +405,20 @@ export default function PatientsTable({
                           <button
                             type="button"
                             className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50"
-                            onClick={() => setOpenMenu(null)}
+                            onClick={() => {
+                              setOpenMenu(null);
+                              if (confirm(`Deactivate patient ${p.name}? They will be marked as inactive.`)) {
+                                startTransition(async () => {
+                                  try {
+                                    await softDeletePatient(p.id);
+                                    toast.success('Patient deactivated.');
+                                    router.refresh();
+                                  } catch (err) {
+                                    toast.error(err instanceof Error ? err.message : 'Failed to deactivate.');
+                                  }
+                                });
+                              }
+                            }}
                           >
                             Deactivate
                           </button>

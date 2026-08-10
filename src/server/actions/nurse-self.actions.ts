@@ -19,14 +19,14 @@ const changePasswordSchema = z.object({
 });
 
 export async function updateOwnNurseProfile(input: unknown) {
-  const session = await requireRole(['nurse', 'admin', 'pharmacist']);
+  const session = await requireRole(['nurse', 'admin', 'pharmacist', 'lab']);
   const data = updateProfileSchema.parse(input);
   await db.update(users).set({ name: data.name }).where(eq(users.id, session.user.id));
   return { success: true };
 }
 
 export async function changeOwnNursePassword(input: unknown) {
-  const session = await requireRole(['nurse', 'admin', 'pharmacist']);
+  const session = await requireRole(['nurse', 'admin', 'pharmacist', 'lab']);
   const { currentPassword, newPassword } = changePasswordSchema.parse(input);
 
   const [userRow] = await db

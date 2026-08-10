@@ -8,6 +8,7 @@ const roleHomeMap: Record<string, string> = {
   patient: '/patient',
   nurse: '/nurse',
   pharmacist: '/pharmacy',
+  lab: '/lab',
 };
 
 export default auth((req) => {
@@ -37,5 +38,5 @@ export default auth((req) => {
 });
 
 export const config = {
-  matcher: ['/admin/:path*', '/doctor/:path*', '/receptionist/:path*', '/patient/:path*', '/nurse/:path*', '/pharmacy/:path*', '/login', '/register'],
+  matcher: ['/admin/:path*', '/doctor/:path*', '/receptionist/:path*', '/patient/:path*', '/nurse/:path*', '/pharmacy/:path*', '/lab/:path*', '/login', '/register'],
 };
