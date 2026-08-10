@@ -30,6 +30,7 @@ interface Props {
   patientId:   string;
   patientName: string;
   doctors:     Doctor[];
+  bookedSlots?: Record<string, string[]>;
 }
 
 // ─── Day helpers ──────────────────────────────────────────────────────────────
@@ -87,7 +88,7 @@ function fmtSlot(t: string) {
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export default function PatientBookingForm({
-  patientId, patientName, doctors,
+  patientId, patientName, doctors, bookedSlots = {},
 }: Props) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -101,6 +102,16 @@ export default function PatientBookingForm({
 
   const selectedDoctor = doctors.find((d) => d.id === doctorId);
   const slots = buildSlots(selectedDoctor?.availability ?? [], date);
+
+  // Check which slots are already booked for this doctor on this date
+  const doctorBookedSlots = bookedSlots[doctorId] ?? [];
+  function isSlotBooked(slotTime: string): boolean {
+    // Build the same key format the server uses: "YYYY-MM-DDTHH:MM"
+    return doctorBookedSlots.includes(`${date}T${slotTime}`);
+  }
+
+  const availableSlots = slots.filter((s) => !isSlotBooked(s));
+  const bookedCount = slots.length - availableSlots.length;
 
   const isDoctorUnavailableOnDate =
     date !== '' && selectedDoctor !== undefined && slots.length === 0;
@@ -264,25 +275,39 @@ export default function PatientBookingForm({
                     Available Time Slots
                   </label>
                   <span className="text-xs text-muted-foreground">
-                    {slots.length} slot{slots.length !== 1 ? 's' : ''} available
+                    {availableSlots.length} available{bookedCount > 0 ? ` · ${bookedCount} booked` : ''}
                   </span>
                 </div>
-                <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
-                  {slots.map((s) => (
-                    <button
-                      key={s}
-                      type="button"
-                      onClick={() => setSlot(s)}
-                      className={`h-10 rounded-xl text-xs font-semibold border
-                        transition-colors
-                        ${slot === s
-                          ? 'bg-primary text-primary-foreground border-primary shadow-sm'
-                          : 'bg-white text-foreground border-border hover:border-primary/40'}`}
-                    >
-                      {fmtSlot(s)}
-                    </button>
-                  ))}
-                </div>
+                {availableSlots.length === 0 ? (
+                  <div className="rounded-xl bg-amber-50 border border-amber-200 px-4 py-3 text-center">
+                    <p className="text-xs text-amber-700 font-medium">
+                      All time slots for this date are fully booked. Please select a different date.
+                    </p>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
+                    {slots.map((s) => {
+                      const booked = isSlotBooked(s);
+                      return (
+                        <button
+                          key={s}
+                          type="button"
+                          onClick={() => !booked && setSlot(s)}
+                          disabled={booked}
+                          className={`h-10 rounded-xl text-xs font-semibold border
+                            transition-colors
+                            ${booked
+                              ? 'bg-muted text-muted-foreground/40 border-muted cursor-not-allowed line-through'
+                              : slot === s
+                                ? 'bg-primary text-primary-foreground border-primary shadow-sm'
+                                : 'bg-white text-foreground border-border hover:border-primary/40'}`}
+                        >
+                          {fmtSlot(s)}
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
             )}
 
