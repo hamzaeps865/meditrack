@@ -125,6 +125,9 @@ export default async function TriagePage({ params }: { params: Promise<{ appoint
             appointmentId={appointmentId}
             patientId={appt.patientId}
             patientName={appt.patientName}
+            patientAge={age}
+            patientGender={appt.patientGender}
+            patientAllergies={appt.patientAllergies ?? undefined}
           />
         </div>
       </div>
