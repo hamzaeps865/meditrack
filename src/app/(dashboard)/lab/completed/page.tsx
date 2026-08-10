@@ -28,7 +28,7 @@ export default async function LabCompletedPage() {
     <p className="text-sm text-muted-foreground mb-6">{completed.length} tests completed</p>
 
     {completed.length === 0 ? (
-     <div className="bg-white border border-border p-12 text-center shadow-sm">
+    <div className="premium-card p-12 text-center">
       <FlaskConical className="h-10 w-10 text-muted-foreground opacity-20 mx-auto mb-3" />
       <p className="text-sm font-medium text-foreground">No completed tests yet</p>
      </div>

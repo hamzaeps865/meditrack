@@ -306,7 +306,7 @@ export default function VisitForm({
    )}
 
    {/* ── Patient Vitals ── */}
-   <section className="bg-white border border-border p-5 shadow-sm">
+  <section className="premium-card premium-card-pad">
     <div className="flex items-center gap-2 mb-4">
      <span className="text-base">🩺</span>
      <h2 className="text-xs font-bold uppercase tracking-widest text-foreground">
@@ -341,7 +341,7 @@ export default function VisitForm({
    </section>
 
    {/* ── Clinical Documentation ── */}
-   <section className="bg-white border border-border p-5 shadow-sm">
+  <section className="premium-card premium-card-pad">
     <div className="flex items-center gap-2 mb-4">
      <span className="text-base">📋</span>
      <h2 className="text-xs font-bold uppercase tracking-widest text-foreground">
@@ -416,7 +416,7 @@ export default function VisitForm({
    </section>
 
    {/* ── Prescriptions ── */}
-   <section className="bg-white border border-border p-5 shadow-sm">
+  <section className="premium-card premium-card-pad">
     <div className="flex items-center justify-between mb-4">
      <div className="flex items-center gap-2">
       <span className="text-base">💊</span>
@@ -539,7 +539,7 @@ export default function VisitForm({
 
    {/* ── Lab Orders ── */}
    {!isReadOnly && (
-    <section className="bg-white border border-border p-5 shadow-sm">
+    <section className="premium-card premium-card-pad">
      <div className="flex items-center justify-between mb-4">
       <div className="flex items-center gap-2">
        <FlaskConical className="h-4 w-4 text-primary" />
@@ -597,7 +597,7 @@ export default function VisitForm({
 
    {/* ── Follow-up scheduling ── */}
    {!isReadOnly && canComplete && (
-    <section className="bg-white border border-border p-5 shadow-sm">
+    <section className="premium-card premium-card-pad">
      <label className="flex items-center gap-3 cursor-pointer mb-3">
       <input
        type="checkbox"
@@ -626,7 +626,7 @@ export default function VisitForm({
    {/* ── Footer action bar ── */}
    {!isReadOnly && (
     <div className="sticky bottom-0 -mx-6 px-6 py-3
-     bg-white/95 backdrop-blur border-t border-border
+     bg-card/95 backdrop-blur border-t border-border
      flex items-center justify-between gap-4">
      <p className="text-xs text-muted-foreground flex items-center gap-1.5">
       <span className="h-1.5 w-1.5 bg-emerald-500 inline-block" />

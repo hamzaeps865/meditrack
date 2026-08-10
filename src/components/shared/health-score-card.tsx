@@ -20,7 +20,7 @@ export function HealthScoreCard({
   : 100;
 
  return (
-  <div className={`bg-white border p-5 shadow-sm ${tier.ring} ring-1`}>
+    <div className={`premium-card premium-card-pad ${tier.ring} ring-1`}>
    <div className="flex items-center justify-between mb-4">
     <h3 className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
      Health Score

@@ -76,7 +76,7 @@ export default async function PatientReportsPage() {
        tier={healthScore.tier}
        next={healthScore.next}
       />
-      <div className="bg-white border border-border p-5 shadow-sm flex flex-col justify-center">
+    <div className="premium-card premium-card-pad flex flex-col justify-center">
        <h3 className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-3">
         Loyalty Status
        </h3>
@@ -200,7 +200,7 @@ function StatTile({ icon: Icon, label, value, color, bg }: { icon: typeof Calend
 
 function Section({ icon: Icon, title, children }: { icon: typeof Calendar; title: string; children: React.ReactNode }) {
  return (
-  <div className="bg-white border border-border p-5 shadow-sm">
+    <div className="premium-card premium-card-pad">
    <div className="flex items-center gap-2 mb-4">
     <Icon className="h-4 w-4 text-primary" />
     <h2 className="text-sm font-bold text-foreground">{title}</h2>

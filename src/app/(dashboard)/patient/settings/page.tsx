@@ -85,7 +85,7 @@ export default async function PatientSettingsPage() {
 
     {/* Profile summary card */}
     {patientRow && (
-     <div className="bg-white border border-border p-5 shadow-sm mb-5">
+    <div className="premium-card premium-card-pad mb-5">
       <div className="flex items-center gap-4">
        <PhotoUpload
         name={userRow?.name ?? patientRow.name}

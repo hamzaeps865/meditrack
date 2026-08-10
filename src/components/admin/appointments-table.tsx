@@ -519,7 +519,7 @@ export default function AppointmentsTable({
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
      {/* Doctor Utilization */}
-     <div className="bg-white border border-border p-5 shadow-sm">
+    <div className="premium-card premium-card-pad">
       <div className="flex items-center justify-between mb-4">
        <h3 className="text-sm font-bold text-foreground">Doctor Utilization</h3>
        <button type="button"
@@ -569,7 +569,7 @@ export default function AppointmentsTable({
      </div>
 
      {/* Efficiency Insight */}
-     <div className=" p-6 flex flex-col justify-between text-white"
+    <div className="premium-card premium-card-pad flex flex-col justify-between text-white"
       style={{ backgroundColor: '#01411C' }}>
       <div>
        <div className="h-9 w-9 bg-white/10 flex items-center

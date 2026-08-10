@@ -318,7 +318,7 @@ export default async function ReceptionistDashboardPage() {
      <div className="space-y-6">
 
       {/* Quick Action Shortcuts */}
-      <div className="bg-white border border-border p-5 shadow-sm space-y-3">
+      <div className="premium-card premium-card-pad space-y-3">
        <h3 className="text-sm font-bold text-foreground flex items-center gap-2 mb-2">
         <Sparkles className="h-4 w-4 text-amber-500" />
         Quick Actions
@@ -353,7 +353,7 @@ export default async function ReceptionistDashboardPage() {
       </div>
 
       {/* Today's Doctor Roster */}
-      <div className="bg-white border border-border shadow-sm overflow-hidden">
+      <div className="premium-card overflow-hidden">
        <div className="px-5 py-4 border-b border-border flex items-center justify-between">
         <div className="flex items-center gap-2">
          <Stethoscope className="h-4 w-4 text-primary" />
@@ -413,7 +413,7 @@ function MetricCard({
  color: string; bg: string; highlight?: boolean;
 }) {
  return (
-  <div className={`bg-white border p-5 shadow-sm transition-all
+  <div className={`premium-card premium-card-pad transition-all
    ${highlight ? 'border-amber-300 ring-2 ring-amber-400/20' : 'border-border'}`}>
    <div className="flex items-center justify-between mb-3">
     <div className={`h-10 w-10 ${bg} flex items-center justify-center`}>
@@ -436,7 +436,7 @@ function ShortcutLink({
  return (
   <Link
    href={href}
-   className="flex items-center gap-3 p-3 border border-border bg-white
+   className="premium-card flex items-center gap-3 p-3
     hover:border-primary/30 hover:bg-muted/30 transition-all group"
   >
    <div className={`h-9 w-9 ${bg} flex items-center justify-center shrink-0`}>

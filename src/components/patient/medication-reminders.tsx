@@ -38,7 +38,7 @@ export default function MedicationReminders({ reminders }: { reminders: Reminder
  const overdue = reminders.filter((r) => isPast(new Date(r.nextDoseAt)));
 
  return (
-  <div className="bg-white border border-border p-5 shadow-sm">
+    <div className="premium-card premium-card-pad">
    <div className="flex items-center justify-between mb-4">
     <div className="flex items-center gap-2">
      <BellRing className="h-4 w-4 text-primary" />

@@ -78,7 +78,7 @@ export default function FamilyMembersList({ members }: { members: Member[] }) {
       const ageMs = Date.now() - new Date(m.dob).getTime();
       const age = Math.floor(ageMs / (365.25 * 24 * 60 * 60 * 1000));
       return (
-       <div key={m.id} className="bg-white border border-border p-5 shadow-sm">
+      <div key={m.id} className="premium-card premium-card-pad">
         <div className="flex items-start justify-between mb-3">
          <div className="flex items-center gap-3">
           <div className="h-10 w-10 bg-emerald-100 text-emerald-700 flex items-center justify-center text-sm font-bold shrink-0">

@@ -42,7 +42,7 @@ export default async function PatientDoctorsPage() {
         <Link
          key={doc.id}
          href={`/patient/doctors/${doc.id}`}
-         className="bg-white border border-border p-5 shadow-sm hover:shadow-md hover:border-primary/30 transition-all group"
+         className="premium-card-interactive premium-card-pad hover:border-primary/30 transition-all group"
         >
          <div className="flex items-start gap-4">
           <div className="h-12 w-12 bg-primary/10 text-primary flex items-center justify-center text-sm font-bold shrink-0">

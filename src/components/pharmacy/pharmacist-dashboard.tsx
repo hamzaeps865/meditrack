@@ -126,7 +126,7 @@ export default function PharmacistDashboard({
 
    {/* Pending queue */}
    {filtered.length === 0 ? (
-    <div className="bg-white border border-border p-12 text-center shadow-sm">
+    <div className="premium-card p-12 text-center">
      <Pill className="h-10 w-10 text-muted-foreground opacity-20 mx-auto mb-3" />
      <p className="text-sm font-medium text-foreground">
       {search ? 'No matching prescriptions found' : 'No pending prescriptions'}

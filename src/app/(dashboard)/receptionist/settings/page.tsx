@@ -73,7 +73,7 @@ export default async function ReceptionistSettingsPage() {
     </div>
 
     {/* ── Staff Summary Card ── */}
-    <div className="bg-white border border-border p-5 shadow-sm">
+    <div className="premium-card premium-card-pad">
      <div className="flex flex-wrap items-center justify-between gap-4">
       <div className="flex items-center gap-4">
        <div

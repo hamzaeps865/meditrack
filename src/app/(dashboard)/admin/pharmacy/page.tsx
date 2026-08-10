@@ -58,28 +58,28 @@ export default async function AdminPharmacyPage() {
 
     {/* Summary cards */}
     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-     <div className="bg-white border border-border p-5 shadow-sm">
+    <div className="premium-card premium-card-pad">
       <div className="h-10 w-10 bg-emerald-50 flex items-center justify-center mb-3">
        <Pill className="h-5 w-5 text-emerald-700" />
       </div>
       <p className="text-2xl font-bold text-foreground">{summary.totalMedicines}</p>
       <p className="text-xs text-muted-foreground mt-0.5">Medicines in Catalog</p>
      </div>
-     <div className="bg-white border border-border p-5 shadow-sm">
+    <div className="premium-card premium-card-pad">
       <div className="h-10 w-10 bg-emerald-50 flex items-center justify-center mb-3">
        <Package className="h-5 w-5 text-emerald-600" />
       </div>
       <p className="text-2xl font-bold text-foreground">{formatPrice(summary.stockValueCents)}</p>
       <p className="text-xs text-muted-foreground mt-0.5">Stock Value (cost)</p>
      </div>
-     <div className="bg-white border border-border p-5 shadow-sm">
+    <div className="premium-card premium-card-pad">
       <div className={`h-10 w-10 flex items-center justify-center mb-3 ${summary.lowStockCount > 0 ? 'bg-rose-50' : 'bg-muted'}`}>
        <AlertTriangle className={`h-5 w-5 ${summary.lowStockCount > 0 ? 'text-rose-600' : 'text-muted-foreground'}`} />
       </div>
       <p className="text-2xl font-bold text-foreground">{summary.lowStockCount}</p>
       <p className="text-xs text-muted-foreground mt-0.5">Low Stock</p>
      </div>
-     <div className="bg-white border border-border p-5 shadow-sm">
+    <div className="premium-card premium-card-pad">
       <div className={`h-10 w-10 flex items-center justify-center mb-3 ${summary.expiringCount > 0 ? 'bg-amber-50' : 'bg-muted'}`}>
        <Clock className={`h-5 w-5 ${summary.expiringCount > 0 ? 'text-amber-600' : 'text-muted-foreground'}`} />
       </div>

@@ -391,7 +391,7 @@ export default async function DoctorDashboard() {
     <div className="flex flex-col gap-4">
 
      {/* Quick Stats */}
-     <div className="bg-card border border-border p-5">
+    <div className="premium-card premium-card-pad">
       <div className="flex items-center justify-between mb-4">
        <h2 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
         Quick Stats
@@ -439,7 +439,7 @@ export default async function DoctorDashboard() {
      </div>
 
      {/* Doctor Rating & Recent Reviews */}
-     <div className="bg-card border border-border p-5">
+    <div className="premium-card premium-card-pad">
       <div className="flex items-center justify-between mb-3">
        <h2 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
         Patient Rating
@@ -483,7 +483,7 @@ export default async function DoctorDashboard() {
      </div>
 
      {/* Recent Patients */}
-     <div className="bg-card border border-border p-5">
+    <div className="premium-card premium-card-pad">
       <div className="flex items-center justify-between mb-4">
        <h2 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
         Recent Patients
@@ -531,7 +531,7 @@ export default async function DoctorDashboard() {
      </div>
 
      {/* Availability Summary */}
-     <div className="bg-card border border-border p-5">
+    <div className="premium-card premium-card-pad">
       <h2 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-4">
        Availability Summary
       </h2>

@@ -92,7 +92,7 @@ export default function DoctorSettingsForm({
  return (
   <div className="space-y-3 mb-4">
    {/* ── Profile Information ── */}
-   <div className="bg-white border border-border p-5 shadow-sm">
+    <div className="premium-card premium-card-pad">
     <div className="flex items-start gap-3 mb-4">
      <div className="h-9 w-9 bg-primary/8 flex items-center justify-center shrink-0 mt-0.5">
       <User className="h-4 w-4 text-primary" />
@@ -138,7 +138,7 @@ export default function DoctorSettingsForm({
    </div>
 
    {/* ── Clinical Profile ── */}
-   <div className="bg-white border border-border p-5 shadow-sm">
+    <div className="premium-card premium-card-pad">
     <div className="flex items-start gap-3 mb-4">
      <div className="h-9 w-9 bg-primary/8 flex items-center justify-center shrink-0 mt-0.5">
       <Stethoscope className="h-4 w-4 text-primary" />
@@ -172,7 +172,7 @@ export default function DoctorSettingsForm({
    </div>
 
    {/* ── Password & Security ── */}
-   <div className="bg-white border border-border p-5 shadow-sm">
+    <div className="premium-card premium-card-pad">
     <div className="flex items-start gap-3 mb-4">
      <div className="h-9 w-9 bg-primary/8 flex items-center justify-center shrink-0 mt-0.5">
       <Lock className="h-4 w-4 text-primary" />
@@ -230,7 +230,7 @@ export default function DoctorSettingsForm({
    </div>
 
    {/* ── Notifications ── */}
-   <div className="bg-white border border-border p-5 shadow-sm">
+    <div className="premium-card premium-card-pad">
     <div className="flex items-start gap-3 mb-4">
      <div className="h-9 w-9 bg-primary/8 flex items-center justify-center shrink-0 mt-0.5">
       <Bell className="h-4 w-4 text-primary" />

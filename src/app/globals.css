@@ -11,7 +11,11 @@
 @theme inline {
   --font-sans:    var(--font-inter);
   --font-mono:    'IBM Plex Mono', ui-monospace, monospace;
-  --font-heading: var(--font-inter);
+  --font-heading: var(--font-jakarta);
+
+  /* Premium shadow tokens */
+  --shadow-card:  0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06);
+  --shadow-hover: 0 4px 6px rgba(0,0,0,0.05), 0 2px 4px rgba(0,0,0,0.06);
 
   /* Map CSS vars → Tailwind color utilities */
   --color-background:              var(--background);
@@ -54,25 +58,31 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-/* ─── Light mode — Pakistan Independence Day Palette 🇵🇰 ─────────────────────
+/* ─── Light mode — Pakistan Premium Healthcare Palette 🇵🇰 ────────────────────
    Primary:    #01411C  Pakistan flag green
-   Accent:     #0a5c3a  lighter flag green (hovers/links)
-   Background: #F0F7F3  subtle green-tinted off-white
+   Accent:     #0a5c3a  lighter flag green
+   Background: #F4F8F6  sophisticated green-tinted off-white
    Surface:    #FFFFFF
    Border:     #E2E8F0
    Text:       #0F172A / #64748B
-   Error:      #DC2626 / #FEF2F2
+   Error:      #DC2626
+   Shadows:    Multi-layer soft depth system
 */
 :root {
-  --radius: 0rem;
+  --radius: 0.5rem;
 
   /* Surfaces */
-  --background:    #F0F7F3;
+  --background:    #F4F8F6;
   --foreground:    #0F172A;
   --card:          #FFFFFF;
   --card-foreground: #0F172A;
   --popover:       #FFFFFF;
   --popover-foreground: #0F172A;
+
+  /* Premium shadow system */
+  --shadow-card:   0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06);
+  --shadow-hover:  0 4px 6px rgba(0,0,0,0.05), 0 2px 4px rgba(0,0,0,0.06);
+  --shadow-modal:  0 10px 25px rgba(0,0,0,0.08), 0 4px 10px rgba(0,0,0,0.06);
 
   /* Primary — Pakistan flag green */
   --primary:          #01411C;
@@ -112,7 +122,7 @@
 
 /* ─── Dark mode — Pakistan green for dark surfaces 🇵🇰 ───────────────────────*/
 .dark {
-  --radius: 0rem;
+  --radius: 0.5rem;
 
   /* Surfaces */
   --background:    #1C1C1E;
@@ -174,6 +184,38 @@
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-semibold tracking-tight text-foreground;
+    @apply font-heading font-semibold tracking-tight text-foreground;
+  }
+}
+
+@layer components {
+  .premium-card {
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    background-color: var(--card);
+    box-shadow: var(--shadow-card);
+  }
+
+  .premium-card-interactive {
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    background-color: var(--card);
+    box-shadow: var(--shadow-card);
+    transition: transform 200ms ease, box-shadow 200ms ease, border-color 200ms ease;
+  }
+
+  .premium-card-interactive:hover {
+    box-shadow: var(--shadow-hover);
+    transform: translateY(-1px);
+  }
+
+  .premium-card-pad {
+    padding: 1.25rem;
+  }
+
+  @media (min-width: 768px) {
+    .premium-card-pad {
+      padding: 1.5rem;
+    }
   }
 }

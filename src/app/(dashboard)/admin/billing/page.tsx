@@ -46,28 +46,28 @@ export default async function AdminBillingPage() {
 
     {/* Summary cards */}
     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-     <div className="bg-white border border-border p-5 shadow-sm">
+        <div className="premium-card premium-card-pad">
       <div className="h-10 w-10 bg-emerald-50 flex items-center justify-center mb-3">
        <TrendingUp className="h-5 w-5 text-emerald-600" />
       </div>
       <p className="text-2xl font-bold text-foreground">{formatAmount(summary.totalRevenue)}</p>
       <p className="text-xs text-muted-foreground mt-0.5">Total Revenue (Paid)</p>
      </div>
-     <div className="bg-white border border-border p-5 shadow-sm">
+    <div className="premium-card premium-card-pad">
       <div className="h-10 w-10 bg-amber-50 flex items-center justify-center mb-3">
        <AlertCircle className="h-5 w-5 text-amber-600" />
       </div>
       <p className="text-2xl font-bold text-foreground">{formatAmount(summary.outstanding)}</p>
       <p className="text-xs text-muted-foreground mt-0.5">Outstanding</p>
      </div>
-     <div className="bg-white border border-border p-5 shadow-sm">
+    <div className="premium-card premium-card-pad">
       <div className="h-10 w-10 bg-emerald-50 flex items-center justify-center mb-3">
        <Receipt className="h-5 w-5 text-emerald-700" />
       </div>
       <p className="text-2xl font-bold text-foreground">{summary.totalInvoices}</p>
       <p className="text-xs text-muted-foreground mt-0.5">Total Invoices</p>
      </div>
-     <div className="bg-white border border-border p-5 shadow-sm">
+    <div className="premium-card premium-card-pad">
       <div className="h-10 w-10 bg-emerald-50 flex items-center justify-center mb-3">
        <CheckCircle2 className="h-5 w-5 text-emerald-700" />
       </div>
@@ -78,7 +78,7 @@ export default async function AdminBillingPage() {
 
     {/* Invoice list */}
     {invoices.length === 0 ? (
-     <div className="bg-white border border-border p-12 text-center shadow-sm">
+        <div className="premium-card p-12 text-center">
       <Receipt className="h-10 w-10 text-muted-foreground opacity-20 mx-auto mb-3" />
       <p className="text-sm font-medium text-foreground">No invoices yet</p>
       <p className="text-xs text-muted-foreground mt-1">
@@ -86,7 +86,7 @@ export default async function AdminBillingPage() {
       </p>
      </div>
     ) : (
-     <div className="bg-white border border-border overflow-hidden shadow-sm">
+        <div className="premium-card overflow-hidden">
       <table className="w-full text-sm">
        <thead>
         <tr className="border-b border-border bg-muted/30 text-left">

@@ -232,7 +232,7 @@ export default function AvailabilityManager({ doctorId, initialWindows }: Props)
   <div className="space-y-6">
 
    {/* ── Schedule table ── */}
-   <div className="bg-white border border-border overflow-hidden shadow-sm">
+  <div className="premium-card overflow-hidden">
 
     {/* Table header */}
     <div className="grid grid-cols-[88px_1fr_110px] px-5 py-3
@@ -366,7 +366,7 @@ export default function AvailabilityManager({ doctorId, initialWindows }: Props)
     <h2 className="text-base font-bold text-foreground mb-3">
      Upcoming Exceptions
     </h2>
-    <div className="bg-white border border-border overflow-hidden shadow-sm">
+    <div className="premium-card overflow-hidden">
      {/* Existing exceptions */}
      {exceptions.map((ex) => (
       <div key={ex.id}
@@ -427,7 +427,7 @@ export default function AvailabilityManager({ doctorId, initialWindows }: Props)
    {/* ── Info cards ── */}
    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
     {/* Standard Policy */}
-    <div className=" p-5 text-white"
+    <div className="premium-card premium-card-pad text-white"
      style={{ backgroundColor: '#01411C' }}>
      <div className="h-8 w-8 bg-white/10 flex items-center
       justify-center mb-3">
@@ -441,7 +441,7 @@ export default function AvailabilityManager({ doctorId, initialWindows }: Props)
     </div>
 
     {/* Emergency Blocks */}
-    <div className="bg-white border border-border p-5 shadow-sm">
+    <div className="premium-card premium-card-pad">
      <div className="h-8 w-8 bg-muted flex items-center
       justify-center mb-3">
       <Zap className="h-4 w-4 text-foreground" />
@@ -454,7 +454,7 @@ export default function AvailabilityManager({ doctorId, initialWindows }: Props)
     </div>
 
     {/* Auto-Sync */}
-    <div className="bg-muted/40 border border-border p-5">
+    <div className="premium-card premium-card-pad bg-muted/40">
      <div className="h-8 w-8 bg-white flex items-center
       justify-center mb-3 shadow-sm">
       <RefreshCw className="h-4 w-4 text-primary" />
