@@ -8,22 +8,22 @@ import { Printer } from 'lucide-react';
 // auto-opens the print dialog on page load.
 
 export default function PrintTrigger() {
-  useEffect(() => {
-    // Small delay so the page fully renders before the dialog opens
-    const t = setTimeout(() => window.print(), 500);
-    return () => clearTimeout(t);
-  }, []);
+ useEffect(() => {
+  // Small delay so the page fully renders before the dialog opens
+  const t = setTimeout(() => window.print(), 500);
+  return () => clearTimeout(t);
+ }, []);
 
-  return (
-    <div className="no-print fixed bottom-6 right-6 z-50 flex gap-2">
-      <button
-        type="button"
-        onClick={() => window.print()}
-        className="flex items-center gap-2 h-11 px-5 rounded-xl bg-emerald-700 text-white text-sm font-semibold shadow-lg hover:bg-emerald-800 transition-colors"
-      >
-        <Printer className="h-4 w-4" />
-        Save as PDF
-      </button>
-    </div>
-  );
+ return (
+  <div className="no-print fixed bottom-6 right-6 z-50 flex gap-2">
+   <button
+    type="button"
+    onClick={() => window.print()}
+    className="flex items-center gap-2 h-11 px-5 bg-emerald-700 text-white text-sm font-semibold shadow-lg hover:bg-emerald-800 transition-colors"
+   >
+    <Printer className="h-4 w-4" />
+    Save as PDF
+   </button>
+  </div>
+ );
 }

@@ -6,116 +6,116 @@ import { format } from 'date-fns';
 import { BriefcaseMedical } from 'lucide-react';
 
 function formatAmount(cents: number) {
-  return `Rs ${(cents / 100).toLocaleString('en-PK', { minimumFractionDigits: 2 })}`;
+ return `Rs ${(cents / 100).toLocaleString('en-PK', { minimumFractionDigits: 2 })}`;
 }
 
 export default async function InvoicePrintPage({ params }: { params: Promise<{ id: string }> }) {
-  const session = await auth();
-  if (!session) redirect('/login');
+ const session = await auth();
+ if (!session) redirect('/login');
 
-  const { id } = await params;
+ const { id } = await params;
 
-  let data: Awaited<ReturnType<typeof getInvoiceForPrint>>;
-  try {
-    data = await getInvoiceForPrint(id);
-  } catch {
-    return (
-      <div className="min-h-screen flex items-center justify-center text-emerald-800/60">
-        <p className="text-sm">Invoice not found or you don&apos;t have access.</p>
-      </div>
-    );
-  }
-
-  const generatedOn = format(new Date(), "MMMM d, yyyy 'at' h:mm a");
-
+ let data: Awaited<ReturnType<typeof getInvoiceForPrint>>;
+ try {
+  data = await getInvoiceForPrint(id);
+ } catch {
   return (
-    <div className="min-h-screen bg-white text-foreground p-8 print:p-0">
-      <PrintTrigger />
-
-      <style>{`
-        @media print {
-          .no-print { display: none !important; }
-          body { background: white !important; }
-        }
-      `}</style>
-
-      <div className="max-w-2xl mx-auto space-y-5">
-        {/* Header */}
-        <div className="flex items-center justify-between border-b-2 border-emerald-900 pb-4">
-          <div className="flex items-center gap-3">
-            <BriefcaseMedical className="h-8 w-8 text-emerald-700" />
-            <div>
-              <h1 className="text-2xl font-bold">MediTrack</h1>
-              <p className="text-xs text-emerald-800/60">Payment Receipt</p>
-            </div>
-          </div>
-          <div className="text-right text-xs text-emerald-800/60">
-            <p>Invoice #: {data.id.slice(0, 8).toUpperCase()}</p>
-            <p>{format(new Date(data.createdAt), 'MMM d, yyyy')}</p>
-          </div>
-        </div>
-
-        {/* Patient + Doctor */}
-        <div className="grid grid-cols-2 gap-4 text-sm">
-          <div>
-            <p className="text-xs font-bold uppercase text-emerald-800/60 mb-1">Patient</p>
-            <p className="font-semibold text-foreground">{data.patientName}</p>
-            <p className="text-muted-foreground">{data.patientPhone}</p>
-          </div>
-          <div>
-            <p className="text-xs font-bold uppercase text-emerald-800/60 mb-1">Consulted With</p>
-            <p className="font-semibold text-foreground">Dr. {data.doctorName ?? '—'}</p>
-            {data.specialization && <p className="text-muted-foreground">{data.specialization}</p>}
-          </div>
-        </div>
-
-        {/* Payment details */}
-        <div className="border-t-2 border-emerald-900 pt-4">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-emerald-200 text-left">
-                <th className="py-2 font-semibold text-foreground">Description</th>
-                <th className="py-2 font-semibold text-foreground text-right">Amount</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr className="border-b border-emerald-50">
-                <td className="py-3 text-foreground">Consultation Fee</td>
-                <td className="py-3 text-foreground font-semibold text-right">{formatAmount(data.amount)}</td>
-              </tr>
-            </tbody>
-            <tfoot>
-              <tr className="border-t-2 border-emerald-200">
-                <td className="py-3 font-bold text-foreground">Total</td>
-                <td className="py-3 font-bold text-foreground text-right text-lg">{formatAmount(data.amount)}</td>
-              </tr>
-            </tfoot>
-          </table>
-        </div>
-
-        {/* Payment status */}
-        <div className="flex items-center justify-between border-t border-emerald-100 pt-4">
-          <div>
-            <p className="text-xs font-bold uppercase text-emerald-800/60 mb-1">Status</p>
-            <span className={`text-sm font-bold uppercase ${data.status === 'paid' ? 'text-emerald-600' : 'text-amber-600'}`}>
-              {data.status}
-            </span>
-          </div>
-          {data.paidAt && (
-            <div className="text-right">
-              <p className="text-xs font-bold uppercase text-emerald-800/60 mb-1">Paid On</p>
-              <p className="text-sm text-foreground">{format(new Date(data.paidAt), 'MMM d, yyyy h:mm a')}</p>
-              {data.paymentMethod && <p className="text-xs text-emerald-800/60 capitalize">via {data.paymentMethod}</p>}
-            </div>
-          )}
-        </div>
-
-        {/* Footer */}
-        <div className="border-t border-emerald-100 pt-4 text-center text-[10px] text-muted-foreground">
-          <p>This receipt was generated by MediTrack on {generatedOn}.</p>
-          <p>Thank you for your visit.</p>
-        </div>
-      </div>
-    </div>
+   <div className="min-h-screen flex items-center justify-center text-emerald-800/60">
+    <p className="text-sm">Invoice not found or you don&apos;t have access.</p>
+   </div>
   );
+ }
+
+ const generatedOn = format(new Date(), "MMMM d, yyyy 'at' h:mm a");
+
+ return (
+  <div className="min-h-screen bg-white text-foreground p-8 print:p-0">
+   <PrintTrigger />
+
+   <style>{`
+    @media print {
+     .no-print { display: none !important; }
+     body { background: white !important; }
+    }
+   `}</style>
+
+   <div className="max-w-2xl mx-auto space-y-5">
+    {/* Header */}
+    <div className="flex items-center justify-between border-b-2 border-emerald-900 pb-4">
+     <div className="flex items-center gap-3">
+      <BriefcaseMedical className="h-8 w-8 text-emerald-700" />
+      <div>
+       <h1 className="text-2xl font-bold">MediTrack</h1>
+       <p className="text-xs text-emerald-800/60">Payment Receipt</p>
+      </div>
+     </div>
+     <div className="text-right text-xs text-emerald-800/60">
+      <p>Invoice #: {data.id.slice(0, 8).toUpperCase()}</p>
+      <p>{format(new Date(data.createdAt), 'MMM d, yyyy')}</p>
+     </div>
+    </div>
+
+    {/* Patient + Doctor */}
+    <div className="grid grid-cols-2 gap-4 text-sm">
+     <div>
+      <p className="text-xs font-bold uppercase text-emerald-800/60 mb-1">Patient</p>
+      <p className="font-semibold text-foreground">{data.patientName}</p>
+      <p className="text-muted-foreground">{data.patientPhone}</p>
+     </div>
+     <div>
+      <p className="text-xs font-bold uppercase text-emerald-800/60 mb-1">Consulted With</p>
+      <p className="font-semibold text-foreground">Dr. {data.doctorName ?? '—'}</p>
+      {data.specialization && <p className="text-muted-foreground">{data.specialization}</p>}
+     </div>
+    </div>
+
+    {/* Payment details */}
+    <div className="border-t-2 border-emerald-900 pt-4">
+     <table className="w-full text-sm">
+      <thead>
+       <tr className="border-b border-emerald-200 text-left">
+        <th className="py-2 font-semibold text-foreground">Description</th>
+        <th className="py-2 font-semibold text-foreground text-right">Amount</th>
+       </tr>
+      </thead>
+      <tbody>
+       <tr className="border-b border-emerald-50">
+        <td className="py-3 text-foreground">Consultation Fee</td>
+        <td className="py-3 text-foreground font-semibold text-right">{formatAmount(data.amount)}</td>
+       </tr>
+      </tbody>
+      <tfoot>
+       <tr className="border-t-2 border-emerald-200">
+        <td className="py-3 font-bold text-foreground">Total</td>
+        <td className="py-3 font-bold text-foreground text-right text-lg">{formatAmount(data.amount)}</td>
+       </tr>
+      </tfoot>
+     </table>
+    </div>
+
+    {/* Payment status */}
+    <div className="flex items-center justify-between border-t border-emerald-100 pt-4">
+     <div>
+      <p className="text-xs font-bold uppercase text-emerald-800/60 mb-1">Status</p>
+      <span className={`text-sm font-bold uppercase ${data.status === 'paid' ? 'text-emerald-600' : 'text-amber-600'}`}>
+       {data.status}
+      </span>
+     </div>
+     {data.paidAt && (
+      <div className="text-right">
+       <p className="text-xs font-bold uppercase text-emerald-800/60 mb-1">Paid On</p>
+       <p className="text-sm text-foreground">{format(new Date(data.paidAt), 'MMM d, yyyy h:mm a')}</p>
+       {data.paymentMethod && <p className="text-xs text-emerald-800/60 capitalize">via {data.paymentMethod}</p>}
+      </div>
+     )}
+    </div>
+
+    {/* Footer */}
+    <div className="border-t border-emerald-100 pt-4 text-center text-[10px] text-muted-foreground">
+     <p>This receipt was generated by MediTrack on {generatedOn}.</p>
+     <p>Thank you for your visit.</p>
+    </div>
+   </div>
+  </div>
+ );
 }
