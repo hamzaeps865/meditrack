@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
-import { dispensePrescriptionItem } from '@/server/actions/pharmacy.actions';
+import { addMedicine, addStock, dispensePrescriptionItem } from '@/server/actions/pharmacy.actions';
 import {
   Pill, Search, Check, Loader2, AlertTriangle,
 } from 'lucide-react';
@@ -28,19 +28,28 @@ interface InventoryBatch {
   quantityInStock: number;
   expiryDate: string | null;
 }
+interface CatalogMedicine { id: string; name: string; genericName: string | null; strength: string | null; }
 
 export default function PharmacistDashboard({
   pending,
   inventory,
+  catalog,
 }: {
   pending: PendingItem[];
   inventory: InventoryBatch[];
+  catalog: CatalogMedicine[];
 }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [search, setSearch] = useState('');
   const [selectedBatch, setSelectedBatch] = useState<Record<string, string>>({});
   const [dispenseQty, setDispenseQty] = useState<Record<string, string>>({});
+  const [medicineName, setMedicineName] = useState('');
+  const [genericName, setGenericName] = useState('');
+  const [strength, setStrength] = useState('');
+  const [stockMedicineId, setStockMedicineId] = useState('');
+  const [stockQuantity, setStockQuantity] = useState('');
+  const [batchNumber, setBatchNumber] = useState('');
 
   // Filter by patient name or medicine name
   const filtered = pending.filter((p) => {
@@ -62,7 +71,6 @@ export default function PharmacistDashboard({
       try {
         await dispensePrescriptionItem({
           prescriptionItemId: item.id,
-          medicineId: item.medicineId ?? inventory.find((b) => b.id === batchId)?.medicineId ?? '',
           inventoryBatchId: batchId,
           quantity: qty,
         });
@@ -74,8 +82,32 @@ export default function PharmacistDashboard({
     });
   }
 
+  function handleAddMedicine(e: React.FormEvent) {
+    e.preventDefault();
+    startTransition(async () => {
+      try {
+        await addMedicine({ name: medicineName, genericName: genericName || undefined, strength: strength || undefined });
+        toast.success('Medicine added to the catalog.');
+        setMedicineName(''); setGenericName(''); setStrength(''); router.refresh();
+      } catch (err) { toast.error(err instanceof Error ? err.message : 'Could not add medicine.'); }
+    });
+  }
+
+  function handleAddStock(e: React.FormEvent) {
+    e.preventDefault();
+    startTransition(async () => {
+      try {
+        await addStock({ medicineId: stockMedicineId, quantityInStock: Number(stockQuantity), batchNumber: batchNumber || undefined });
+        toast.success('Stock batch added.');
+        setStockMedicineId(''); setStockQuantity(''); setBatchNumber(''); router.refresh();
+      } catch (err) { toast.error(err instanceof Error ? err.message : 'Could not add stock.'); }
+    });
+  }
+
   // Available batches (stock > 0)
-  const availableBatches = inventory.filter((b) => b.quantityInStock > 0);
+  const availableBatches = (item: PendingItem) => inventory.filter((b) =>
+    b.quantityInStock > 0 && (!item.medicineId || b.medicineId === item.medicineId),
+  );
 
   return (
     <div className="space-y-5">
@@ -134,7 +166,7 @@ export default function PharmacistDashboard({
                     onChange={(e) => setSelectedBatch((p) => ({ ...p, [item.id]: e.target.value }))}
                   >
                     <option value="">Choose batch...</option>
-                    {availableBatches.map((b) => (
+                    {availableBatches(item).map((b) => (
                       <option key={b.id} value={b.id}>
                         {b.medicineName} — {b.batchNumber ?? 'N/A'} ({b.quantityInStock} in stock
                         {b.expiryDate ? `, exp ${format(new Date(b.expiryDate), 'MMM yyyy')}` : ''})
@@ -188,6 +220,30 @@ export default function PharmacistDashboard({
           </p>
         </div>
       )}
+
+      <div className="grid gap-4 md:grid-cols-2">
+        <form onSubmit={handleAddMedicine} className="bg-white rounded-2xl border border-border p-4 shadow-sm space-y-3">
+          <h2 className="text-sm font-bold text-foreground">Add Medicine to Catalog</h2>
+          <input required value={medicineName} onChange={(e) => setMedicineName(e.target.value)} placeholder="Medicine name" className="w-full h-9 px-3 rounded-md border border-border text-sm" />
+          <div className="grid grid-cols-2 gap-2">
+            <input value={genericName} onChange={(e) => setGenericName(e.target.value)} placeholder="Generic name" className="w-full h-9 px-3 rounded-md border border-border text-sm" />
+            <input value={strength} onChange={(e) => setStrength(e.target.value)} placeholder="Strength" className="w-full h-9 px-3 rounded-md border border-border text-sm" />
+          </div>
+          <button disabled={isPending} className="h-9 px-3 rounded-lg bg-primary text-primary-foreground text-sm font-semibold disabled:opacity-60">Add Medicine</button>
+        </form>
+        <form onSubmit={handleAddStock} className="bg-white rounded-2xl border border-border p-4 shadow-sm space-y-3">
+          <h2 className="text-sm font-bold text-foreground">Receive Stock</h2>
+          <select required value={stockMedicineId} onChange={(e) => setStockMedicineId(e.target.value)} className="w-full h-9 px-3 rounded-md border border-border text-sm">
+            <option value="">Select medicine</option>
+            {catalog.map((medicine) => <option key={medicine.id} value={medicine.id}>{medicine.name}{medicine.strength ? ` ${medicine.strength}` : ''}</option>)}
+          </select>
+          <div className="grid grid-cols-2 gap-2">
+            <input required min="0" type="number" value={stockQuantity} onChange={(e) => setStockQuantity(e.target.value)} placeholder="Quantity" className="w-full h-9 px-3 rounded-md border border-border text-sm" />
+            <input value={batchNumber} onChange={(e) => setBatchNumber(e.target.value)} placeholder="Batch number" className="w-full h-9 px-3 rounded-md border border-border text-sm" />
+          </div>
+          <button disabled={isPending} className="h-9 px-3 rounded-lg bg-primary text-primary-foreground text-sm font-semibold disabled:opacity-60">Add Stock</button>
+        </form>
+      </div>
     </div>
   );
 }

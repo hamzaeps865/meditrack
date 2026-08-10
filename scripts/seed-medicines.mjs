@@ -160,8 +160,11 @@ async function main() {
     try {
       await pool.query(
         `INSERT INTO medicines (name, generic_name, category, form, strength, manufacturer, reorder_level, unit_price_cents)
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-         ON CONFLICT DO NOTHING`,
+         SELECT $1, $2, $3, $4, $5, $6, $7, $8
+         WHERE NOT EXISTS (
+           SELECT 1 FROM medicines
+           WHERE lower(name) = lower($1) AND coalesce(strength, '') = coalesce($5, '')
+         )`,
         [name, genericName, category, form, strength, manufacturer, reorder, price],
       );
       inserted++;

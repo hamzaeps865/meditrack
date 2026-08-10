@@ -3,10 +3,10 @@
 import { db } from '@/server/db';
 import {
   medicines, medicineInventory, dispensings,
-  prescriptionItems, prescriptions, visits, patients, users, doctors,
+  prescriptionItems, prescriptions, visits, patients, users, doctors, appointments,
 } from '@/server/db/schema';
 import { requireRole } from '@/server/auth/rbac';
-import { eq, and, or, ilike, desc, sql, isNull, gte, sum } from 'drizzle-orm';
+import { eq, and, or, ilike, desc, sql, isNull, gte } from 'drizzle-orm';
 import { z } from 'zod';
 import { addDays, format } from 'date-fns';
 
@@ -45,7 +45,7 @@ export async function searchMedicines(query: string, limit = 10) {
  * Full catalog list for admin management.
  */
 export async function getAllMedicines() {
-  await requireRole(['admin']);
+  await requireRole(['admin', 'pharmacist']);
   return db.select().from(medicines).orderBy(medicines.name);
 }
 
@@ -61,14 +61,19 @@ const addMedicineSchema = z.object({
 });
 
 export async function addMedicine(input: unknown) {
-  await requireRole(['admin']);
+  await requireRole(['admin', 'pharmacist']);
   const data = addMedicineSchema.parse(input);
+  const [duplicate] = await db
+    .select({ id: medicines.id })
+    .from(medicines)
+    .where(sql`lower(${medicines.name}) = lower(${data.name}) and coalesce(${medicines.strength}, '') = coalesce(${data.strength ?? null}, '')`);
+  if (duplicate) throw new Error('A medicine with this name and strength already exists.');
   const [medicine] = await db.insert(medicines).values(data).returning();
   return medicine;
 }
 
 export async function updateMedicine(id: string, input: unknown) {
-  await requireRole(['admin']);
+  await requireRole(['admin', 'pharmacist']);
   const data = addMedicineSchema.partial().parse(input);
   const [updated] = await db
     .update(medicines)
@@ -122,7 +127,7 @@ const addStockSchema = z.object({
 });
 
 export async function addStock(input: unknown) {
-  await requireRole(['admin']);
+  await requireRole(['admin', 'pharmacist']);
   const data = addStockSchema.parse(input);
   const [batch] = await db
     .insert(medicineInventory)
@@ -136,7 +141,8 @@ export async function addStock(input: unknown) {
 }
 
 export async function adjustStock(id: string, newQuantity: number) {
-  await requireRole(['admin']);
+  await requireRole(['admin', 'pharmacist']);
+  if (!Number.isInteger(newQuantity) || newQuantity < 0) throw new Error('Quantity must be a non-negative whole number.');
   const [updated] = await db
     .update(medicineInventory)
     .set({ quantityInStock: newQuantity, updatedAt: new Date() })
@@ -235,51 +241,66 @@ export async function getPharmacySummary() {
  * Dispense a prescription item from a specific batch. Decrements stock + records
  * the dispensing. One dispensing per prescription item (unique constraint).
  */
-export async function dispensePrescriptionItem(input: {
-  prescriptionItemId: string;
-  medicineId: string;
-  inventoryBatchId: string;
-  quantity: number;
-  notes?: string;
-}) {
+const dispenseSchema = z.object({
+  prescriptionItemId: z.string().uuid(),
+  inventoryBatchId: z.string().uuid(),
+  quantity: z.number().int().positive(),
+  notes: z.string().max(1000).trim().optional(),
+});
+
+export async function dispensePrescriptionItem(input: unknown) {
   const session = await requireRole(['admin', 'pharmacist']);
+  const data = dispenseSchema.parse(input);
 
   // Check not already dispensed
   const [existing] = await db
     .select({ id: dispensings.id })
     .from(dispensings)
-    .where(eq(dispensings.prescriptionItemId, input.prescriptionItemId));
+    .where(eq(dispensings.prescriptionItemId, data.prescriptionItemId));
   if (existing) throw new Error('This item has already been dispensed.');
 
-  // Check stock
-  const [batch] = await db
-    .select()
-    .from(medicineInventory)
-    .where(eq(medicineInventory.id, input.inventoryBatchId));
+  const [item] = await db
+    .select({ id: prescriptionItems.id, medicineId: prescriptionItems.medicineId })
+    .from(prescriptionItems)
+    .where(eq(prescriptionItems.id, data.prescriptionItemId));
+  if (!item) throw new Error('Prescription item not found.');
+
+  const [batch] = await db.select().from(medicineInventory).where(eq(medicineInventory.id, data.inventoryBatchId));
   if (!batch) throw new Error('Batch not found.');
-  if (batch.quantityInStock < input.quantity) {
+  if (item.medicineId && item.medicineId !== batch.medicineId) {
+    throw new Error('The selected batch does not match the prescribed medicine.');
+  }
+  if (batch.quantityInStock < data.quantity) {
     throw new Error(`Insufficient stock. Only ${batch.quantityInStock} units available.`);
   }
 
   // Decrement stock + record dispensing in a transaction
   return db.transaction(async (tx) => {
-    await tx
+    const [updatedBatch] = await tx
       .update(medicineInventory)
       .set({
-        quantityInStock: batch.quantityInStock - input.quantity,
+        quantityInStock: sql`${medicineInventory.quantityInStock} - ${data.quantity}`,
         updatedAt: new Date(),
       })
-      .where(eq(medicineInventory.id, input.inventoryBatchId));
+      .where(and(eq(medicineInventory.id, data.inventoryBatchId), gte(medicineInventory.quantityInStock, data.quantity)))
+      .returning({ id: medicineInventory.id });
+    if (!updatedBatch) throw new Error('Stock changed before dispensing. Please try again.');
+
+    // Older prescriptions did not store a catalog link. The pharmacist's batch
+    // selection establishes that link once; all new prescriptions are strict.
+    if (!item.medicineId) {
+      await tx.update(prescriptionItems).set({ medicineId: batch.medicineId }).where(eq(prescriptionItems.id, item.id));
+    }
 
     const [dispensing] = await tx
       .insert(dispensings)
       .values({
-        prescriptionItemId: input.prescriptionItemId,
-        medicineId: input.medicineId,
-        inventoryBatchId: input.inventoryBatchId,
-        quantityDispensed: input.quantity,
+        prescriptionItemId: data.prescriptionItemId,
+        medicineId: batch.medicineId,
+        inventoryBatchId: data.inventoryBatchId,
+        quantityDispensed: data.quantity,
         dispensedBy: session.user.id,
-        notes: input.notes || null,
+        notes: data.notes || null,
       })
       .returning();
 
@@ -309,11 +330,12 @@ export async function getPendingDispensings() {
     .from(prescriptionItems)
     .innerJoin(prescriptions, eq(prescriptionItems.prescriptionId, prescriptions.id))
     .innerJoin(visits, eq(prescriptions.visitId, visits.id))
+    .innerJoin(appointments, eq(visits.appointmentId, appointments.id))
     .leftJoin(patients, eq(visits.patientId, patients.id))
     .leftJoin(doctors, eq(visits.doctorId, doctors.id))
     .leftJoin(users, eq(doctors.userId, users.id))
     .leftJoin(dispensings, eq(prescriptionItems.id, dispensings.prescriptionItemId))
-    .where(isNull(dispensings.id))
+    .where(and(isNull(dispensings.id), eq(appointments.status, 'completed')))
     .orderBy(desc(prescriptions.createdAt));
 }
 
@@ -322,7 +344,7 @@ export async function getPendingDispensings() {
 // The prescription item becomes pending again.
 
 export async function undoDispensing(dispensingId: string) {
-  const session = await requireRole(['admin', 'pharmacist']);
+  await requireRole(['admin', 'pharmacist']);
 
   const [dispensing] = await db
     .select()
@@ -365,6 +387,7 @@ export async function getDispenseHistory(limit = 50) {
     })
     .from(dispensings)
     .innerJoin(prescriptionItems, eq(dispensings.prescriptionItemId, prescriptionItems.id))
+    .innerJoin(prescriptions, eq(prescriptionItems.prescriptionId, prescriptions.id))
     .innerJoin(visits, eq(prescriptions.visitId, visits.id))
     .leftJoin(patients, eq(visits.patientId, patients.id))
     .leftJoin(users, eq(dispensings.dispensedBy, users.id))

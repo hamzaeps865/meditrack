@@ -1,6 +1,6 @@
 import { auth } from '@/server/auth';
 import { redirect } from 'next/navigation';
-import { getPendingDispensings, getInventory } from '@/server/actions/pharmacy.actions';
+import { getPendingDispensings, getInventory, getAllMedicines } from '@/server/actions/pharmacy.actions';
 import PharmacistDashboard from '@/components/pharmacy/pharmacist-dashboard';
 import NotificationBell from '@/components/shared/notification-bell';
 import { Pill, Package, AlertTriangle } from 'lucide-react';
@@ -11,9 +11,10 @@ export default async function PharmacyDashboardPage() {
     redirect('/login');
   }
 
-  const [pending, inventory] = await Promise.all([
+  const [pending, inventory, catalog] = await Promise.all([
     getPendingDispensings(),
     getInventory(),
+    getAllMedicines(),
   ]);
 
   // Serialize for client component
@@ -78,6 +79,7 @@ export default async function PharmacyDashboardPage() {
         <PharmacistDashboard
           pending={serializedPending}
           inventory={serializedInventory}
+          catalog={catalog}
         />
       </div>
     </div>
