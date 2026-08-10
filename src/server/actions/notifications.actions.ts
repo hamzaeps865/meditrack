@@ -4,7 +4,7 @@ import { db } from '@/server/db';
 import {
   appointments, doctors, patients, users, auditLogs,
   prescriptionItems, prescriptions, visits, dispensings,
-  medicineInventory, medicines,
+  medicineInventory, medicines, labOrders,
 } from '@/server/db/schema';
 import { requireSession } from '@/server/auth/rbac';
 import {
@@ -18,7 +18,7 @@ import {
 
 export type NotificationItem = {
   id:        string;
-  type:      'appointment' | 'checked_in' | 'cancelled' | 'new_patient' | 'audit' | 'system' | 'pharmacy' | 'prescription';
+  type:      'appointment' | 'checked_in' | 'cancelled' | 'new_patient' | 'audit' | 'system' | 'pharmacy' | 'prescription' | 'lab';
   title:     string;
   body:      string;
   time:      string;   // ISO string
@@ -418,6 +418,116 @@ export async function getNotifications(): Promise<NotificationItem[]> {
         read:  false,
         href:  `/patient/prescriptions`,
       });
+    }
+
+    // Lab results ready (completed in last 24h for this patient)
+    const readyLabs = await db
+      .select({
+        id: labOrders.id,
+        testName: labOrders.testName,
+        completedAt: labOrders.completedAt,
+      })
+      .from(labOrders)
+      .innerJoin(visits, eq(labOrders.visitId, visits.id))
+      .leftJoin(patients, eq(visits.patientId, patients.id))
+      .where(
+        and(
+          eq(patients.email, session.user.email ?? ''),
+          eq(labOrders.status, 'completed'),
+          gte(labOrders.completedAt, subHours(now, 24)),
+        ),
+      )
+      .orderBy(desc(labOrders.completedAt))
+      .limit(5);
+
+    for (const lab of readyLabs) {
+      items.push({
+        id:    `lab-${lab.id}`,
+        type:  'lab',
+        title: 'Lab Result Ready',
+        body:  `${lab.testName} — view your results now.`,
+        time:  (lab.completedAt ?? now).toISOString(),
+        read:  false,
+        href:  `/patient/lab-results`,
+      });
+    }
+  }
+
+  // ── LAB TECHNICIAN notifications ──────────────────────────────────────────
+  if (role === 'lab') {
+    // New lab orders awaiting processing (last 24h)
+    const newLabs = await db
+      .select({
+        id: labOrders.id,
+        testName: labOrders.testName,
+        patientName: patients.name,
+        priority: labOrders.priority,
+        createdAt: labOrders.createdAt,
+      })
+      .from(labOrders)
+      .innerJoin(patients, eq(labOrders.patientId, patients.id))
+      .where(
+        and(
+          sql`${labOrders.status} in ('ordered', 'sample_collected')`,
+          gte(labOrders.createdAt, subHours(now, 24)),
+        ),
+      )
+      .orderBy(desc(labOrders.createdAt))
+      .limit(5);
+
+    for (const lab of newLabs) {
+      items.push({
+        id:    `newlab-${lab.id}`,
+        type:  'lab',
+        title: 'New Lab Order',
+        body:  `${lab.testName} — ${lab.patientName} (${lab.priority})`,
+        time:  lab.createdAt.toISOString(),
+        read:  false,
+        href:  `/lab`,
+      });
+    }
+  }
+
+  // ── DOCTOR lab result notifications ────────────────────────────────────────
+  if (role === 'doctor') {
+    // Resolve doctor profile
+    const [doctorRow] = await db
+      .select({ id: doctors.id })
+      .from(doctors)
+      .where(eq(doctors.userId, userId));
+
+    if (doctorRow) {
+      // Lab results completed for this doctor's patients (last 24h)
+      const completedLabs = await db
+        .select({
+          id: labOrders.id,
+          testName: labOrders.testName,
+          patientName: patients.name,
+          completedAt: labOrders.completedAt,
+        })
+        .from(labOrders)
+        .innerJoin(patients, eq(labOrders.patientId, patients.id))
+        .where(
+          and(
+            eq(labOrders.doctorId, doctorRow.id),
+            eq(labOrders.status, 'completed'),
+            gte(labOrders.completedAt, subHours(now, 24)),
+          ),
+        )
+        .orderBy(desc(labOrders.completedAt))
+        .limit(5);
+
+      for (const lab of completedLabs) {
+        items.push({
+          id:    `doclab-${lab.id}`,
+          type:  'lab',
+          title: 'Lab Result Available',
+          body:  `${lab.testName} — ${lab.patientName}`,
+          time:  (lab.completedAt ?? now).toISOString(),
+          read:  false,
+          href:  `/doctor/appointments`,
+        });
+      }
     }
   }
 

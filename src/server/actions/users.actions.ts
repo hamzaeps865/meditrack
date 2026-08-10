@@ -30,7 +30,7 @@ export async function getAllUsers() {
 
 const assignRoleSchema = z.object({
   userId: z.string().uuid('Invalid user ID'),
-  role: z.enum(['admin', 'doctor', 'receptionist', 'patient', 'nurse', 'pharmacist'], {
+  role: z.enum(['admin', 'doctor', 'receptionist', 'patient', 'nurse', 'pharmacist', 'lab'], {
     message: 'Invalid role',
   }),
 });

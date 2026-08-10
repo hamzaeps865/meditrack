@@ -7,11 +7,11 @@ import {
   LayoutDashboard, Stethoscope, Users, Calendar,
   FileText, Settings, ClipboardList, HelpCircle, LogOut, ShieldCheck,
   Search, HeartPulse, BarChart2, UsersRound, ShieldAlert, Receipt, Pill, Package,
-  FlaskConical,
+  FlaskConical, CheckCircle2,
 } from 'lucide-react';
 import ProfileSwitcher from '@/components/layout/profile-switcher';
 
-type Role = 'admin' | 'doctor' | 'receptionist' | 'patient' | 'nurse' | 'pharmacist';
+type Role = 'admin' | 'doctor' | 'receptionist' | 'patient' | 'nurse' | 'pharmacist' | 'lab';
 
 const navItems: Record<Role, { label: string; href: string; icon: any }[]> = {
   admin: [
@@ -49,6 +49,11 @@ const navItems: Record<Role, { label: string; href: string; icon: any }[]> = {
     { label: 'Inventory',        href: '/pharmacy/inventory',       icon: Package },
     { label: 'Settings',         href: '/pharmacy/settings',        icon: Settings },
   ],
+  lab: [
+    { label: 'Lab Queue',       href: '/lab',                       icon: FlaskConical },
+    { label: 'Completed',       href: '/lab/completed',             icon: CheckCircle2 },
+    { label: 'Settings',        href: '/lab/settings',              icon: Settings },
+  ],
   patient: [
     { label: 'My Appointments',  href: '/patient/appointments',   icon: Calendar },
     { label: 'Find a Doctor',    href: '/patient/doctors',        icon: Search },
@@ -69,6 +74,7 @@ const quickAction: Record<Role, { label: string; href: string } | null> = {
   patient: { label: 'Book Appointment', href: '/patient/appointments/new' },
   nurse: null,
   pharmacist: null,
+  lab: null,
 };
 
 export default function Sidebar({

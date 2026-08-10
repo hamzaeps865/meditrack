@@ -4,7 +4,7 @@ import { useState, useTransition } from 'react';
 import { assignRole } from '@/server/actions/users.actions';
 import { toast } from 'sonner';
 
-type Role = 'admin' | 'doctor' | 'receptionist' | 'patient' | 'nurse' | 'pharmacist';
+type Role = 'admin' | 'doctor' | 'receptionist' | 'patient' | 'nurse' | 'pharmacist' | 'lab';
 
 const roleColors: Record<Role, string> = {
   admin:        'bg-red-100 text-red-700',
@@ -13,6 +13,7 @@ const roleColors: Record<Role, string> = {
   patient:      'bg-blue-100 text-blue-700',
   nurse:        'bg-teal-100 text-teal-700',
   pharmacist:   'bg-emerald-100 text-emerald-700',
+  lab:          'bg-cyan-100 text-cyan-700',
 };
 
 interface RoleSelectProps {
@@ -61,6 +62,7 @@ export default function RoleSelect({ userId, currentRole, isSelf }: RoleSelectPr
         <option value="doctor">Doctor</option>
         <option value="nurse">Nurse</option>
         <option value="pharmacist">Pharmacist</option>
+        <option value="lab">Lab Technician</option>
         <option value="admin">Admin</option>
       </select>
 

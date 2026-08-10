@@ -415,14 +415,10 @@ export default function AdminSettings({ adminName, adminEmail }: Props) {
                     <div>
                       <label className={labelCls}>Clinic Logo</label>
                       <div className="h-44 rounded-xl border-2 border-dashed border-border
-                        flex flex-col items-center justify-center gap-2 cursor-pointer
-                        hover:border-primary/40 hover:bg-muted/20 transition-colors">
+                        flex flex-col items-center justify-center gap-2">
                         <FileImage className="h-7 w-7 text-muted-foreground/40" />
                         <p className="text-xs font-medium text-muted-foreground text-center px-2">
-                          Click to upload or drag logo
-                        </p>
-                        <p className="text-[10px] text-muted-foreground/60 text-center px-2">
-                          PNG, JPG up to 10MB<br />(Recommended 512×512)
+                          Logo upload coming soon
                         </p>
                       </div>
                     </div>

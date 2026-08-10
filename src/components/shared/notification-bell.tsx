@@ -5,7 +5,7 @@ import Link from 'next/link';
 import {
   Bell, X, Calendar, UserCheck, XCircle,
   UserPlus, ShieldAlert, Info, Loader2,
-  CheckCheck, Pill, Package,
+  CheckCheck, Pill, Package, FlaskConical,
 } from 'lucide-react';
 import { getNotifications, type NotificationItem } from '@/server/actions/notifications.actions';
 import { formatDistanceToNow } from 'date-fns';
@@ -22,6 +22,7 @@ function NotifIcon({ type }: { type: NotificationItem['type'] }) {
     case 'appointment':  return <Calendar   className={`${cls} text-blue-500`}   />;
     case 'pharmacy':     return <Pill       className={`${cls} text-emerald-500`} />;
     case 'prescription': return <Package    className={`${cls} text-violet-500`}  />;
+    case 'lab':          return <FlaskConical className={`${cls} text-cyan-500`} />;
     default:             return <Info       className={`${cls} text-muted-foreground`} />;
   }
 }
@@ -37,6 +38,7 @@ const dotColor: Record<NotificationItem['type'], string> = {
   system:      'bg-muted-foreground',
   pharmacy:    'bg-emerald-400',
   prescription: 'bg-violet-400',
+  lab:         'bg-cyan-400',
 };
 
 // ─── Component ────────────────────────────────────────────────────────────────

@@ -1,8 +1,11 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useEffect, useMemo, useTransition } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
+import { deleteDoctor } from '@/server/actions/doctors.actions';
+import { toast } from 'sonner';
 import {
   Search, Plus, MoreVertical, ChevronLeft, ChevronRight,
   SlidersHorizontal,
@@ -55,11 +58,17 @@ function avatarColor(name: string) {
 
 export default function DoctorsTable({ doctors: initialDoctors }: Props) {
   const [doctors, setDoctors] = useState(initialDoctors);
+
+  // Sync local state when server props change (after router.refresh / createDoctor)
+  useEffect(() => { setDoctors(initialDoctors); }, [initialDoctors]);
+
   const [search,  setSearch]  = useState('');
   const [filter,  setFilter]  = useState('all');
   const [page,    setPage]    = useState(1);
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
+  const [isPending, startTransition] = useTransition();
+  const router = useRouter();
   // Track which doctors are toggled OFF (active by default)
   const [inactiveIds, setInactiveIds] = useState<Set<string>>(new Set());
 
@@ -307,7 +316,21 @@ export default function DoctorsTable({ doctors: initialDoctors }: Props) {
                           <button
                             type="button"
                             className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50"
-                            onClick={() => setOpenMenu(null)}
+                            onClick={() => {
+                              setOpenMenu(null);
+                              if (confirm(`Remove Dr. ${doc.name}? Their user account will be demoted to patient.`)) {
+                                startTransition(async () => {
+                                  try {
+                                    await deleteDoctor(doc.id);
+                                    toast.success('Doctor removed.');
+                                    router.push('/admin/doctors');
+                                    router.refresh();
+                                  } catch (err) {
+                                    toast.error(err instanceof Error ? err.message : 'Failed to remove doctor.');
+                                  }
+                                });
+                              }
+                            }}
                           >
                             Remove Doctor
                           </button>

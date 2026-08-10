@@ -192,13 +192,6 @@ export default async function AdminPatientProfilePage({
               initialBloodGroup={patient.bloodGroup}
               initialAllergies={patient.allergies}
             />
-            <button type="button"
-              className="flex items-center gap-1.5 h-9 px-4 rounded-lg border
-                border-border bg-white text-sm font-medium text-foreground
-                hover:bg-muted transition-colors">
-              <Printer className="h-4 w-4 text-muted-foreground" />
-              Print Summary
-            </button>
             <Link href={`/admin/appointments/new?patientId=${id}`}
               className="flex items-center gap-1.5 h-9 px-4 rounded-xl text-sm
                 font-bold text-white hover:opacity-90 transition-opacity"
@@ -501,11 +494,6 @@ export default async function AdminPatientProfilePage({
                   label: 'View Audit Logs',
                   icon:  FileText,
                   href:  `/admin/audit-logs?recordId=${id}`,
-                },
-                {
-                  label: 'Print Summary',
-                  icon:  Printer,
-                  href:  '#',
                 },
               ].map((action) => {
                 const Icon = action.icon;

@@ -362,3 +362,40 @@ export async function createWalkInAppointment(input: {
     throw error;
   }
 }
+
+// ─── Reschedule Appointment ───────────────────────────────────────────────────
+// Changes the scheduledAt time for an existing appointment.
+// Accessible by: admin, receptionist
+
+export async function rescheduleAppointment(input: {
+  appointmentId: string;
+  newScheduledAt: string; // ISO datetime string
+}) {
+  const session = await requireRole(['admin', 'receptionist']);
+
+  if (!input.appointmentId || !input.newScheduledAt) {
+    throw new Error('Appointment ID and new time are required.');
+  }
+
+  const [existing] = await db
+    .select()
+    .from(appointments)
+    .where(eq(appointments.id, input.appointmentId));
+
+  if (!existing) throw new Error('Appointment not found.');
+
+  try {
+    const [updated] = await db
+      .update(appointments)
+      .set({ scheduledAt: new Date(input.newScheduledAt), status: 'scheduled' })
+      .where(eq(appointments.id, input.appointmentId))
+      .returning();
+
+    return updated;
+  } catch (error) {
+    if (error instanceof Error && error.message.includes('23505')) {
+      throw new Error('That time slot is already booked. Please choose another time.');
+    }
+    throw error;
+  }
+}
