@@ -8,6 +8,8 @@ import { createLabOrders } from '@/server/actions/lab-orders.actions';
 import { updateAppointmentStatus, scheduleFollowUp } from '@/server/actions/appointments.actions';
 import { Plus, Trash2, Loader2, AlertCircle, Download, FlaskConical } from 'lucide-react';
 import MedicineSearch from '@/components/doctor/medicine-search';
+import DrugCheckButton from '@/components/ai/drug-check-button';
+import NotesGeneratorButton from '@/components/ai/notes-generator-button';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -380,13 +382,26 @@ export default function VisitForm({
         </div>
 
         <div>
-          <label className="block text-xs font-medium text-muted-foreground mb-1.5">
-            Clinical Notes
-          </label>
+          <div className="flex items-center justify-between mb-1.5">
+            <label className="block text-xs font-medium text-muted-foreground">
+              Clinical Notes
+            </label>
+            {!isReadOnly && (
+              <NotesGeneratorButton
+                chiefComplaint={complaint}
+                vitalsBp={bp}
+                vitalsTemp={temp}
+                vitalsWeight={weight}
+                diagnosis={diagnosis}
+                medicines={rxRows.map((r) => r.medicineName).filter((m) => m.trim())}
+                onGenerate={(generated) => setNotes(generated)}
+              />
+            )}
+          </div>
           <textarea
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
-            placeholder="Detailed objective and subjective findings..."
+            placeholder="Detailed objective and subjective findings... (or click AI Generate Notes above)"
             rows={5}
             disabled={isReadOnly}
             className="w-full px-3 py-2.5 rounded-lg border border-border bg-muted/30
@@ -508,6 +523,13 @@ export default function VisitForm({
                 ))}
               </tbody>
             </table>
+          </div>
+        )}
+
+        {/* AI Drug Interaction Check */}
+        {!isReadOnly && rxRows.filter((r) => r.medicineName.trim()).length >= 2 && (
+          <div className="mt-3 flex justify-end">
+            <DrugCheckButton medicines={rxRows.map((r) => r.medicineName).filter((m) => m.trim())} />
           </div>
         )}
       </section>
