@@ -21,9 +21,8 @@ const genderSchema = z.enum(['male', 'female', 'other'], {
 
 const phoneSchema = z
   .string({ message: 'Phone number is required' })
-  .min(7, 'Phone number is too short')
-  .max(20, 'Phone number must be at most 20 characters')
-  .trim();
+  .trim()
+  .regex(/^\+?[0-9]{10,15}$/, 'Enter 10–15 digits, optionally starting with +');
 
 const emailSchema = z
   .string()

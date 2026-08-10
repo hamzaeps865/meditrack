@@ -4,23 +4,26 @@ import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import AddFamilyMemberForm from '@/components/patient/add-family-member-form';
 import { removeFamilyMember as removeAction } from '@/server/actions/family.actions';
-import { UserPlus, Droplet, MapPin, Trash2, Loader2, Users } from 'lucide-react';
+import { UserPlus, Droplet, MapPin, Trash2, Loader2, Users, Pencil, Phone } from 'lucide-react';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
 
 interface Member {
   id: string;
   name: string;
+  phone: string;
   dob: string;
-  gender: string;
+  gender: 'male' | 'female' | 'other';
   bloodGroup: string | null;
   allergies: string | null;
   city: string | null;
+  emergencyContact: string | null;
 }
 
 export default function FamilyMembersList({ members }: { members: Member[] }) {
   const router = useRouter();
   const [showAdd, setShowAdd] = useState(false);
+  const [editing, setEditing] = useState<Member | null>(null);
   const [removingId, setRemovingId] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
@@ -86,7 +89,7 @@ export default function FamilyMembersList({ members }: { members: Member[] }) {
                       <p className="text-xs text-muted-foreground">{age} years old</p>
                     </div>
                   </div>
-                    <button
+                    <div className="flex gap-1"><button type="button" onClick={() => setEditing(m)} className="h-8 w-8 flex items-center justify-center rounded-lg text-muted-foreground hover:text-primary hover:bg-primary/5" aria-label="View or edit"><Pencil className="h-3.5 w-3.5" /></button><button
                       type="button"
                       onClick={() => handleRemove(m.id, m.name)}
                       disabled={removingId === m.id}
@@ -94,7 +97,7 @@ export default function FamilyMembersList({ members }: { members: Member[] }) {
                       aria-label="Remove"
                     >
                       {removingId === m.id ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Trash2 className="h-3.5 w-3.5" />}
-                    </button>
+                    </button></div>
                 </div>
 
                 <div className="flex flex-wrap gap-1.5">
@@ -120,6 +123,7 @@ export default function FamilyMembersList({ members }: { members: Member[] }) {
                     ⚠ Allergies: {m.allergies}
                   </p>
                 )}
+                <p className="text-xs text-muted-foreground mt-2 flex items-center gap-1"><Phone className="h-3 w-3" /> {m.phone}</p>
               </div>
             );
           })}
@@ -127,6 +131,7 @@ export default function FamilyMembersList({ members }: { members: Member[] }) {
       )}
 
       {showAdd && <AddFamilyMemberForm onClose={() => setShowAdd(false)} />}
+      {editing && <AddFamilyMemberForm member={editing} onClose={() => setEditing(null)} />}
     </>
   );
 }

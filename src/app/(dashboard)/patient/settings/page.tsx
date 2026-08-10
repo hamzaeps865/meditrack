@@ -22,13 +22,15 @@ export default async function PatientSettingsPage() {
     .from(users)
     .where(eq(users.id, session.user.id));
 
+  const currentEmail = userRow?.email ?? session.user.email ?? '';
+
   // Load linked patient record
   const [patientRow] = await db
     .select()
     .from(patients)
     .where(
       and(
-        eq(patients.email, session.user.email ?? ''),
+        eq(patients.email, currentEmail),
         isNull(patients.deletedAt),
       ),
     );

@@ -1,11 +1,11 @@
 import { auth } from '@/server/auth';
 import { redirect } from 'next/navigation';
+import Link from 'next/link';
 import { getLabOrdersForPatient } from '@/server/actions/lab-orders.actions';
 import { getActivePatient } from '@/server/actions/active-patient';
-import { assertPatientOwnsPatientRecord } from '@/server/auth/rbac';
 import NotificationBell from '@/components/shared/notification-bell';
 import { format } from 'date-fns';
-import { FlaskConical, CheckCircle2, Clock, FileText } from 'lucide-react';
+import { FlaskConical, CheckCircle2, Clock, FileText, Printer } from 'lucide-react';
 
 export default async function PatientLabResultsPage() {
   const session = await auth();
@@ -31,13 +31,13 @@ export default async function PatientLabResultsPage() {
 
       <div className="px-6 py-8 max-w-3xl mx-auto">
         <h1 className="text-2xl font-bold text-foreground mb-1">Lab Tests & Results</h1>
-        <p className="text-sm text-muted-foreground mb-6">{labOrders.length} test{labOrders.length !== 1 ? 's' : ''} ordered</p>
+        <p className="text-sm text-muted-foreground mb-6">{labOrders.length} completed report{labOrders.length !== 1 ? 's' : ''}</p>
 
         {labOrders.length === 0 ? (
           <div className="bg-white rounded-2xl border border-border p-12 text-center shadow-sm">
             <FlaskConical className="h-10 w-10 text-muted-foreground opacity-20 mx-auto mb-3" />
-            <p className="text-sm font-medium text-foreground">No lab tests ordered</p>
-            <p className="text-xs text-muted-foreground mt-1">Tests ordered by your doctor will appear here with results when available.</p>
+            <p className="text-sm font-medium text-foreground">No completed lab reports yet</p>
+            <p className="text-xs text-muted-foreground mt-1">Reports from your completed lab orders will appear here once the lab finishes them.</p>
           </div>
         ) : (
           <div className="space-y-3">
@@ -76,6 +76,15 @@ export default async function PatientLabResultsPage() {
                       )}
                     </div>
                   )}
+
+                  <div className="flex flex-wrap gap-2 mt-3">
+                    <Link href={`/patient/lab-results/${order.id}`} className="inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-2 text-xs font-medium text-foreground hover:bg-muted/50 transition-colors">
+                      <FileText className="h-3.5 w-3.5" /> View Report
+                    </Link>
+                    <Link href={`/patient/lab-results/${order.id}/print`} target="_blank" className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-3 py-2 text-xs font-medium text-white hover:opacity-90 transition-opacity">
+                      <Printer className="h-3.5 w-3.5" /> Print
+                    </Link>
+                  </div>
                 </div>
               );
             })}

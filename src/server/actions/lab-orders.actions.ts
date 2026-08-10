@@ -3,7 +3,7 @@
 import { db } from '@/server/db';
 import { labOrders, visits, doctors } from '@/server/db/schema';
 import { requireRole, assertDoctorOwnsResource } from '@/server/auth/rbac';
-import { eq, desc } from 'drizzle-orm';
+import { and, eq, desc, sql } from 'drizzle-orm';
 import { z } from 'zod';
 
 // ─── Lab Order Actions ────────────────────────────────────────────────────────
@@ -112,6 +112,33 @@ export async function getLabOrdersForPatient(patientId: string) {
     })
     .from(labOrders)
     .innerJoin(visits, eq(labOrders.visitId, visits.id))
-    .where(eq(visits.patientId, patientId))
+    .where(
+      and(
+        eq(visits.patientId, patientId),
+        eq(labOrders.status, 'completed'),
+        sql`coalesce(${labOrders.result}, '') <> ''`,
+      ),
+    )
     .orderBy(desc(labOrders.createdAt));
+}
+
+export async function getLabOrderForPatient(patientId: string, orderId: string) {
+  await requireRole(['admin', 'doctor', 'patient']);
+
+  const [row] = await db
+    .select({
+      id: labOrders.id,
+      testName: labOrders.testName,
+      instructions: labOrders.instructions,
+      status: labOrders.status,
+      result: labOrders.result,
+      createdAt: labOrders.createdAt,
+      completedAt: labOrders.completedAt,
+      visitCreatedAt: visits.createdAt,
+    })
+    .from(labOrders)
+    .innerJoin(visits, eq(labOrders.visitId, visits.id))
+    .where(and(eq(labOrders.id, orderId), eq(visits.patientId, patientId)));
+
+  return row ?? null;
 }

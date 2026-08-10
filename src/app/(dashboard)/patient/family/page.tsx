@@ -59,11 +59,13 @@ export default async function FamilyPage() {
           members={members.map((m) => ({
             id: m.id,
             name: m.name,
+            phone: m.phone,
             dob: m.dob,
             gender: m.gender,
             bloodGroup: m.bloodGroup,
             allergies: m.allergies,
             city: m.city,
+            emergencyContact: m.emergencyContact,
           }))}
         />
       </div>

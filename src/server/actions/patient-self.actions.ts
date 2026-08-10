@@ -6,19 +6,23 @@ import { requireRole } from '@/server/auth/rbac';
 import { eq, and, isNull } from 'drizzle-orm';
 import { z } from 'zod';
 import bcrypt from 'bcryptjs';
+import { revalidatePath } from 'next/cache';
 
 // ─── Schemas ──────────────────────────────────────────────────────────────────
 
+const phoneRegex = /^\+?[0-9]{10,15}$/;
+
 const updateProfileSchema = z.object({
-  name:             z.string().min(2).max(255).trim(),
-  phone:            z.string().min(5).max(20).trim().optional(),
-  address:          z.string().max(500).trim().optional().nullable(),
+  name: z.string().min(2).max(255).trim(),
+  email: z.string().email('Enter a valid email address').max(255).trim(),
+  phone: z.string().trim().regex(phoneRegex, 'Enter 10–15 digits, optionally starting with +').optional().or(z.literal('')),
+  address: z.string().max(500).trim().optional().nullable(),
   emergencyContact: z.string().max(255).trim().optional().nullable(),
 });
 
 const changePasswordSchema = z.object({
   currentPassword: z.string().min(1, 'Current password is required'),
-  newPassword:     z.string().min(8, 'Password must be at least 8 characters').max(72),
+  newPassword: z.string().min(8, 'Password must be at least 8 characters').max(72),
 });
 
 // ─── Get Own Patient Profile ──────────────────────────────────────────────────
@@ -27,21 +31,20 @@ const changePasswordSchema = z.object({
 export async function getOwnPatientProfile() {
   const session = await requireRole(['patient']);
 
+  const [userRow] = await db
+    .select({ id: users.id, name: users.name, email: users.email })
+    .from(users)
+    .where(eq(users.id, session.user.id));
+
   const [patientRow] = await db
     .select()
     .from(patients)
     .where(
       and(
-        eq(patients.email, session.user.email ?? ''),
+        eq(patients.email, userRow?.email ?? ''),
         isNull(patients.deletedAt),
       ),
     );
-
-  // Also return the user's display name from users table
-  const [userRow] = await db
-    .select({ id: users.id, name: users.name, email: users.email })
-    .from(users)
-    .where(eq(users.id, session.user.id));
 
   return { patient: patientRow ?? null, user: userRow ?? null };
 }
@@ -53,20 +56,36 @@ export async function updateOwnProfile(input: unknown) {
   const session = await requireRole(['patient']);
 
   const data = updateProfileSchema.parse(input);
+  const normalizedEmail = data.email.trim().toLowerCase();
+  const normalizedPhone = data.phone ? data.phone.trim() : null;
 
-  // 1. Update the user display name
-  await db
-    .update(users)
-    .set({ name: data.name })
+  const [userRow] = await db
+    .select({ id: users.id, email: users.email })
+    .from(users)
     .where(eq(users.id, session.user.id));
 
-  // 2. Update the linked patient record (matched by email)
+  if (!userRow) throw new Error('User not found.');
+
+  const [emailOwner] = await db
+    .select({ id: users.id })
+    .from(users)
+    .where(eq(users.email, normalizedEmail));
+
+  if (emailOwner && emailOwner.id !== userRow.id) {
+    throw new Error('This email address is already in use.');
+  }
+
+  await db
+    .update(users)
+    .set({ name: data.name, email: normalizedEmail })
+    .where(eq(users.id, userRow.id));
+
   const [existing] = await db
     .select({ id: patients.id })
     .from(patients)
     .where(
       and(
-        eq(patients.email, session.user.email ?? ''),
+        eq(patients.email, userRow.email),
         isNull(patients.deletedAt),
       ),
     );
@@ -75,14 +94,17 @@ export async function updateOwnProfile(input: unknown) {
     await db
       .update(patients)
       .set({
-        name:             data.name,
-        phone:            data.phone ?? undefined,
-        address:          data.address ?? null,
+        name: data.name,
+        email: normalizedEmail,
+        phone: normalizedPhone ?? undefined,
+        address: data.address ?? null,
         emergencyContact: data.emergencyContact ?? null,
       })
       .where(eq(patients.id, existing.id));
   }
 
+  revalidatePath('/patient/settings');
+  revalidatePath('/patient');
   return { success: true };
 }
 

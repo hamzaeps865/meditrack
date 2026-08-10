@@ -16,6 +16,7 @@ const createFamilyMemberSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters').max(255).trim(),
   dob: z.string().min(1, 'Date of birth is required'),
   gender: z.enum(['male', 'female', 'other']),
+  phone: z.string().trim().regex(/^\+?[0-9]{10,15}$/, 'Enter 10–15 digits, optionally starting with +'),
   bloodGroup: z
     .enum(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])
     .optional(),
@@ -38,9 +39,7 @@ export async function createFamilyMember(input: unknown) {
       name: data.name,
       dob: data.dob,
       gender: data.gender,
-      // Family members have no phone/email of their own — they share the
-      // manager's phone for contact. Required columns need a value.
-      phone: '—',
+      phone: data.phone,
       email: null,
       bloodGroup: data.bloodGroup ?? null,
       allergies: data.allergies || null,
@@ -55,6 +54,19 @@ export async function createFamilyMember(input: unknown) {
   return member;
 }
 
+export async function updateFamilyMember(id: string, input: unknown) {
+  const session = await requireRole(['patient']);
+  const data = createFamilyMemberSchema.parse(input);
+  const [updated] = await db.update(patients).set({
+    name: data.name, dob: data.dob, gender: data.gender, phone: data.phone,
+    bloodGroup: data.bloodGroup ?? null, allergies: data.allergies || null,
+    emergencyContact: data.emergencyContact || null, city: data.city || null,
+  }).where(and(eq(patients.id, id), eq(patients.managedBy, session.user.id), isNull(patients.deletedAt))).returning({ id: patients.id, name: patients.name });
+  if (!updated) throw new Error('Family member not found.');
+  revalidatePath('/patient', 'layout');
+  return updated;
+}
+
 // ─── List family members managed by the logged-in patient ─────────────────────
 
 export async function getFamilyMembers() {
@@ -64,11 +76,13 @@ export async function getFamilyMembers() {
     .select({
       id: patients.id,
       name: patients.name,
+      phone: patients.phone,
       dob: patients.dob,
       gender: patients.gender,
       bloodGroup: patients.bloodGroup,
       allergies: patients.allergies,
       city: patients.city,
+      emergencyContact: patients.emergencyContact,
       createdAt: patients.createdAt,
     })
     .from(patients)
