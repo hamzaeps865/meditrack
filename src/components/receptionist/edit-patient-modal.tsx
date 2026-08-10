@@ -167,6 +167,8 @@ export default function EditPatientModal({ patient, patientCode, onClose }: Prop
                   type="tel"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
+                  placeholder="03001234567"
+                  maxLength={11}
                   required
                   className="w-full h-10 px-3 rounded-lg border border-border bg-background
                     text-sm text-foreground

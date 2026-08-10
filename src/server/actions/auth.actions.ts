@@ -31,9 +31,8 @@ const registerSchema = z.object({
   }),
   phone: z
     .string({ message: 'Phone number is required' })
-    .min(7, 'Phone number is too short')
-    .max(20, 'Phone number must be at most 20 characters')
-    .trim(),
+    .trim()
+    .regex(/^0\d{10}$/, 'Phone number must be exactly 11 digits and start with 0 (e.g. 03001234567)'),
 });
 
 export type RegisterInput = z.infer<typeof registerSchema>;

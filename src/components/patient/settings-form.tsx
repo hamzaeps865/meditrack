@@ -198,7 +198,8 @@ export default function PatientSettingsForm({
                   type="tel"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  placeholder="+1 (555) 000-0000"
+                  placeholder="03001234567"
+                  maxLength={11}
                   className={`${inputCls} pl-9`}
                 />
               </div>

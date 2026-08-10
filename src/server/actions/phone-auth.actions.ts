@@ -56,7 +56,7 @@ export async function sendOtp(input: unknown): Promise<{ success: boolean; code?
  */
 export async function verifyOtp(input: unknown): Promise<{ success: boolean; email?: string; error?: string }> {
   const schema = z.object({
-    phone: z.string().min(7).max(20),
+    phone: phoneSchema,
     code: z.string().length(4),
   });
   const { phone, code } = schema.parse(input);

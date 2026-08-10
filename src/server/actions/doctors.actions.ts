@@ -1,11 +1,15 @@
 'use server';
 
 import { db } from '@/server/db';
-import { doctors, users, doctorAvailability, appointments, patients } from '@/server/db/schema';
+import {
+  doctors, users, doctorAvailability, appointments, patients,
+  doctorReviews, labOrders, invoices, visits, prescriptions, prescriptionItems,
+} from '@/server/db/schema';
 import { requireRole } from '@/server/auth/rbac';
-import { eq, count, isNull, sql } from 'drizzle-orm';
+import { eq, count, isNull, sql, inArray } from 'drizzle-orm';
 import { z } from 'zod';
 import bcrypt from 'bcryptjs';
+import { revalidatePath } from 'next/cache';
 
 // ─── Get All Doctors (with name + specialization) ─────────────────────────────
 // Used to populate the doctor dropdown in the booking modal.
@@ -16,10 +20,10 @@ export async function getAllDoctors() {
 
   return db
     .select({
-      id:             doctors.id,
+      id: doctors.id,
       specialization: doctors.specialization,
-      licenseNumber:  doctors.licenseNumber,
-      name:           users.name,
+      licenseNumber: doctors.licenseNumber,
+      name: users.name,
     })
     .from(doctors)
     .leftJoin(users, eq(doctors.userId, users.id))
@@ -36,12 +40,12 @@ export async function getAllDoctorsAdmin() {
   // Base doctor + user join
   const rows = await db
     .select({
-      id:             doctors.id,
-      userId:         doctors.userId,
+      id: doctors.id,
+      userId: doctors.userId,
       specialization: doctors.specialization,
-      licenseNumber:  doctors.licenseNumber,
-      name:           users.name,
-      email:          users.email,
+      licenseNumber: doctors.licenseNumber,
+      name: users.name,
+      email: users.email,
     })
     .from(doctors)
     .leftJoin(users, eq(doctors.userId, users.id))
@@ -50,17 +54,17 @@ export async function getAllDoctorsAdmin() {
   // Availability counts per doctor
   const availRows = await db
     .select({
-      doctorId:  doctorAvailability.doctorId,
+      doctorId: doctorAvailability.doctorId,
       dayOfWeek: doctorAvailability.dayOfWeek,
       startTime: doctorAvailability.startTime,
-      endTime:   doctorAvailability.endTime,
+      endTime: doctorAvailability.endTime,
     })
     .from(doctorAvailability);
 
   // Active patient counts per doctor (distinct patients with appointments)
   const patientCountRows = await db
     .selectDistinct({
-      doctorId:  appointments.doctorId,
+      doctorId: appointments.doctorId,
       patientId: appointments.patientId,
     })
     .from(appointments);
@@ -79,7 +83,7 @@ export async function getAllDoctorsAdmin() {
   }
 
   return rows.map((doc) => {
-    const avail    = availByDoctor.get(doc.id) ?? [];
+    const avail = availByDoctor.get(doc.id) ?? [];
     const dayCount = new Set(avail.map((a) => a.dayOfWeek)).size;
 
     // Total hours = sum of (endTime - startTime) in hours
@@ -91,15 +95,15 @@ export async function getAllDoctorsAdmin() {
     }
 
     return {
-      id:             doc.id,
-      userId:         doc.userId,
-      name:           doc.name,
-      email:          doc.email,
+      id: doc.id,
+      userId: doc.userId,
+      name: doc.name,
+      email: doc.email,
       specialization: doc.specialization,
-      licenseNumber:  doc.licenseNumber,
-      availDays:      dayCount,
-      availHours:     Math.round(totalHours),
-      patientCount:   patientsByDoctor.get(doc.id)?.size ?? 0,
+      licenseNumber: doc.licenseNumber,
+      availDays: dayCount,
+      availHours: Math.round(totalHours),
+      patientCount: patientsByDoctor.get(doc.id)?.size ?? 0,
     };
   });
 }
@@ -109,12 +113,12 @@ export async function getAllDoctorsAdmin() {
 // Accessible by: admin only
 
 const createDoctorSchema = z.object({
-  name:           z.string().min(2).max(255).trim(),
-  email:          z.string().email().max(255).trim(),
+  name: z.string().min(2).max(255).trim(),
+  email: z.string().email().max(255).trim(),
   // Optional at the schema level — the action enforces it for new accounts only
-  password:       z.string().max(100).optional().default(''),
+  password: z.string().max(100).optional().default(''),
   specialization: z.string().min(2).max(255).trim(),
-  licenseNumber:  z.string().min(2).max(100).trim(),
+  licenseNumber: z.string().min(2).max(100).trim(),
 });
 
 export type CreateDoctorInput = z.infer<typeof createDoctorSchema>;
@@ -151,10 +155,10 @@ export async function createDoctor(input: unknown) {
     const [newUser] = await db
       .insert(users)
       .values({
-        name:         data.name,
-        email:        data.email,
+        name: data.name,
+        email: data.email,
         passwordHash,
-        role:         'doctor',
+        role: 'doctor',
       })
       .returning();
 
@@ -172,11 +176,12 @@ export async function createDoctor(input: unknown) {
       .update(doctors)
       .set({
         specialization: data.specialization,
-        licenseNumber:  data.licenseNumber,
+        licenseNumber: data.licenseNumber,
       })
       .where(eq(doctors.userId, userId))
       .returning();
 
+    revalidatePath('/admin/doctors');
     return { userId, doctor: updated, wasExistingUser: true };
   }
 
@@ -185,10 +190,11 @@ export async function createDoctor(input: unknown) {
     .values({
       userId,
       specialization: data.specialization,
-      licenseNumber:  data.licenseNumber,
+      licenseNumber: data.licenseNumber,
     })
     .returning();
 
+  revalidatePath('/admin/doctors');
   return { userId, doctor: newDoctor, wasExistingUser: false };
 }
 
@@ -223,10 +229,12 @@ export async function updateDoctor(doctorId: string, input: unknown) {
     }
   }
 
+  revalidatePath('/admin/doctors');
+  revalidatePath(`/admin/doctors/${doctorId}`);
   return { success: true };
 }
 
-// ─── Delete Doctor (admin only — soft delete by removing the profile) ─────────
+// ─── Delete Doctor (admin only) ───────────────────────────────────────────────
 
 export async function deleteDoctor(doctorId: string) {
   await requireRole(['admin']);
@@ -234,11 +242,45 @@ export async function deleteDoctor(doctorId: string) {
   const [doctor] = await db.select().from(doctors).where(eq(doctors.id, doctorId));
   if (!doctor) throw new Error('Doctor not found.');
 
-  // Delete the doctor profile (cascade removes availability)
+  // Clean up dependent foreign key records in order
+  // 1. Doctor availability
+  await db.delete(doctorAvailability).where(eq(doctorAvailability.doctorId, doctorId));
+
+  // 2. Doctor reviews
+  await db.delete(doctorReviews).where(eq(doctorReviews.doctorId, doctorId));
+
+  // 3. Lab orders
+  await db.delete(labOrders).where(eq(labOrders.doctorId, doctorId));
+
+  // 4. Invoices
+  await db.delete(invoices).where(eq(invoices.doctorId, doctorId));
+
+  // 5. Visits and their associated prescriptions & items
+  const docVisits = await db.select({ id: visits.id }).from(visits).where(eq(visits.doctorId, doctorId));
+  if (docVisits.length > 0) {
+    const visitIds = docVisits.map((v) => v.id);
+    const docPrescriptions = await db
+      .select({ id: prescriptions.id })
+      .from(prescriptions)
+      .where(inArray(prescriptions.visitId, visitIds));
+    if (docPrescriptions.length > 0) {
+      const rxIds = docPrescriptions.map((r) => r.id);
+      await db.delete(prescriptionItems).where(inArray(prescriptionItems.prescriptionId, rxIds));
+      await db.delete(prescriptions).where(inArray(prescriptions.id, rxIds));
+    }
+    await db.delete(visits).where(eq(visits.doctorId, doctorId));
+  }
+
+  // 6. Appointments
+  await db.delete(appointments).where(eq(appointments.doctorId, doctorId));
+
+  // 7. Delete the doctor profile
   await db.delete(doctors).where(eq(doctors.id, doctorId));
 
-  // Demote the user account to patient role so they can no longer access doctor routes
+  // 8. Demote the user account to patient role so they can no longer access doctor routes
   await db.update(users).set({ role: 'patient' }).where(eq(users.id, doctor.userId));
 
+  revalidatePath('/admin/doctors');
+  revalidatePath(`/admin/doctors/${doctorId}`);
   return { success: true };
 }
