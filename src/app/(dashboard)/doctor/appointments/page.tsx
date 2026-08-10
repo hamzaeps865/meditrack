@@ -147,9 +147,8 @@ export default async function DoctorAppointmentsPage({
       if (apptsByTime.has(time)) {
         unifiedSlots.push(...apptsByTime.get(time)!.map(appt => ({ type: 'appt' as const, appt, time })));
         apptsByTime.delete(time);
-      } else {
-        unifiedSlots.push({ type: 'empty' as const, time });
       }
+      // Empty slots are intentionally omitted — only booked appointments are shown
     }
     
     for (const [time, appts] of Array.from(apptsByTime.entries())) {
@@ -341,39 +340,6 @@ export default async function DoctorAppointmentsPage({
             <ul>
               {unifiedSlots.map((item, idx) => {
                 const isLast = idx === unifiedSlots.length - 1;
-
-                if (item.type === 'empty') {
-                  const [hStr, mStr] = item.time.split(':');
-                  const dateObj = new Date();
-                  dateObj.setHours(Number(hStr), Number(mStr));
-                  const timeFormatted = format(dateObj, 'hh:mm a');
-
-                  return (
-                    <li key={`empty-${item.time}`}
-                      className={`grid grid-cols-[100px_1fr_1fr_160px_140px] gap-4
-                        items-center px-6 py-4 bg-muted/5
-                        ${!isLast ? 'border-b border-border' : ''}`}
-                    >
-                      <div>
-                        <p className="text-sm font-mono font-semibold tabular-nums text-muted-foreground">
-                          {timeFormatted}
-                        </p>
-                      </div>
-                      <div className="col-span-2">
-                        <p className="text-sm italic text-muted-foreground">Empty Slot</p>
-                      </div>
-                      <div>
-                        <span className="inline-flex items-center gap-1.5 text-sm text-muted-foreground font-semibold">
-                          <span className="h-2 w-2 rounded-full shrink-0 bg-muted-foreground/30" />
-                          Available
-                        </span>
-                      </div>
-                      <div className="flex justify-end">
-                        <span className="text-sm text-muted-foreground">—</span>
-                      </div>
-                    </li>
-                  );
-                }
 
                 const appt = item.appt;
                 const cfg         = statusConfig[appt.status] ?? statusConfig.scheduled;

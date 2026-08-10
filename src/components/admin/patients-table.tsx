@@ -92,6 +92,7 @@ export default function PatientsTable({
 }: Props) {
   const [search,      setSearch]      = useState('');
   const [statusTab,   setStatusTab]   = useState<'active' | 'inactive'>('active');
+  const [sortKey,     setSortKey]     = useState<'newest' | 'oldest' | 'name'>('newest');
   const [page,        setPage]        = useState(1);
   const [openMenu,    setOpenMenu]    = useState<string | null>(null);
   const [showModal,   setShowModal]   = useState(false);
@@ -104,10 +105,10 @@ export default function PatientsTable({
   const malePercent   = total > 0 ? Math.round((maleCount   / total) * 100) : 50;
   const femalePercent = 100 - malePercent;
 
-  // Filter
+  // Filter + Sort
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
-    return initialPatients.filter((p) => {
+    const list = initialPatients.filter((p) => {
       const isActive = !p.deletedAt;
       if (statusTab === 'active'   && !isActive) return false;
       if (statusTab === 'inactive' &&  isActive) return false;
@@ -121,7 +122,18 @@ export default function PatientsTable({
       }
       return true;
     });
-  }, [initialPatients, search, statusTab]);
+
+    // Sort
+    if (sortKey === 'newest') {
+      list.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    } else if (sortKey === 'oldest') {
+      list.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+    } else if (sortKey === 'name') {
+      list.sort((a, b) => a.name.localeCompare(b.name));
+    }
+
+    return list;
+  }, [initialPatients, search, statusTab, sortKey]);
 
   const totalPages  = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const currentPage = Math.min(page, totalPages);
@@ -233,8 +245,24 @@ export default function PatientsTable({
             </div>
           </div>
 
-          {/* Right side icons */}
-          <div className="flex items-center gap-1.5">
+          {/* Right side: Sort + icons */}
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-muted-foreground">Sort by:</span>
+            <select
+              value={sortKey}
+              onChange={(e) => {
+                setSortKey(e.target.value as 'newest' | 'oldest' | 'name');
+                setPage(1);
+              }}
+              className="h-8 px-2.5 rounded-lg border border-border bg-white text-xs
+                font-medium text-foreground focus:outline-none focus:ring-2
+                focus:ring-primary/20 transition-colors"
+            >
+              <option value="newest">Registered (Newest)</option>
+              <option value="oldest">Registered (Oldest)</option>
+              <option value="name">Name (A–Z)</option>
+            </select>
+
             <button type="button"
               className="h-8 w-8 flex items-center justify-center rounded-lg
                 border border-border bg-white text-muted-foreground hover:text-foreground
