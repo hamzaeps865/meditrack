@@ -378,7 +378,7 @@ export async function getDispenseHistory(limit = 50) {
   return db
     .select({
       id: dispensings.id,
-      medicineName: prescriptionItems.medicineName,
+      medicineName: medicines.name,
       quantityDispensed: dispensings.quantityDispensed,
       dispensedAt: dispensings.dispensedAt,
       patientName: patients.name,
@@ -387,6 +387,7 @@ export async function getDispenseHistory(limit = 50) {
     })
     .from(dispensings)
     .innerJoin(prescriptionItems, eq(dispensings.prescriptionItemId, prescriptionItems.id))
+    .innerJoin(medicines, eq(dispensings.medicineId, medicines.id))
     .innerJoin(prescriptions, eq(prescriptionItems.prescriptionId, prescriptions.id))
     .innerJoin(visits, eq(prescriptions.visitId, visits.id))
     .leftJoin(patients, eq(visits.patientId, patients.id))

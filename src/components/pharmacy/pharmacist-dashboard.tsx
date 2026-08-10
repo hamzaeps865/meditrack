@@ -44,6 +44,7 @@ export default function PharmacistDashboard({
   const [search, setSearch] = useState('');
   const [selectedBatch, setSelectedBatch] = useState<Record<string, string>>({});
   const [dispenseQty, setDispenseQty] = useState<Record<string, string>>({});
+  const [inventoryState, setInventoryState] = useState(inventory);
   const [medicineName, setMedicineName] = useState('');
   const [genericName, setGenericName] = useState('');
   const [strength, setStrength] = useState('');
@@ -75,6 +76,7 @@ export default function PharmacistDashboard({
           quantity: qty,
         });
         toast.success(`${item.medicineName} dispensed to ${item.patientName ?? 'patient'}.`);
+        setInventoryState((current) => current.map((batch) => (batch.id === batchId ? { ...batch, quantityInStock: Math.max(0, batch.quantityInStock - qty) } : batch)));
         router.refresh();
       } catch (err) {
         toast.error(err instanceof Error ? err.message : 'Dispensing failed.');
@@ -105,7 +107,7 @@ export default function PharmacistDashboard({
   }
 
   // Available batches (stock > 0)
-  const availableBatches = (item: PendingItem) => inventory.filter((b) =>
+  const availableBatches = (item: PendingItem) => inventoryState.filter((b) =>
     b.quantityInStock > 0 && (!item.medicineId || b.medicineId === item.medicineId),
   );
 
@@ -201,14 +203,14 @@ export default function PharmacistDashboard({
       )}
 
       {/* Low-stock warning */}
-      {inventory.filter((b) => b.quantityInStock <= 10).length > 0 && (
+      {inventoryState.filter((b) => b.quantityInStock <= 10).length > 0 && (
         <div className="bg-rose-50 border border-rose-200 rounded-2xl p-4">
           <div className="flex items-center gap-2 mb-2">
             <AlertTriangle className="h-4 w-4 text-rose-600" />
             <h3 className="text-sm font-bold text-rose-700">Low Stock Alert</h3>
           </div>
           <div className="space-y-1">
-            {inventory.filter((b) => b.quantityInStock <= 10).slice(0, 5).map((b) => (
+            {inventoryState.filter((b) => b.quantityInStock <= 10).slice(0, 5).map((b) => (
               <div key={b.id} className="flex items-center justify-between text-xs">
                 <span className="text-rose-700">{b.medicineName} — Batch {b.batchNumber ?? 'N/A'}</span>
                 <span className="font-bold text-rose-600">{b.quantityInStock} units</span>
