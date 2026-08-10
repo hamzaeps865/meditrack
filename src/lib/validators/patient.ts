@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { isValidPakistaniPhone, pakistaniPhoneMessage } from '@/lib/validators/phone';
 
 // ─── Reusable field definitions ───────────────────────────────────────────────
 
@@ -22,13 +23,16 @@ const genderSchema = z.enum(['male', 'female', 'other'], {
 const phoneSchema = z
   .string({ message: 'Phone number is required' })
   .trim()
-  .regex(/^\+?[0-9]{10,15}$/, 'Enter 10–15 digits, optionally starting with +');
+  .refine((value) => isValidPakistaniPhone(value), {
+    message: pakistaniPhoneMessage,
+  });
 
 const emailSchema = z
   .string()
   .email('Invalid email address')
   .max(255, 'Email must be at most 255 characters')
   .trim()
+  .toLowerCase()
   .optional()
   .or(z.literal(''));
 
@@ -46,6 +50,8 @@ export const createPatientSchema = z.object({
   gender: genderSchema,
   phone: phoneSchema,
   email: emailSchema,
+  password: z.string().min(8, 'Password must be at least 8 characters').max(72, 'Password too long').optional().or(z.literal('')),
+  confirmPassword: z.string().max(72).optional().or(z.literal('')),
   address: z.string().max(1000).trim().optional(),
   bloodGroup: bloodGroupSchema,
   allergies: z.string().max(1000, 'Allergies text too long').trim().optional(),
@@ -54,6 +60,15 @@ export const createPatientSchema = z.object({
     .max(255, 'Emergency contact too long')
     .trim()
     .optional(),
+}).superRefine((data, ctx) => {
+  if (data.password || data.confirmPassword) {
+    if (data.password !== data.confirmPassword) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['confirmPassword'], message: 'Passwords do not match' });
+    }
+    if (data.password && data.password.length < 8) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['password'], message: 'Password must be at least 8 characters' });
+    }
+  }
 });
 
 export type CreatePatientInput = z.infer<typeof createPatientSchema>;

@@ -58,6 +58,8 @@ export default function RegisterPatientModal({ onClose }: Props) {
   const [gender, setGender]                     = useState('');
   const [phone, setPhone]                       = useState('');
   const [email, setEmail]                       = useState('');
+  const [password, setPassword]                 = useState('');
+  const [confirmPassword, setConfirmPassword]   = useState('');
   const [address, setAddress]                   = useState('');
   const [emergencyContactName, setEcName]       = useState('');
   const [emergencyRelation, setEcRelation]      = useState('');
@@ -81,6 +83,16 @@ export default function RegisterPatientModal({ onClose }: Props) {
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
+    if (password && password !== confirmPassword) {
+      toast.error('Passwords do not match.');
+      return;
+    }
+
+    if (password && password.length < 8) {
+      toast.error('Password must be at least 8 characters.');
+      return;
+    }
+
     // Combine emergency contact fields into one string
     const emergencyContact = [emergencyContactName, emergencyRelation, emergencyPhone]
       .filter(Boolean)
@@ -94,6 +106,8 @@ export default function RegisterPatientModal({ onClose }: Props) {
           gender,
           phone,
           email:            email || undefined,
+          password:         password || undefined,
+          confirmPassword: confirmPassword || undefined,
           address:          address || undefined,
           emergencyContact: emergencyContact || undefined,
           bloodGroup:       (bloodGroup as any) || undefined,
@@ -215,6 +229,26 @@ export default function RegisterPatientModal({ onClose }: Props) {
                     className={inputCls}
                   />
                 </Field>
+                <div className="grid grid-cols-2 gap-3">
+                  <Field label="Password">
+                    <input
+                      type="password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder="Min. 8 chars"
+                      className={inputCls}
+                    />
+                  </Field>
+                  <Field label="Confirm Password">
+                    <input
+                      type="password"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      placeholder="Repeat password"
+                      className={inputCls}
+                    />
+                  </Field>
+                </div>
                 <Field label="Residential Address">
                   <textarea
                     value={address}

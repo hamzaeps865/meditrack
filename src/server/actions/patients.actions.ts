@@ -1,12 +1,13 @@
 'use server';
 
 import { db } from '@/server/db';
-import { patients, auditLogs } from '@/server/db/schema';
+import { patients, auditLogs, users } from '@/server/db/schema';
 import { requireRole } from '@/server/auth/rbac';
 import { createPatientSchema, updatePatientSchema, patientIdSchema } from '@/lib/validators/patient';
 import { withAudit, auditRead, getIpFromHeaders } from '@/lib/audit-wrapper';
 import { headers } from 'next/headers';
 import { eq, and, isNull, or, ilike } from 'drizzle-orm';
+import bcrypt from 'bcryptjs';
 
 // ─── Get All Patients ─────────────────────────────────────────────────────────
 // Returns all non-deleted patients.
@@ -80,13 +81,46 @@ export async function createPatient(input: unknown) {
   const ip = getIpFromHeaders(await headers());
 
   const data = createPatientSchema.parse(input);
+  const normalizedEmail = data.email?.trim().toLowerCase() || null;
+  const password = data.password?.trim();
+
+  const [existingUser] = await db
+    .select({ id: users.id })
+    .from(users)
+    .where(eq(users.email, normalizedEmail ?? ''));
+
+  let linkedUserId = session.user.id;
+
+  if (normalizedEmail && !existingUser) {
+    const passwordHash = password ? await bcrypt.hash(password, 12) : await bcrypt.hash('Patient@1234', 12);
+
+    const [newUser] = await db
+      .insert(users)
+      .values({
+        name: data.name,
+        email: normalizedEmail,
+        passwordHash,
+        role: 'patient',
+        phone: data.phone,
+      })
+      .returning({ id: users.id });
+
+    linkedUserId = newUser.id;
+  }
 
   const [newPatient] = await db
     .insert(patients)
     .values({
-      ...data,
-      email: data.email || null,
-      createdBy: session.user.id,
+      name: data.name,
+      dob: data.dob,
+      gender: data.gender,
+      phone: data.phone,
+      email: normalizedEmail,
+      address: data.address || null,
+      bloodGroup: data.bloodGroup || null,
+      allergies: data.allergies || null,
+      emergencyContact: data.emergencyContact || null,
+      createdBy: linkedUserId,
     })
     .returning();
 

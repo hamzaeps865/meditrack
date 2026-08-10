@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { getLabOrdersForPatient } from '@/server/actions/lab-orders.actions';
 import { getActivePatient } from '@/server/actions/active-patient';
 import NotificationBell from '@/components/shared/notification-bell';
+import LabExplainButton from '@/components/ai/lab-explain-button';
 import { format } from 'date-fns';
 import { FlaskConical, CheckCircle2, Clock, FileText, Printer } from 'lucide-react';
 
@@ -70,10 +71,18 @@ export default async function PatientLabResultsPage() {
                       <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-0.5 flex items-center gap-1">
                         <FileText className="h-3 w-3" /> Result
                       </p>
-                      <p className="text-sm text-foreground">{order.result}</p>
+                      <p className="text-sm text-foreground whitespace-pre-line">{order.result}</p>
                       {order.completedAt && (
                         <p className="text-[10px] text-muted-foreground mt-1">Completed: {format(new Date(order.completedAt), 'MMM d, yyyy')}</p>
                       )}
+                      {/* AI Explain button */}
+                      <div className="mt-2">
+                        <LabExplainButton
+                          testName={order.testName}
+                          result={order.result}
+                          patientName={session.user.name}
+                        />
+                      </div>
                     </div>
                   )}
 

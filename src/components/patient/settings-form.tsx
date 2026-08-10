@@ -8,6 +8,7 @@ import {
   AlertCircle, Heart, Bell,
 } from 'lucide-react';
 import { updateOwnProfile, changeOwnPassword } from '@/server/actions/patient-self.actions';
+import { isValidPakistaniPhone, pakistaniPhoneMessage } from '@/lib/validators/phone';
 
 const phoneRegex = /^\+?[0-9]{10,15}$/;
 
@@ -111,8 +112,8 @@ export default function PatientSettingsForm({
 
   // ── Profile save ────────────────────────────────────────────────────────────
   function validateProfileInput() {
-    if (phone.trim() && !phoneRegex.test(phone.replace(/\s+/g, ''))) {
-      setProfileMsg({ type: 'error', text: 'Please enter a valid phone number with 10–15 digits.' });
+    if (phone.trim() && !isValidPakistaniPhone(phone)) {
+      setProfileMsg({ type: 'error', text: pakistaniPhoneMessage });
       return false;
     }
 

@@ -6,6 +6,7 @@ import { requireRole } from '@/server/auth/rbac';
 import { eq, and, isNull } from 'drizzle-orm';
 import { z } from 'zod';
 import { revalidatePath } from 'next/cache';
+import { isValidPakistaniPhone, pakistaniPhoneMessage } from '@/lib/validators/phone';
 
 // ─── Family Profile Management ────────────────────────────────────────────────
 // A logged-in patient (head-of-household) can create managed sub-profiles for
@@ -16,7 +17,9 @@ const createFamilyMemberSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters').max(255).trim(),
   dob: z.string().min(1, 'Date of birth is required'),
   gender: z.enum(['male', 'female', 'other']),
-  phone: z.string().trim().regex(/^\+?[0-9]{10,15}$/, 'Enter 10–15 digits, optionally starting with +'),
+  phone: z.string().trim().refine((value) => isValidPakistaniPhone(value), {
+    message: pakistaniPhoneMessage,
+  }),
   bloodGroup: z
     .enum(['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'])
     .optional(),
