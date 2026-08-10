@@ -5,6 +5,9 @@ import { users } from '@/server/db/schema';
 import { requireRole } from '@/server/auth/rbac';
 import { eq } from 'drizzle-orm';
 import { z } from 'zod';
+import bcrypt from 'bcryptjs';
+
+const BCRYPT_ROUNDS = 12;
 
 // ─── Get All Users ────────────────────────────────────────────────────────────
 // Accessible by: admin only
@@ -104,4 +107,36 @@ export async function deactivateUser(userId: string) {
 
   await db.update(users).set({ role: 'patient' }).where(eq(users.id, userId));
   return { success: true };
+}
+
+// ─── Reset User Password (admin only — change password for any patient/doctor/staff) ───
+
+const resetUserPasswordSchema = z.object({
+  userId: z.string().uuid('Invalid user ID'),
+  newPassword: z
+    .string()
+    .min(8, 'Password must be at least 8 characters')
+    .max(72, 'Password is too long'),
+});
+
+export async function resetUserPassword(input: unknown) {
+  await requireRole(['admin']);
+
+  const { userId, newPassword } = resetUserPasswordSchema.parse(input);
+
+  const [existing] = await db
+    .select({ id: users.id, name: users.name, email: users.email })
+    .from(users)
+    .where(eq(users.id, userId));
+
+  if (!existing) throw new Error('User not found.');
+
+  const passwordHash = await bcrypt.hash(newPassword, BCRYPT_ROUNDS);
+
+  await db
+    .update(users)
+    .set({ passwordHash })
+    .where(eq(users.id, userId));
+
+  return { success: true, name: existing.name, email: existing.email };
 }

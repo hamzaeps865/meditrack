@@ -6,7 +6,7 @@ import {
   Search, Plus, MoreVertical,
   ChevronLeft, ChevronRight,
   CheckCircle2, XCircle, AlertCircle,
-  CalendarDays, Lightbulb,
+  CalendarDays, Lightbulb, CalendarClock,
 } from 'lucide-react';
 import NotificationBell from '@/components/shared/notification-bell';
 import CancelAppointmentButton from '@/components/shared/cancel-appointment-button';
@@ -95,6 +95,7 @@ export default function AppointmentsTable({
   const [statusFilter, setStatusFilter] = useState('all');
   const [page,       setPage]       = useState(1);
   const [openMenu,   setOpenMenu]   = useState<string | null>(null);
+  const [rescheduleTarget, setRescheduleTarget] = useState<AdminAppointment | null>(null);
 
   // Unique doctors for dropdown
   const doctorOptions = useMemo(() => {
@@ -333,11 +334,11 @@ export default function AppointmentsTable({
         <div className="bg-white rounded-2xl border border-border overflow-hidden shadow-sm mb-4">
 
           {/* Header */}
-          <div className="grid grid-cols-[130px_1fr_1fr_120px_1fr_120px_50px]
+          <div className="grid grid-cols-[130px_1fr_1fr_120px_1fr_120px_90px]
             px-5 py-3 border-b border-border bg-muted/20">
-            {['DATE/TIME', 'PATIENT NAME', 'DOCTOR', 'STATUS', 'REASON', 'BOOKED BY', 'ACTIONS'].map((h) => (
+            {['DATE/TIME', 'PATIENT NAME', 'DOCTOR', 'STATUS', 'REASON', 'BOOKED BY', 'ACTIONS'].map((h, i) => (
               <p key={h}
-                className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                className={`text-[10px] font-bold uppercase tracking-widest text-muted-foreground ${i === 6 ? 'text-right pr-2' : ''}`}>
                 {h}
               </p>
             ))}
@@ -360,7 +361,7 @@ export default function AppointmentsTable({
 
                 return (
                   <li key={appt.id}
-                    className={`grid grid-cols-[130px_1fr_1fr_120px_1fr_120px_50px]
+                    className={`grid grid-cols-[130px_1fr_1fr_120px_1fr_120px_90px]
                       items-center px-5 py-4 relative transition-colors
                       ${isLive ? 'bg-primary/[0.03] border-l-4 border-l-primary' : ''}
                       ${isCancelled ? 'opacity-60' : 'hover:bg-muted/20'}`}>
@@ -427,7 +428,16 @@ export default function AppointmentsTable({
                     </div>
 
                     {/* Actions */}
-                    <div className="flex justify-center relative">
+                    <div className="flex items-center justify-end gap-1 relative">
+                      <button
+                        type="button"
+                        onClick={() => setRescheduleTarget(appt)}
+                        className="h-7 w-7 flex items-center justify-center rounded-md text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors"
+                        title="Easy Reschedule"
+                      >
+                        <CalendarClock className="h-4 w-4" />
+                      </button>
+
                       <button
                         type="button"
                         onClick={() => setOpenMenu(openMenu === appt.id ? null : appt.id)}
@@ -447,9 +457,16 @@ export default function AppointmentsTable({
                           >
                             View Details
                           </Link>
-                          <div onClick={() => setOpenMenu(null)}>
-                            <RescheduleModal appointmentId={appt.id} />
-                          </div>
+                          <button
+                            type="button"
+                            className="w-full text-left px-4 py-2 text-sm text-foreground hover:bg-muted"
+                            onClick={() => {
+                              setOpenMenu(null);
+                              setRescheduleTarget(appt);
+                            }}
+                          >
+                            Reschedule
+                          </button>
                           <div onClick={() => setOpenMenu(null)} className="px-4 py-2 hover:bg-red-50">
                             <CancelAppointmentButton appointmentId={appt.id} variant="text" />
                           </div>
@@ -593,6 +610,14 @@ export default function AppointmentsTable({
           </div>
         </div>
       </div>
+
+      {/* Easy Reschedule Modal */}
+      {rescheduleTarget && (
+        <RescheduleModal
+          appointment={rescheduleTarget}
+          onClose={() => setRescheduleTarget(null)}
+        />
+      )}
     </div>
   );
 }

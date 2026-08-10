@@ -6,7 +6,7 @@ import {
   Calendar, BellRing, Shield, Users,
   FileImage, CheckCircle2, Clock,
   Lock, Eye, EyeOff, ToggleLeft, ToggleRight,
-  Loader2,
+  Loader2, Upload, Trash2, Building2,
 } from 'lucide-react';
 import NotificationBell from '@/components/shared/notification-bell';
 import { toast } from 'sonner';
@@ -150,9 +150,39 @@ export default function AdminSettings({ adminName, adminEmail }: Props) {
 
   // ── Clinic Information state ──────────────────────────────────────────────
   const [clinicName,    setClinicName]    = useState('MediTrack Central Clinic');
+  const [clinicLogo,    setClinicLogo]    = useState<string>('');
   const [contactEmail,  setContactEmail]  = useState('admin@meditrack-central.com');
   const [phone,         setPhone]         = useState('+1 (555) 902-3401');
   const [address,       setAddress]       = useState('102 Medical Plaza, Suite 400, Austin, TX 78701');
+
+  function handleLogoUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      toast.error('Please upload a valid image file (PNG, JPG, WebP, SVG).');
+      return;
+    }
+
+    if (file.size > 2 * 1024 * 1024) {
+      toast.error('File size exceeds 2MB limit.');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (typeof reader.result === 'string') {
+        setClinicLogo(reader.result);
+        toast.success('Logo selected. Click Save Changes below to apply.');
+      }
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function handleRemoveLogo() {
+    setClinicLogo('');
+    toast.info('Logo removed. Click Save Changes below to apply.');
+  }
 
   const [hours, setHours] = useState([
     { day: 'Monday – Friday', open: true,  start: '08:00', end: '18:00' },
@@ -197,7 +227,11 @@ export default function AdminSettings({ adminName, adminEmail }: Props) {
         const s = await getSystemSettings();
         if (cancelled) return;
         if (s.clinic_name)    setClinicName(s.clinic_name);
-        if (s.consultation_fee) setConsultationFee(s.consultation_fee);
+        if (s.clinic_logo !== undefined) setClinicLogo(s.clinic_logo);
+        if (s.consultation_fee) {
+          const feeNum = Number(s.consultation_fee);
+          setConsultationFee(String(feeNum >= 100 ? feeNum / 100 : feeNum));
+        }
         if (s.contact_email)  setContactEmail(s.contact_email);
         if (s.phone)          setPhone(s.phone);
         if (s.address)        setAddress(s.address);
@@ -231,6 +265,7 @@ export default function AdminSettings({ adminName, adminEmail }: Props) {
       try {
         await setSystemSettings({
           clinic_name: clinicName,
+          clinic_logo: clinicLogo,
           consultation_fee: String(Number(consultationFee) * 100), // store in paisa/cents
           contact_email: contactEmail,
           phone,
@@ -322,11 +357,15 @@ export default function AdminSettings({ adminName, adminEmail }: Props) {
           </button>
           <div className="pl-2.5 border-l border-border flex items-center gap-2">
             <span className="text-sm font-semibold text-foreground hidden sm:block">
-              Clinic 0812
+              {clinicName || 'Clinic'}
             </span>
             <div className="h-8 w-8 rounded-full bg-primary/10 text-primary
-              flex items-center justify-center text-xs font-bold shrink-0">
-              <Globe className="h-4 w-4" />
+              flex items-center justify-center text-xs font-bold shrink-0 overflow-hidden border border-primary/20">
+              {clinicLogo ? (
+                <img src={clinicLogo} alt={clinicName} className="h-full w-full object-cover" />
+              ) : (
+                <Globe className="h-4 w-4" />
+              )}
             </div>
           </div>
         </div>
@@ -414,12 +453,41 @@ export default function AdminSettings({ adminName, adminEmail }: Props) {
                     {/* Logo upload */}
                     <div>
                       <label className={labelCls}>Clinic Logo</label>
-                      <div className="h-44 rounded-xl border-2 border-dashed border-border
-                        flex flex-col items-center justify-center gap-2">
-                        <FileImage className="h-7 w-7 text-muted-foreground/40" />
-                        <p className="text-xs font-medium text-muted-foreground text-center px-2">
-                          Logo upload coming soon
-                        </p>
+                      <div className="h-48 rounded-xl border-2 border-dashed border-border bg-muted/20 hover:bg-muted/30 transition-colors p-4 flex flex-col items-center justify-center text-center relative overflow-hidden group">
+                        {clinicLogo ? (
+                          <div className="flex flex-col items-center justify-center h-full w-full gap-2">
+                            <div className="h-20 w-20 rounded-xl overflow-hidden border border-border bg-white p-1 shadow-sm flex items-center justify-center">
+                              <img src={clinicLogo} alt="Clinic Logo Preview" className="h-full w-full object-contain" />
+                            </div>
+                            <p className="text-xs font-semibold text-emerald-600 flex items-center gap-1">
+                              <CheckCircle2 className="h-3.5 w-3.5" /> Logo uploaded
+                            </p>
+                            <div className="flex items-center gap-2 mt-1">
+                              <label className="cursor-pointer px-2.5 py-1 rounded-lg text-xs font-semibold bg-white border border-border text-foreground hover:bg-muted transition-colors shadow-xs">
+                                Change
+                                <input type="file" accept="image/*" className="hidden" onChange={handleLogoUpload} />
+                              </label>
+                              <button
+                                type="button"
+                                onClick={handleRemoveLogo}
+                                className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-red-50 border border-red-200 text-red-600 hover:bg-red-100 transition-colors"
+                              >
+                                Remove
+                              </button>
+                            </div>
+                          </div>
+                        ) : (
+                          <label className="cursor-pointer flex flex-col items-center justify-center h-full w-full gap-2 p-2">
+                            <div className="h-10 w-10 rounded-full bg-primary/10 text-primary flex items-center justify-center">
+                              <Upload className="h-5 w-5" />
+                            </div>
+                            <div>
+                              <p className="text-xs font-bold text-foreground">Click to upload logo</p>
+                              <p className="text-[11px] text-muted-foreground mt-0.5">PNG, JPG, WebP (max 2MB)</p>
+                            </div>
+                            <input type="file" accept="image/*" className="hidden" onChange={handleLogoUpload} />
+                          </label>
+                        )}
                       </div>
                     </div>
                   </div>

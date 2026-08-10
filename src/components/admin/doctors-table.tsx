@@ -20,14 +20,14 @@ const AddDoctorModal = dynamic(
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 interface Doctor {
-  id:             string;
-  name:           string | null;
-  email:          string | null;
+  id: string;
+  name: string | null;
+  email: string | null;
   specialization: string;
-  licenseNumber:  string;
-  availDays:      number;
-  availHours:     number;
-  patientCount:   number;
+  licenseNumber: string;
+  availDays: number;
+  availHours: number;
+  patientCount: number;
 }
 
 interface Props {
@@ -62,9 +62,9 @@ export default function DoctorsTable({ doctors: initialDoctors }: Props) {
   // Sync local state when server props change (after router.refresh / createDoctor)
   useEffect(() => { setDoctors(initialDoctors); }, [initialDoctors]);
 
-  const [search,  setSearch]  = useState('');
-  const [filter,  setFilter]  = useState('all');
-  const [page,    setPage]    = useState(1);
+  const [search, setSearch] = useState('');
+  const [filter, setFilter] = useState('all');
+  const [page, setPage] = useState(1);
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [isPending, startTransition] = useTransition();
@@ -80,7 +80,7 @@ export default function DoctorsTable({ doctors: initialDoctors }: Props) {
 
   // Filter chips: All + top 2 specializations + Active Only
   const filterChips = [
-    { key: 'all',    label: 'All Specialists' },
+    { key: 'all', label: 'All Specialists' },
     ...specializations.slice(0, 2).map((s) => ({ key: s, label: s })),
     { key: 'active', label: 'Active Only' },
   ];
@@ -99,11 +99,11 @@ export default function DoctorsTable({ doctors: initialDoctors }: Props) {
     });
   }, [doctors, search, filter, inactiveIds]);
 
-  const totalPages  = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const currentPage = Math.min(page, totalPages);
-  const pageStart   = (currentPage - 1) * PAGE_SIZE;
-  const pageItems   = filtered.slice(pageStart, pageStart + PAGE_SIZE);
-  
+  const pageStart = (currentPage - 1) * PAGE_SIZE;
+  const pageItems = filtered.slice(pageStart, pageStart + PAGE_SIZE);
+
 
   function toggleActive(id: string) {
     setInactiveIds((prev) => {
@@ -212,7 +212,7 @@ export default function DoctorsTable({ doctors: initialDoctors }: Props) {
             <ul className="divide-y divide-border">
               {pageItems.map((doc) => {
                 const isActive = !inactiveIds.has(doc.id);
-                const name     = doc.name ?? 'Unknown';
+                const name = doc.name ?? 'Unknown';
 
                 return (
                   <li key={doc.id}

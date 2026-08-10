@@ -27,7 +27,7 @@ export async function getSystemSettings(): Promise<Record<string, string>> {
   return Object.fromEntries(rows.map((r) => [r.key, r.value]));
 }
 
-const settingsInputSchema = z.record(z.string(), z.string().max(5000));
+const settingsInputSchema = z.record(z.string(), z.string().max(2000000));
 
 /**
  * Persist a batch of setting key/values (admin-only).

@@ -2,10 +2,11 @@
 
 import { useState, useMemo, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Search, SlidersHorizontal, Users as UsersIcon, ShieldCheck } from 'lucide-react';
+import { Search, SlidersHorizontal, Users as UsersIcon, ShieldCheck, KeyRound } from 'lucide-react';
 import NotificationBell from '@/components/shared/notification-bell';
 import RoleSelect from '@/components/admin/role-select';
 import EditUserName from '@/components/admin/edit-user-name';
+import ResetPasswordModal from '@/components/admin/reset-password-modal';
 import { format } from 'date-fns';
 
 type Role = 'admin' | 'doctor' | 'receptionist' | 'patient' | 'nurse' | 'pharmacist' | 'lab';
@@ -65,6 +66,7 @@ export default function UsersTable({ users: initialUsers, currentUserId }: Users
   const [search, setSearch] = useState('');
   const [roleFilter, setRoleFilter] = useState('all');
   const [page, setPage] = useState(1);
+  const [resetTarget, setResetTarget] = useState<{ id: string; name: string; email: string } | null>(null);
 
   const filteredUsers = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -222,7 +224,15 @@ export default function UsersTable({ users: initialUsers, currentUserId }: Users
                     </div>
 
                     {/* Actions */}
-                    <div className="flex justify-end">
+                    <div className="flex items-center justify-end gap-1.5">
+                      <button
+                        type="button"
+                        onClick={() => setResetTarget({ id: u.id, name: name, email: u.email })}
+                        className="text-muted-foreground hover:text-amber-600 transition-colors p-1"
+                        title="Reset User Password"
+                      >
+                        <KeyRound className="h-3.5 w-3.5" />
+                      </button>
                       <EditUserName userId={u.id} currentName={u.name} isSelf={isSelf} />
                     </div>
                   </li>
@@ -259,6 +269,16 @@ export default function UsersTable({ users: initialUsers, currentUserId }: Users
           </div>
         </div>
       </div>
+
+      {/* Reset Password Modal */}
+      {resetTarget && (
+        <ResetPasswordModal
+          userId={resetTarget.id}
+          userName={resetTarget.name}
+          userEmail={resetTarget.email}
+          onClose={() => setResetTarget(null)}
+        />
+      )}
     </div>
   );
 }
