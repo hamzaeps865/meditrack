@@ -4,7 +4,7 @@ import { signIn } from 'next-auth/react';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { BriefcaseMedical, Eye, EyeOff, Phone, Mail, Loader2, Sparkles, Flag, CheckCircle2 } from 'lucide-react';
+import { BriefcaseMedical, Eye, EyeOff, Phone, Mail, Loader2, CheckCircle2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -101,27 +101,28 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-[url('/azadi_bg.png')] bg-cover bg-center bg-no-repeat px-4 py-10 relative overflow-hidden">
-      {/* Dark Cinematic Backdrop Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#00180a]/85 via-[#012d13]/80 to-[#001207]/90 backdrop-blur-[1px] pointer-events-none" />
-
-      {/* Vibrant Ambient Glow Rings */}
-      <div className="absolute -top-24 -left-24 w-96 h-96 bg-emerald-400/30 rounded-full blur-3xl pointer-events-none animate-pulse" />
-      <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-white/20 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-emerald-500/20 rounded-full blur-3xl pointer-events-none" />
+    <div className="min-h-screen flex flex-col items-center justify-center bg-white px-4 py-10 relative overflow-hidden">
 
 
 
-      {/* Main Glassmorphic Card (Flat rectangular layout without rounded corners) */}
-      <div className="bg-white/95 backdrop-blur-2xl shadow-[0_0_50px_-10px_rgba(1,65,28,0.5)] border-2 border-emerald-500/30 w-full max-w-[380px] overflow-hidden rounded-none relative z-10">
-        {/* Pakistani Flag Top Stripe */}
-        <div className="h-1.5 w-full bg-gradient-to-r from-[#01411C] via-white to-[#01411C]" />
+      {/* Login Card */}
+      <div
+        className="shadow-lg border border-gray-200 w-full max-w-[380px] rounded-none overflow-hidden relative z-10"
+        style={{
+          backgroundImage: "url('/loginbackground.jpg')",
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+        }}
+      >
+        {/* Semi-transparent white overlay to ensure content readability */}
+        <div className="absolute inset-0 bg-white/90 pointer-events-none" />
 
-        <div className="px-5 sm:px-6 pt-5 pb-5">
+        <div className="px-6 pt-8 pb-6 relative z-10">
           {/* Brand & Emblem */}
           <div className="flex flex-col items-center text-center mb-6">
             <div className="flex items-center gap-2.5 mb-3">
-              <div className="h-11 w-11 rounded-none bg-[#01411C] text-white flex items-center justify-center shadow-md border border-emerald-600/30">
+              <div className="h-11 w-11 rounded-none bg-[#01411C] text-white flex items-center justify-center shadow-md">
                 <BriefcaseMedical className="h-6 w-6 text-emerald-300" strokeWidth={2.25} />
               </div>
               <div className="text-left">
@@ -326,32 +327,12 @@ export default function LoginPage() {
             </div>
           )}
 
-          {/* Divider */}
-          <div className="flex items-center gap-3 mt-6">
-            <span className="h-px flex-1 bg-gray-200" />
-            <span className="text-[11px] font-semibold text-emerald-800 uppercase tracking-wider bg-emerald-50 px-2.5 py-0.5 rounded-none border border-emerald-200/60">
-              Secure Medical Access
-            </span>
-            <span className="h-px flex-1 bg-gray-200" />
-          </div>
-
-          <p className="mt-5 text-center text-xs text-gray-600">
+          <p className="mt-6 text-center text-sm text-gray-600">
             Don&apos;t have a patient account?{' '}
             <Link href="/register" className="text-[#01411C] font-bold hover:underline">
               Register New Patient
             </Link>
           </p>
-        </div>
-
-        {/* Patriotic Footer Strip */}
-        <div className="flex items-center justify-between border-t border-gray-100 bg-emerald-50/50 px-6 sm:px-[33px] py-3 text-[11px] text-gray-600">
-          <span className="flex items-center gap-1.5 font-medium">
-            <span className="h-2 w-2 rounded-none bg-emerald-600 animate-ping" />
-            MediTrack Systems Online
-          </span>
-          <div className="flex items-center gap-3 font-semibold text-[#01411C]">
-            <span>Azadi Mubarak 🇵🇰</span>
-          </div>
         </div>
       </div>
     </div>

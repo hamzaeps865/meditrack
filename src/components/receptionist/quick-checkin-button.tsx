@@ -4,6 +4,7 @@ import { useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { updateAppointmentStatus } from '@/server/actions/appointments.actions';
 import { UserCheck, Loader2 } from 'lucide-react';
+import { toast } from 'sonner';
 
 export default function QuickCheckinButton({ appointmentId }: { appointmentId: string }) {
  const router = useRouter();
@@ -14,8 +15,8 @@ export default function QuickCheckinButton({ appointmentId }: { appointmentId: s
    try {
     await updateAppointmentStatus({ id: appointmentId, status: 'checked_in' });
     router.refresh();
-   } catch (err: any) {
-    alert(err?.message ?? 'Failed to check in patient.');
+  } catch (err) {
+   toast.error(err instanceof Error ? err.message : 'Failed to check in patient.');
    }
   });
  }

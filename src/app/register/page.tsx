@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
-import { BriefcaseMedical, ArrowRight, AlertCircle, Sparkles, CheckCircle2, Loader2 } from 'lucide-react';
+import { BriefcaseMedical, ArrowRight, AlertCircle, CheckCircle2, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -93,21 +93,22 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-[url('/azadi_register_bg.png')] bg-cover bg-center bg-no-repeat px-4 py-8 relative overflow-hidden">
-      {/* Dark Cinematic Backdrop Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#00180a]/85 via-[#012d13]/80 to-[#001207]/90 backdrop-blur-[1px] pointer-events-none" />
+    <div className="min-h-screen flex flex-col items-center justify-center bg-white px-4 py-8 relative overflow-hidden">
 
-      {/* Radiant Glowing Elements */}
-      <div className="absolute -top-24 -left-24 w-96 h-96 bg-emerald-400/30 rounded-full blur-3xl pointer-events-none animate-pulse" />
-      <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-white/20 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-emerald-500/20 rounded-full blur-3xl pointer-events-none" />
+      {/* Register Card */}
+      <div
+        className="shadow-lg border border-gray-200 w-full max-w-[460px] rounded-none overflow-hidden relative z-10"
+        style={{
+          backgroundImage: "url('/regsiterBackground.jpg')",
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+        }}
+      >
+        {/* Semi-transparent white overlay to ensure content readability */}
+        <div className="absolute inset-0 bg-white/90 pointer-events-none" />
 
-      {/* Main Centered Flat Register Card */}
-      <div className="bg-white/95 backdrop-blur-2xl shadow-[0_0_50px_-10px_rgba(1,65,28,0.5)] border-2 border-emerald-500/30 w-full max-w-[460px] overflow-hidden rounded-none relative z-10">
-        {/* Pakistani Flag Top Stripe */}
-        <div className="h-1.5 w-full bg-gradient-to-r from-[#01411C] via-white to-[#01411C]" />
-
-        <div className="px-6 sm:px-8 pt-6 pb-6">
+        <div className="px-6 sm:px-8 pt-6 pb-6 relative z-10">
           {/* Brand Header */}
           <div className="flex flex-col items-center text-center mb-5">
             <div className="flex items-center gap-2.5 mb-2">
@@ -325,17 +326,6 @@ export default function RegisterPage() {
               </Link>
             </p>
           </div>
-        </div>
-
-        {/* Patriotic Footer Strip */}
-        <div className="flex items-center justify-between border-t border-gray-100 bg-emerald-50/50 px-6 sm:px-8 py-3 text-[11px] text-gray-600">
-          <span className="flex items-center gap-1.5 font-medium">
-            <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" />
-            256-Bit SSL Encrypted
-          </span>
-          <span className="font-bold text-[#01411C]">
-            Azadi Mubarak 🇵🇰
-          </span>
         </div>
       </div>
     </div>

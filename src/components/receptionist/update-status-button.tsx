@@ -4,6 +4,7 @@ import { useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { updateAppointmentStatus } from '@/server/actions/appointments.actions';
 import { Loader2 } from 'lucide-react';
+import { toast } from 'sonner';
 
 interface Props {
  appointmentId: string;
@@ -24,7 +25,7 @@ export default function UpdateStatusButton({
     await updateAppointmentStatus({ id: appointmentId, status: newStatus });
     router.refresh();
    } catch (err) {
-    alert(err instanceof Error ? err.message : 'Failed to update status.');
+    toast.error(err instanceof Error ? err.message : 'Failed to update status.');
    }
   });
  }
