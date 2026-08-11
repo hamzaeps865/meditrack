@@ -65,7 +65,7 @@ export default function FamilyMembersList({ members }: { members: Member[] }) {
 
    {/* Members */}
    {members.length === 0 ? (
-    <div className="bg-white border border-border p-10 text-center shadow-sm">
+    <div className="bg-white border border-border p-10 text-center ">
      <Users className="h-10 w-10 text-muted-foreground opacity-20 mx-auto mb-3" />
      <p className="text-sm font-medium text-foreground">No family members yet</p>
      <p className="text-xs text-muted-foreground mt-1 max-w-xs mx-auto">

@@ -107,7 +107,7 @@ export default function LoginPage() {
 
       {/* Login Card */}
       <div
-        className="shadow-lg border border-gray-200 w-full max-w-[380px] rounded-none overflow-hidden relative z-10"
+        className=" border border-gray-200 w-full max-w-[380px] rounded-none overflow-hidden relative z-10"
         style={{
           backgroundImage: "url('/loginbackground.jpg')",
           backgroundSize: 'cover',
@@ -122,7 +122,7 @@ export default function LoginPage() {
           {/* Brand & Emblem */}
           <div className="flex flex-col items-center text-center mb-6">
             <div className="flex items-center gap-2.5 mb-3">
-              <div className="h-11 w-11 rounded-none bg-[#01411C] text-white flex items-center justify-center shadow-md">
+              <div className="h-11 w-11 rounded-none bg-[#01411C] text-white flex items-center justify-center ">
                 <BriefcaseMedical className="h-6 w-6 text-emerald-300" strokeWidth={2.25} />
               </div>
               <div className="text-left">
@@ -150,7 +150,7 @@ export default function LoginPage() {
               onClick={() => setMode('email')}
               className={`flex-1 flex items-center justify-center gap-1.5 h-9 text-xs font-bold rounded-none transition-all ${
                 mode === 'email'
-                  ? 'bg-[#01411C] text-white shadow-md'
+                  ? 'bg-[#01411C] text-white '
                   : 'text-gray-600 hover:text-gray-900'
               }`}
             >
@@ -162,7 +162,7 @@ export default function LoginPage() {
               onClick={() => setMode('phone')}
               className={`flex-1 flex items-center justify-center gap-1.5 h-9 text-xs font-bold rounded-none transition-all ${
                 mode === 'phone'
-                  ? 'bg-[#01411C] text-white shadow-md'
+                  ? 'bg-[#01411C] text-white '
                   : 'text-gray-600 hover:text-gray-900'
               }`}
             >
@@ -222,7 +222,7 @@ export default function LoginPage() {
 
               <Button
                 type="submit"
-                className="w-full h-[48px] bg-[#01411C] hover:bg-[#013316] text-white font-bold rounded-none shadow-lg shadow-[#01411C]/20 mt-2 transition-all cursor-pointer flex items-center justify-center gap-2"
+                className="w-full h-[48px] bg-[#01411C] hover:bg-[#013316] text-white font-bold rounded-none  [#01411C]/20 mt-2 transition-all cursor-pointer flex items-center justify-center gap-2"
                 disabled={loading}
               >
                 {loading ? (
@@ -264,7 +264,7 @@ export default function LoginPage() {
                     type="button"
                     onClick={handleSendOtp}
                     disabled={sendingOtp}
-                    className="w-full h-[48px] bg-[#01411C] hover:bg-[#013316] text-white font-bold rounded-none shadow-lg shadow-[#01411C]/20 cursor-pointer flex items-center justify-center gap-2"
+                    className="w-full h-[48px] bg-[#01411C] hover:bg-[#013316] text-white font-bold rounded-none  [#01411C]/20 cursor-pointer flex items-center justify-center gap-2"
                   >
                     {sendingOtp ? (
                       <>
@@ -302,7 +302,7 @@ export default function LoginPage() {
                     type="button"
                     onClick={handleVerifyOtp}
                     disabled={loading || otpCode.length !== 4}
-                    className="w-full h-[48px] bg-[#01411C] hover:bg-[#013316] text-white font-bold rounded-none shadow-lg shadow-[#01411C]/20 cursor-pointer flex items-center justify-center gap-2"
+                    className="w-full h-[48px] bg-[#01411C] hover:bg-[#013316] text-white font-bold rounded-none  [#01411C]/20 cursor-pointer flex items-center justify-center gap-2"
                   >
                     {loading ? (
                       <>

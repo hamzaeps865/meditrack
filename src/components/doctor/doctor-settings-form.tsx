@@ -25,7 +25,7 @@ function Toggle({ defaultOn = true, label }: { defaultOn?: boolean; label: strin
    className="flex items-center gap-2.5 cursor-pointer"
   >
    <div className={`h-4 w-8 flex items-center px-0.5 transition-colors ${on ? 'bg-primary' : 'bg-muted'}`}>
-    <div className={`h-3 w-3 bg-white shadow-sm transition-all ${on ? 'ml-auto' : ''}`} />
+    <div className={`h-3 w-3 bg-white  transition-all ${on ? 'ml-auto' : ''}`} />
    </div>
    <span className="text-xs text-foreground">{label}</span>
   </button>
@@ -248,7 +248,7 @@ export default function DoctorSettingsForm({
    </div>
 
    {/* ── Danger zone / Sign out ── */}
-   <div className="bg-white border border-red-100 p-5 shadow-sm">
+   <div className="bg-white border border-red-100 p-5 ">
     <h3 className="text-xs font-bold uppercase tracking-widest text-red-500 mb-3">Account</h3>
     <div className="flex items-center justify-between">
      <div>

@@ -62,7 +62,7 @@ export default async function TriagePage({ params }: { params: Promise<{ appoint
 
    <div className="px-6 py-8 max-w-2xl mx-auto">
     {/* Patient header card */}
-    <div className="bg-white border border-border p-5 shadow-sm mb-5">
+    <div className="bg-white border border-border p-5  mb-5">
      <div className="flex items-start gap-4">
       <div className="h-12 w-12 bg-emerald-100 text-emerald-700 flex items-center justify-center text-sm font-bold shrink-0">
        {appt.patientName.split(' ').map((p) => p[0]).slice(0, 2).join('').toUpperCase()}
@@ -95,7 +95,7 @@ export default async function TriagePage({ params }: { params: Promise<{ appoint
 
     {/* Existing triage (if re-assessing) */}
     {existingTriage && (
-     <div className="bg-white border border-border p-5 shadow-sm mb-5">
+     <div className="bg-white border border-border p-5  mb-5">
       <div className="flex items-center gap-2 mb-3">
        <HeartPulse className="h-4 w-4 text-emerald-700" />
        <h2 className="text-sm font-bold text-foreground">Previous Triage</h2>
@@ -114,7 +114,7 @@ export default async function TriagePage({ params }: { params: Promise<{ appoint
     )}
 
     {/* Triage form */}
-    <div className="bg-white border border-border p-5 shadow-sm">
+    <div className="bg-white border border-border p-5 ">
      <div className="flex items-center gap-2 mb-5">
       <HeartPulse className="h-4 w-4 text-primary" />
       <h2 className="text-sm font-bold text-foreground">

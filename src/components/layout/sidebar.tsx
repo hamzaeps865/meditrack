@@ -98,7 +98,7 @@ export default function Sidebar({
          {/* Logo */}
          <div className="px-6 py-6 border-b border-border flex items-center gap-3">
             {clinicLogo ? (
-               <div className="h-9 w-9 rounded-xl bg-white border border-emerald-300 p-1 flex items-center justify-center shrink-0 shadow-sm overflow-hidden">
+               <div className="h-9 w-9 rounded-none bg-white border border-emerald-300 p-1 flex items-center justify-center shrink-0  overflow-hidden">
                   <img src={clinicLogo} alt="Clinic Logo" className="h-full w-full object-contain" />
                </div>
             ) : (

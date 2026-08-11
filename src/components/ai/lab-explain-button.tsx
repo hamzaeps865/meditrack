@@ -64,7 +64,7 @@ export default function LabExplainButton({
      onClick={() => setShowModal(false)}
     >
      <div
-      className="bg-white shadow-xl border border-border w-full max-w-md max-h-[80vh] overflow-y-auto"
+      className="bg-white  border border-border w-full max-w-md max-h-[80vh] overflow-y-auto"
       onClick={(e) => e.stopPropagation()}
      >
       {/* Header */}

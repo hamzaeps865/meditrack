@@ -35,7 +35,7 @@ export default async function LabCompletedPage() {
     ) : (
      <div className="space-y-3">
       {completed.map((c) => (
-       <div key={c.id} className="bg-white border border-border p-4 shadow-sm">
+       <div key={c.id} className="bg-white border border-border p-4 ">
         <div className="flex items-start justify-between mb-2">
          <div>
           <p className="text-sm font-bold text-foreground">{c.testName}</p>

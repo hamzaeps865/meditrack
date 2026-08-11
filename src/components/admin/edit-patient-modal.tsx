@@ -66,7 +66,7 @@ export default function EditPatientModal({
 
    {open && (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
-     <div className="bg-white shadow-xl border border-border w-full max-w-lg max-h-[90vh] overflow-y-auto">
+     <div className="bg-white  border border-border w-full max-w-lg max-h-[90vh] overflow-y-auto">
       <div className="flex items-center justify-between px-5 py-4 border-b border-border sticky top-0 bg-white">
        <h3 className="text-base font-bold text-foreground">Edit Patient</h3>
        <button type="button" onClick={() => setOpen(false)} className="h-8 w-8 flex items-center justify-center text-muted-foreground hover:bg-muted"><X className="h-4 w-4" /></button>

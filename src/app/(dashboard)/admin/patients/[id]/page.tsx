@@ -300,7 +300,7 @@ export default async function AdminPatientProfilePage({
       {/* Recent Visits */}
       {recentVisits.length > 0 && (
        <div className="bg-white border border-border
-        overflow-hidden shadow-sm">
+        overflow-hidden ">
         <div className="flex items-center justify-between px-5 py-4
          border-b border-border">
          <div className="flex items-center gap-2">
@@ -336,7 +336,7 @@ export default async function AdminPatientProfilePage({
 
       {/* Appointment History */}
       <div className="bg-white border border-border
-       overflow-hidden shadow-sm">
+       overflow-hidden ">
        <div className="flex items-center justify-between px-5 py-4
         border-b border-border">
         <div className="flex items-center gap-2">
@@ -479,7 +479,7 @@ export default async function AdminPatientProfilePage({
 
       {/* Quick Actions */}
       <div className="bg-white border border-border
-       overflow-hidden shadow-sm">
+       overflow-hidden ">
        <p className="text-[10px] font-bold uppercase tracking-widest
         text-muted-foreground px-4 pt-4 pb-2">
         Quick Actions

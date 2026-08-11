@@ -311,7 +311,7 @@ export default async function DoctorAppointmentsPage({
     )}
 
     {/* ── Appointments table ── */}
-    <div className="bg-white border border-border overflow-hidden shadow-sm">
+    <div className="bg-white border border-border overflow-hidden ">
 
      {/* Table header */}
      <div className="grid grid-cols-[100px_1fr_1fr_160px_140px] gap-4
@@ -354,7 +354,7 @@ export default async function DoctorAppointmentsPage({
           className={`grid grid-cols-[100px_1fr_1fr_160px_140px] gap-4
            items-center px-6 py-4
            ${!isLast ? 'border-b border-border' : ''}
-           ${cfg.rowHighlight ? 'bg-primary/[0.025] border-l-2 border-l-primary' : ''}
+           ${cfg.rowHighlight ? 'bg-primary/[0.025]' : ''}
            ${isCancelled ? 'opacity-55' : ''}`}
          >
           {/* Time */}

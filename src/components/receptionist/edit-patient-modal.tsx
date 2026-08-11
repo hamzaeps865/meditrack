@@ -88,7 +88,7 @@ export default function EditPatientModal({ patient, patientCode, onClose }: Prop
     bg-black/40 backdrop-blur-sm"
   >
    <div
-    className="relative h-full w-full max-w-[460px] bg-card shadow-2xl
+    className="relative h-full w-full max-w-[460px] bg-card 
      flex flex-col overflow-hidden"
     role="dialog"
     aria-modal="true"

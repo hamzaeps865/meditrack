@@ -208,7 +208,7 @@ export default function PatientsTable({
 
     {/* Filter bar */}
     <div className="flex flex-wrap items-center justify-between gap-3 mb-4
-     bg-white border border-border px-4 py-2.5 shadow-sm">
+     bg-white border border-border px-4 py-2.5 ">
      <div className="flex items-center gap-2 flex-wrap">
       {/* Date range pill */}
       <button type="button"
@@ -279,7 +279,7 @@ export default function PatientsTable({
     </div>
 
     {/* Table */}
-    <div className="bg-white border border-border overflow-hidden shadow-sm mb-4">
+    <div className="bg-white border border-border overflow-hidden  mb-4">
 
      {/* Header */}
      <div className="grid
@@ -415,7 +415,7 @@ export default function PatientsTable({
 
            {openMenu === p.id && (
             <div className="absolute right-0 top-8 z-20 w-44 bg-white
-             border border-border shadow-lg py-1 overflow-hidden">
+             border border-border  py-1 overflow-hidden">
              <Link
               href={`/admin/patients/${p.id}`}
               className="block px-4 py-2 text-sm text-foreground hover:bg-muted"

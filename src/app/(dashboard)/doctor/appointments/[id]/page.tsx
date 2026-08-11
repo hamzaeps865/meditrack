@@ -235,7 +235,7 @@ export default async function AppointmentDetailPage({
      <div className="flex flex-col gap-4">
 
       {/* Safety Critical Info */}
-      <div className="bg-white border border-red-100 p-4 shadow-sm">
+      <div className="bg-white border border-red-100 p-4 ">
        <div className="flex items-center gap-2 mb-3">
         <AlertTriangle className="h-4 w-4 text-red-500 shrink-0" />
         <h3 className="text-[10px] font-bold uppercase tracking-widest text-red-500">
@@ -278,7 +278,7 @@ export default async function AppointmentDetailPage({
 
       {/* Triage (nurse assessment) */}
       {triageData && (
-       <div className="bg-white border border-border p-4 shadow-sm">
+       <div className="bg-white border border-border p-4 ">
         <div className="flex items-center justify-between mb-3">
          <h3 className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
           Triage Assessment
@@ -316,7 +316,7 @@ export default async function AppointmentDetailPage({
       )}
 
       {/* Visit History */}
-      <div className="bg-white border border-border p-4 shadow-sm">
+      <div className="bg-white border border-border p-4 ">
        <div className="flex items-center justify-between mb-3">
         <h3 className="text-[10px] font-bold uppercase tracking-widest
          text-muted-foreground">

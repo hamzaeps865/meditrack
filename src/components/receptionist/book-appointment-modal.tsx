@@ -148,7 +148,7 @@ export default function BookAppointmentModal({ doctors, onClose }: Props) {
     bg-black/40 backdrop-blur-sm"
   >
    <div
-    className="relative h-full w-full max-w-[480px] bg-card shadow-2xl
+    className="relative h-full w-full max-w-[480px] bg-card 
      overflow-y-auto flex flex-col"
     role="dialog"
     aria-modal="true"
@@ -196,7 +196,7 @@ export default function BookAppointmentModal({ doctors, onClose }: Props) {
 
       {/* Search results */}
       {!selectedPatient && patientResults.length > 0 && (
-       <div className="mt-1 border border-border bg-card shadow-sm overflow-hidden">
+       <div className="mt-1 border border-border bg-card  overflow-hidden">
         {patientResults.map((p) => (
          <button
           key={p.id}

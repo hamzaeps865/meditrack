@@ -33,7 +33,7 @@ export default function HealthInsightsButton() {
    <button
     type="button"
     onClick={handleGenerate}
-    className="inline-flex items-center gap-1.5 h-10 px-4 bg-gradient-to-r from-emerald-600 to-emerald-700 text-white text-sm font-semibold hover:opacity-90 transition-opacity shadow-sm"
+    className="inline-flex items-center gap-1.5 h-10 px-4 bg-gradient-to-r from-emerald-600 to-emerald-700 text-white text-sm font-semibold hover:opacity-90 transition-opacity "
    >
     <Sparkles className="h-4 w-4" />
     AI Health Insights
@@ -41,7 +41,7 @@ export default function HealthInsightsButton() {
 
    {showModal && (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4" onClick={() => setShowModal(false)}>
-     <div className="bg-white shadow-xl border border-border w-full max-w-lg max-h-[85vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+     <div className="bg-white  border border-border w-full max-w-lg max-h-[85vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
       <div className="flex items-center justify-between px-5 py-4 border-b border-border sticky top-0 bg-white">
        <div className="flex items-center gap-2">
         <div className="h-7 w-7 bg-gradient-to-r from-emerald-600 to-emerald-700 flex items-center justify-center">

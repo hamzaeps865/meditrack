@@ -46,28 +46,28 @@ export default async function LabDashboardPage() {
 
     {/* Stats */}
     <div className="grid grid-cols-4 gap-3 mb-6">
-     <div className="bg-white border border-border p-4 shadow-sm">
+     <div className="bg-white border border-border p-4 ">
       <div className="h-9 w-9 bg-amber-50 flex items-center justify-center mb-2">
        <Clock className="h-4 w-4 text-amber-600" />
       </div>
       <p className="text-2xl font-bold text-foreground">{summary.pending}</p>
       <p className="text-xs text-muted-foreground mt-0.5">Pending</p>
      </div>
-     <div className="bg-white border border-border p-4 shadow-sm">
+     <div className="bg-white border border-border p-4 ">
       <div className="h-9 w-9 bg-emerald-50 flex items-center justify-center mb-2">
        <CheckCircle2 className="h-4 w-4 text-emerald-600" />
       </div>
       <p className="text-2xl font-bold text-foreground">{summary.completed}</p>
       <p className="text-xs text-muted-foreground mt-0.5">Completed</p>
      </div>
-     <div className="bg-white border border-border p-4 shadow-sm">
+     <div className="bg-white border border-border p-4 ">
       <div className="h-9 w-9 bg-emerald-50 flex items-center justify-center mb-2">
        <FlaskConical className="h-4 w-4 text-emerald-700" />
       </div>
       <p className="text-2xl font-bold text-foreground">{summary.total}</p>
       <p className="text-xs text-muted-foreground mt-0.5">Total Tests</p>
      </div>
-     <div className="bg-white border border-border p-4 shadow-sm">
+     <div className="bg-white border border-border p-4 ">
       <div className={`h-9 w-9 flex items-center justify-center mb-2 ${summary.statCount > 0 ? 'bg-rose-50' : 'bg-muted'}`}>
        <Zap className={`h-4 w-4 ${summary.statCount > 0 ? 'text-rose-600' : 'text-muted-foreground'}`} />
       </div>

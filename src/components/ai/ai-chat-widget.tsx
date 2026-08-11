@@ -73,7 +73,7 @@ export default function AiChatWidget({ patientName }: { patientName: string }) {
      onClick={() => setOpen(true)}
      className="fixed bottom-6 right-6 z-50 h-14 w-14 
       bg-gradient-to-br from-emerald-600 to-emerald-700 text-white
-      shadow-lg hover:shadow-xl hover:scale-105 transition-all
+       hover: hover:scale-105 transition-all
       flex items-center justify-center group"
      aria-label="Open AI Assistant"
     >
@@ -91,7 +91,7 @@ export default function AiChatWidget({ patientName }: { patientName: string }) {
    {/* Chat panel */}
    {open && (
     <div className="fixed bottom-6 right-6 z-50 w-[calc(100vw-3rem)] sm:w-96 h-[500px] max-h-[calc(100vh-3rem)]
-     bg-white shadow-2xl border border-border flex flex-col overflow-hidden">
+     bg-white  border border-border flex flex-col overflow-hidden">
      
      {/* Header */}
      <div className="bg-gradient-to-r from-emerald-600 to-emerald-700 px-4 py-3 flex items-center justify-between">

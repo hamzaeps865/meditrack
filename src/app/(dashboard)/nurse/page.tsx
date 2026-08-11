@@ -71,14 +71,14 @@ export default async function NurseDashboardPage() {
 
     {/* Stats */}
     <div className="grid grid-cols-3 gap-3 mb-6">
-     <div className="bg-white border border-border p-4 shadow-sm">
+     <div className="bg-white border border-border p-4 ">
       <div className="h-9 w-9 bg-amber-50 flex items-center justify-center mb-2">
        <Clock className="h-4 w-4 text-amber-600" />
       </div>
       <p className="text-2xl font-bold text-foreground">{untriaged.length}</p>
       <p className="text-xs text-muted-foreground mt-0.5">Awaiting Triage</p>
      </div>
-     <div className="bg-white border border-border p-4 shadow-sm">
+     <div className="bg-white border border-border p-4 ">
       <div className="h-9 w-9 bg-rose-50 flex items-center justify-center mb-2">
        <AlertTriangle className="h-4 w-4 text-rose-600" />
       </div>
@@ -87,7 +87,7 @@ export default async function NurseDashboardPage() {
       </p>
       <p className="text-xs text-muted-foreground mt-0.5">Critical / Urgent</p>
      </div>
-     <div className="bg-white border border-border p-4 shadow-sm">
+     <div className="bg-white border border-border p-4 ">
       <div className="h-9 w-9 bg-emerald-50 flex items-center justify-center mb-2">
        <Activity className="h-4 w-4 text-emerald-600" />
       </div>
@@ -117,7 +117,7 @@ export default async function NurseDashboardPage() {
        return (
         <div
          key={patient.id}
-         className={`bg-white border p-5 shadow-sm ${sev ? sev.border : 'border-border'}`}
+         className={`bg-white border p-5  ${sev ? sev.border : 'border-border'}`}
         >
          <div className="flex items-start justify-between gap-4">
           {/* Left: patient info */}

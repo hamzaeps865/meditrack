@@ -28,7 +28,7 @@ export default function QuickCheckinButton({ appointmentId }: { appointmentId: s
    disabled={isPending}
    className="h-8 px-3 bg-amber-500 text-white text-xs font-bold
     hover:bg-amber-600 transition-colors disabled:opacity-50
-    flex items-center gap-1.5 shadow-sm shrink-0"
+    flex items-center gap-1.5  shrink-0"
   >
    {isPending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <UserCheck className="h-3.5 w-3.5" />}
    {isPending ? 'Checking in...' : 'Check-in'}

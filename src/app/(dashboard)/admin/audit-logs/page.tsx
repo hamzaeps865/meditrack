@@ -223,7 +223,7 @@ export default async function AdminAuditLogsPage({
     {/* ── Filter bar ── */}
     <form method="GET"
      className="bg-white border border-border px-4 py-4
-      shadow-sm mb-3">
+       mb-3">
 
      {/* Row 1: four filter controls */}
      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-3">
@@ -363,7 +363,7 @@ export default async function AdminAuditLogsPage({
     )}
 
     {/* ── Table ── */}
-    <div className="bg-white border border-border overflow-hidden shadow-sm">
+    <div className="bg-white border border-border overflow-hidden ">
 
      {/* Header */}
      <div className="grid grid-cols-[180px_1fr_90px_150px_150px_130px]

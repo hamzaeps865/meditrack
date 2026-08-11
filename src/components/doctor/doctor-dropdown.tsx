@@ -32,7 +32,7 @@ export default function DoctorDropdown({ doctorName }: { doctorName: string }) {
    </button>
 
    {open && (
-    <div className="absolute right-0 top-8 z-50 w-48 bg-white border border-border shadow-lg overflow-hidden py-1">
+    <div className="absolute right-0 top-8 z-50 w-48 bg-white border border-border  overflow-hidden py-1">
      <Link
       href="/doctor/settings"
       onClick={() => setOpen(false)}

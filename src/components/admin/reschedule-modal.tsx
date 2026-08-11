@@ -101,7 +101,7 @@ export default function RescheduleModal({
         <button
           type="button"
           onClick={() => setOpen(true)}
-          className="h-9 px-4 bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-colors flex items-center gap-2 shadow-sm cursor-pointer"
+          className="h-9 px-4 bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-colors flex items-center gap-2  cursor-pointer"
         >
           <CalendarClock className="h-4 w-4" />
           {triggerLabel}
@@ -126,7 +126,7 @@ export default function RescheduleModal({
             if (e.target === e.currentTarget) setOpen(false);
           }}
         >
-          <div className="bg-white shadow-2xl border border-border w-full max-w-md overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+          <div className="bg-white  border border-border w-full max-w-md overflow-hidden animate-in fade-in zoom-in-95 duration-150">
             {/* Modal Header */}
             <div className="flex items-center justify-between px-5 py-4 border-b border-border bg-muted/20">
               <div className="flex items-center gap-2.5">
@@ -205,7 +205,7 @@ export default function RescheduleModal({
                   type="button"
                   onClick={handleReschedule}
                   disabled={isPending}
-                  className="h-10 px-5 bg-primary text-primary-foreground text-sm font-bold hover:bg-primary/90 disabled:opacity-60 transition-colors flex items-center gap-2 cursor-pointer shadow-sm"
+                  className="h-10 px-5 bg-primary text-primary-foreground text-sm font-bold hover:bg-primary/90 disabled:opacity-60 transition-colors flex items-center gap-2 cursor-pointer "
                 >
                   {isPending ? (
                     <Loader2 className="h-4 w-4 animate-spin" />

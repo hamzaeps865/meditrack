@@ -53,7 +53,7 @@ export default function AddFamilyMemberForm({ onClose, member }: { onClose: () =
 
  return (
   <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
-   <div className="bg-white shadow-xl border border-border w-full max-w-lg max-h-[90vh] overflow-y-auto">
+   <div className="bg-white  border border-border w-full max-w-lg max-h-[90vh] overflow-y-auto">
     <div className="flex items-center justify-between px-5 py-4 border-b border-border sticky top-0 bg-white">
      <div className="flex items-center gap-2">
       <Plus className="h-4 w-4 text-primary" />

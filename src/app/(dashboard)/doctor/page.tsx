@@ -311,7 +311,7 @@ export default async function DoctorDashboard() {
          <li
           key={appt.id}
           className={`flex items-center gap-4 px-5 py-4 transition-colors
-           ${isNextUp ? 'bg-primary/5 border-l-4 border-l-primary' : ''}
+           ${isNextUp ? 'bg-primary/5' : ''}
            ${isComplete ? 'opacity-60' : ''}`}
          >
           {/* Time */}
@@ -418,7 +418,7 @@ export default async function DoctorDashboard() {
         </div>
         {/* Toggle — visual only; wire to real action later */}
         <div className="h-6 w-11 bg-primary flex items-center px-0.5 cursor-pointer">
-         <div className="h-5 w-5 bg-white shadow-sm ml-auto" />
+         <div className="h-5 w-5 bg-white  ml-auto" />
         </div>
        </div>
       </div>

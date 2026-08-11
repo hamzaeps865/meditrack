@@ -176,7 +176,7 @@ export default function MedicineSearch({
    {showDropdown && results.length > 0 &&
     createPortal(
      <div
-      className="fixed z-[9999] bg-white border border-gray-200 rounded-md shadow-xl max-h-72 overflow-y-auto"
+      className="fixed z-[9999] bg-white border border-gray-200 rounded-md  max-h-72 overflow-y-auto"
       style={{
        top: `${dropdownPosition.top}px`,
        left: `${dropdownPosition.left}px`,

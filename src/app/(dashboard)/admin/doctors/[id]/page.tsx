@@ -189,7 +189,7 @@ export default async function AdminDoctorProfilePage({
     </div>
 
     {/* ── Profile header card ── */}
-    <div className="bg-white border border-border p-6 shadow-sm mb-4">
+    <div className="bg-white border border-border p-6  mb-4">
      <div className="flex flex-wrap items-start justify-between gap-4">
       <div className="flex items-center gap-4">
        <div className={`h-16 w-16 flex items-center justify-center
@@ -283,7 +283,7 @@ export default async function AdminDoctorProfilePage({
       const Icon = s.icon;
       return (
        <div key={s.label}
-        className="bg-white border border-border p-4 shadow-sm">
+        className="bg-white border border-border p-4 ">
         <div className="flex items-center justify-between mb-2">
          <p className="text-xs text-muted-foreground font-medium">{s.label}</p>
          <div className={`h-7 w-7 flex items-center justify-center
@@ -301,7 +301,7 @@ export default async function AdminDoctorProfilePage({
     <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-4">
 
      {/* Recent Appointments */}
-     <div className="bg-white border border-border shadow-sm overflow-hidden">
+     <div className="bg-white border border-border  overflow-hidden">
       <div className="flex items-center justify-between px-5 py-4 border-b border-border">
        <div className="flex items-center gap-2">
         <Calendar className="h-4 w-4 text-primary" />
@@ -359,7 +359,7 @@ export default async function AdminDoctorProfilePage({
      </div>
 
      {/* Availability Summary */}
-     <div className="bg-white border border-border shadow-sm overflow-hidden">
+     <div className="bg-white border border-border  overflow-hidden">
       <div className="flex items-center justify-between px-5 py-4 border-b border-border">
        <div className="flex items-center gap-2">
         <Stethoscope className="h-4 w-4 text-primary" />

@@ -191,7 +191,7 @@ export default function NewAppointmentForm({ doctors, adminName }: Props) {
 
     {/* Form card */}
     <form onSubmit={handleSubmit}
-     className="bg-white border border-border p-6 shadow-sm mb-4">
+     className="bg-white border border-border p-6  mb-4">
 
      {/* ── Select Patient ── */}
      <div className="mb-5">
@@ -230,7 +230,7 @@ export default function NewAppointmentForm({ doctors, adminName }: Props) {
         {/* Dropdown results */}
         {patientResults.length > 0 && (
          <div className="absolute top-full left-0 right-0 z-20 mt-1 bg-white
-          border border-border shadow-lg overflow-hidden">
+          border border-border  overflow-hidden">
           {patientResults.map((p) => (
            <button
             key={p.id}
@@ -360,7 +360,7 @@ export default function NewAppointmentForm({ doctors, adminName }: Props) {
            ${isPast
             ? 'opacity-30 cursor-not-allowed bg-muted text-muted-foreground border-border'
             : isSelected
-             ? 'bg-primary text-primary-foreground border-primary shadow-sm'
+             ? 'bg-primary text-primary-foreground border-primary '
              : 'bg-white text-foreground border-border hover:border-primary/40 hover:bg-primary/5'}`}
          >
           {fmtSlot(slot)}
@@ -462,7 +462,7 @@ export default function NewAppointmentForm({ doctors, adminName }: Props) {
     </form>
 
     {/* ── Scheduling Policy card ── */}
-    <div className="bg-white border border-border p-4 shadow-sm
+    <div className="bg-white border border-border p-4 
      flex items-start gap-3">
      <div className="h-8 w-8 bg-muted flex items-center
       justify-center shrink-0 mt-0.5">

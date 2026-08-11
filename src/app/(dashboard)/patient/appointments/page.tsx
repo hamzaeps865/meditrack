@@ -176,7 +176,7 @@ export default async function PatientAppointmentsPage() {
      </div>
      <Link
       href="/patient/appointments/new"
-      className="h-10 px-4 text-sm font-bold text-white flex items-center gap-2 hover:opacity-90 transition-opacity shadow-sm"
+      className="h-10 px-4 text-sm font-bold text-white flex items-center gap-2 hover:opacity-90 transition-opacity "
       style={{ backgroundColor: '#01411C' }}
      >
       <CalendarDays className="h-4 w-4" />
@@ -217,7 +217,7 @@ export default async function PatientAppointmentsPage() {
        tier={healthScore.tier}
        next={healthScore.next}
       />
-      <div className="bg-white border border-border p-5 shadow-sm flex flex-col">
+      <div className="bg-white border border-border p-5  flex flex-col">
        <div className="flex items-center justify-between mb-4">
         <h3 className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
          Loyalty Status
@@ -393,7 +393,7 @@ function StatCard({
  icon: typeof Calendar; label: string; value: number; color: string; bg: string;
 }) {
  return (
-  <div className="bg-white border border-border p-4 shadow-sm">
+  <div className="bg-white border border-border p-4 ">
    <div className={`h-9 w-9 ${bg} flex items-center justify-center mb-3`}>
     <Icon className={`h-4.5 w-4.5 ${color}`} style={{ width: '1.125rem', height: '1.125rem' }} />
    </div>
@@ -409,7 +409,7 @@ function Section({
  title: string; count: number; icon: typeof Calendar; children: React.ReactNode;
 }) {
  return (
-  <div className="bg-white border border-border overflow-hidden shadow-sm">
+  <div className="bg-white border border-border overflow-hidden ">
    <div className="flex items-center justify-between px-5 py-4 border-b border-border">
     <div className="flex items-center gap-2">
      <Icon className="h-4 w-4 text-primary" />

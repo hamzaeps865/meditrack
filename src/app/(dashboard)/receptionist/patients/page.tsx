@@ -378,7 +378,7 @@ export default function PatientsPage() {
              <MoreVertical className="h-4 w-4" />
             </button>
             {openMenuId === p.id && (
-             <div className="absolute right-5 top-11 z-10 w-40 bg-card border border-border shadow-md py-1">
+             <div className="absolute right-5 top-11 z-10 w-40 bg-card border border-border  py-1">
               <Link
                href={`/receptionist/patients/${p.id}`}
                className="block px-3 py-2 text-sm text-foreground hover:bg-muted"

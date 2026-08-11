@@ -211,7 +211,7 @@ export default async function AdminAppointmentDetailPage({
      <div className="space-y-4">
 
       {/* Patient info */}
-      <div className="bg-white border border-border p-4 shadow-sm">
+      <div className="bg-white border border-border p-4 ">
        <div className="flex items-center gap-2 mb-3">
         <User className="h-4 w-4 text-primary" />
         <h3 className="text-xs font-bold uppercase tracking-widest
@@ -242,7 +242,7 @@ export default async function AdminAppointmentDetailPage({
       </div>
 
       {/* Doctor info */}
-      <div className="bg-white border border-border p-4 shadow-sm">
+      <div className="bg-white border border-border p-4 ">
        <div className="flex items-center gap-2 mb-3">
         <Activity className="h-4 w-4 text-primary" />
         <h3 className="text-xs font-bold uppercase tracking-widest
@@ -275,7 +275,7 @@ export default async function AdminAppointmentDetailPage({
       </div>
 
       {/* Booking info */}
-      <div className="bg-white border border-border p-4 shadow-sm">
+      <div className="bg-white border border-border p-4 ">
        <div className="flex items-center gap-2 mb-3">
         <Clock className="h-4 w-4 text-primary" />
         <h3 className="text-xs font-bold uppercase tracking-widest
@@ -305,7 +305,7 @@ export default async function AdminAppointmentDetailPage({
 
       {/* Safety Info */}
       {(allergyList.length > 0 || patient?.bloodGroup) && (
-       <div className="bg-white border border-red-100 p-4 shadow-sm">
+       <div className="bg-white border border-red-100 p-4 ">
         <div className="flex items-center gap-2 mb-3">
          <AlertTriangle className="h-4 w-4 text-red-500" />
          <h3 className="text-[10px] font-bold uppercase tracking-widest

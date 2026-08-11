@@ -39,7 +39,7 @@ function SectionCard({
  accent?: string;
 }) {
  return (
-  <div className={`bg-white border shadow-sm overflow-hidden
+  <div className={`bg-white border  overflow-hidden
    ${accent ? `border-${accent}-100` : 'border-border'}`}>
    <div className="flex items-center gap-2.5 px-5 py-4 border-b border-border bg-muted/10">
     <div className="h-7 w-7 bg-primary/10 flex items-center justify-center">
@@ -393,7 +393,7 @@ export default function PatientSettingsForm({
          ${pref.value ? 'justify-end' : 'justify-start bg-muted'}`}
         style={pref.value ? { backgroundColor: '#01411C' } : undefined}
        >
-        <div className="h-5 w-5 bg-white shadow-sm transition-transform" />
+        <div className="h-5 w-5 bg-white  transition-transform" />
        </button>
       </div>
      ))}
@@ -401,7 +401,7 @@ export default function PatientSettingsForm({
    </SectionCard>
 
    {/* ── Sign Out ── */}
-   <div className="bg-white border border-red-100 overflow-hidden shadow-sm">
+   <div className="bg-white border border-red-100 overflow-hidden ">
     <div className="flex items-center gap-2.5 px-5 py-4 border-b border-red-50 bg-red-50/30">
      <div className="h-7 w-7 bg-red-50 flex items-center justify-center">
       <LogOut className="h-3.5 w-3.5 text-red-500" />

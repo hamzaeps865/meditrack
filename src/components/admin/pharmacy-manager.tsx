@@ -137,7 +137,7 @@ function InventoryTab({ inventory, catalog }: { inventory: InventoryBatch[]; cat
    </div>
 
    {inventory.length === 0 ? (
-    <div className="bg-white border border-border p-10 text-center shadow-sm">
+    <div className="bg-white border border-border p-10 text-center ">
      <Package className="h-10 w-10 text-muted-foreground opacity-20 mx-auto mb-3" />
      <p className="text-sm font-medium text-foreground">No stock yet</p>
      <p className="text-xs text-muted-foreground mt-1">Add a batch to start tracking inventory.</p>
@@ -187,7 +187,7 @@ function InventoryTab({ inventory, catalog }: { inventory: InventoryBatch[]; cat
 
    {showAdd && (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
-     <div className="bg-white shadow-xl border border-border w-full max-w-md max-h-[90vh] overflow-y-auto">
+     <div className="bg-white  border border-border w-full max-w-md max-h-[90vh] overflow-y-auto">
       <div className="flex items-center justify-between px-5 py-4 border-b border-border sticky top-0 bg-white">
        <h3 className="text-base font-bold text-foreground">Add Stock Batch</h3>
        <button type="button" onClick={() => setShowAdd(false)} className="h-8 w-8 flex items-center justify-center text-muted-foreground hover:bg-muted"><X className="h-4 w-4" /></button>
@@ -243,7 +243,7 @@ function CatalogTab({ catalog }: { catalog: Medicine[] }) {
    </div>
    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
     {filtered.map((m) => (
-     <div key={m.id} className="bg-white border border-border p-4 shadow-sm">
+     <div key={m.id} className="bg-white border border-border p-4 ">
       <div className="flex items-start justify-between">
        <div className="min-w-0">
         <p className="text-sm font-bold text-foreground truncate">{m.name}</p>
@@ -294,7 +294,7 @@ function DispensingTab({ pending, inventory }: { pending: PendingItem[]; invento
   <div>
    <h2 className="text-sm font-bold text-foreground mb-4">Pending Dispensings ({pending.length})</h2>
    {pending.length === 0 ? (
-    <div className="bg-white border border-border p-10 text-center shadow-sm">
+    <div className="bg-white border border-border p-10 text-center ">
      <FlaskConical className="h-10 w-10 text-muted-foreground opacity-20 mx-auto mb-3" />
      <p className="text-sm font-medium text-foreground">No pending prescriptions</p>
      <p className="text-xs text-muted-foreground mt-1">Completed-visit prescriptions awaiting dispensing will appear here.</p>
@@ -302,7 +302,7 @@ function DispensingTab({ pending, inventory }: { pending: PendingItem[]; invento
    ) : (
     <div className="space-y-3">
      {pending.map((item) => (
-      <div key={item.id} className="bg-white border border-border p-4 shadow-sm">
+      <div key={item.id} className="bg-white border border-border p-4 ">
        <div className="flex items-start justify-between gap-3 mb-3">
         <div>
          <p className="text-sm font-bold text-foreground">{item.medicineName}</p>
@@ -352,7 +352,7 @@ function AlertsTab({ summary }: { summary: Summary }) {
     {summary.lowStock.length === 0 ? (
      <p className="text-sm text-muted-foreground">All medicines are above reorder level.</p>
     ) : (
-     <div className="bg-white border border-border divide-y divide-border shadow-sm">
+     <div className="bg-white border border-border divide-y divide-border ">
       {summary.lowStock.map((m) => (
        <div key={m.medicineId} className="flex items-center justify-between px-4 py-3">
         <div><p className="text-sm font-medium text-foreground">{m.medicineName}</p><p className="text-xs text-muted-foreground">{m.genericName}</p></div>
@@ -370,7 +370,7 @@ function AlertsTab({ summary }: { summary: Summary }) {
     {summary.expiring.length === 0 ? (
      <p className="text-sm text-muted-foreground">No batches expiring within 30 days.</p>
     ) : (
-     <div className="bg-white border border-border divide-y divide-border shadow-sm">
+     <div className="bg-white border border-border divide-y divide-border ">
       {summary.expiring.map((b) => (
        <div key={b.id} className="flex items-center justify-between px-4 py-3">
         <div><p className="text-sm font-medium text-foreground">{b.medicineName}</p><p className="text-xs text-muted-foreground">Batch {b.batchNumber ?? 'N/A'} · {b.quantityInStock} units</p></div>

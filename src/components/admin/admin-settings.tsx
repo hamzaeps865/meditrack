@@ -132,7 +132,7 @@ function ToggleRow({
     className={`h-6 w-11 flex items-center px-0.5 shrink-0
      transition-colors ${value ? 'bg-primary justify-end' : 'bg-muted justify-start'}`}
    >
-    <div className="h-5 w-5 bg-white shadow-sm" />
+    <div className="h-5 w-5 bg-white " />
    </button>
   </div>
  );
@@ -367,7 +367,7 @@ export default function AdminSettings({ adminName, adminEmail }: Props) {
 
      {/* ── Left nav sidebar ── */}
      <nav className="w-52 shrink-0 bg-white border border-border
-      overflow-hidden shadow-sm">
+      overflow-hidden ">
       {navItems.map((item) => {
        const Icon  = item.icon;
        const isActive = activeTab === item.key;
@@ -392,7 +392,7 @@ export default function AdminSettings({ adminName, adminEmail }: Props) {
 
      {/* ── Right content panel ── */}
      <div className="flex-1 min-w-0 bg-white border border-border
-      p-6 shadow-sm">
+      p-6 ">
 
       {/* ════ CLINIC INFORMATION ════ */}
       {activeTab === 'clinic' && (
@@ -433,21 +433,21 @@ export default function AdminSettings({ adminName, adminEmail }: Props) {
           {/* Logo upload */}
           <div>
            <label className={labelCls}>Clinic Logo</label>
-           <div className="border-2 border-dashed border-emerald-300 rounded-xl p-4 bg-emerald-50/20 flex flex-col items-center justify-center gap-3 relative group">
+           <div className="border-2 border-dashed border-emerald-300 rounded-none p-4 bg-emerald-50/20 flex flex-col items-center justify-center gap-3 relative group">
             {clinicLogo ? (
              <div className="flex flex-col items-center gap-3">
-              <div className="h-24 w-24 rounded-2xl bg-white border-2 border-emerald-500/30 p-2 shadow-md flex items-center justify-center overflow-hidden">
+              <div className="h-24 w-24 rounded-none bg-white border-2 border-emerald-500/30 p-2  flex items-center justify-center overflow-hidden">
                <img src={clinicLogo} alt="Clinic Logo" className="h-full w-full object-contain" />
               </div>
               <div className="flex items-center gap-2">
-               <label className="cursor-pointer px-3 py-1.5 rounded-lg bg-[#01411C] text-white text-xs font-bold hover:bg-[#013316] transition-colors shadow-sm">
+               <label className="cursor-pointer px-3 py-1.5 rounded-none bg-[#01411C] text-white text-xs font-bold hover:bg-[#013316] transition-colors ">
                 Change Logo
                 <input type="file" accept="image/*" className="hidden" onChange={handleLogoFileChange} />
                </label>
                <button
                 type="button"
                 onClick={() => setClinicLogo(null)}
-                className="px-3 py-1.5 rounded-lg bg-red-50 text-red-600 border border-red-200 text-xs font-bold hover:bg-red-100 transition-colors"
+                className="px-3 py-1.5 rounded-none bg-red-50 text-red-600 border border-red-200 text-xs font-bold hover:bg-red-100 transition-colors"
                >
                 Remove
                </button>
@@ -455,7 +455,7 @@ export default function AdminSettings({ adminName, adminEmail }: Props) {
              </div>
             ) : (
              <label className="cursor-pointer flex flex-col items-center justify-center w-full h-36 gap-2">
-              <div className="h-12 w-12 rounded-xl bg-emerald-100/70 text-[#01411C] flex items-center justify-center">
+              <div className="h-12 w-12 rounded-none bg-emerald-100/70 text-[#01411C] flex items-center justify-center">
                <FileImage className="h-6 w-6" />
               </div>
               <div className="text-center">

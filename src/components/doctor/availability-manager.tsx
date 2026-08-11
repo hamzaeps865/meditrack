@@ -123,7 +123,7 @@ function AddBlockForm({
    <button type="button" onClick={submit} disabled={isPending}
     className="h-9 px-4 bg-primary text-primary-foreground text-sm
      font-bold hover:bg-primary/90 transition-colors disabled:opacity-60
-     disabled:cursor-not-allowed flex items-center gap-2 shadow-sm">
+     disabled:cursor-not-allowed flex items-center gap-2 ">
     {isPending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Check className="h-3.5 w-3.5" />}
     {isPending ? 'Saving...' : 'Save Block'}
    </button>
@@ -272,7 +272,7 @@ export default function AvailabilityManager({ doctorId, initialWindows }: Props)
            transition-colors shrink-0 cursor-pointer
            ${active ? 'bg-primary justify-end' : 'bg-muted justify-start'}`}
          >
-          <div className="h-5 w-5 bg-white shadow-sm" />
+          <div className="h-5 w-5 bg-white " />
          </button>
          <span className={`text-sm font-semibold
           ${active ? 'text-foreground' : 'text-muted-foreground'}`}>
@@ -456,7 +456,7 @@ export default function AvailabilityManager({ doctorId, initialWindows }: Props)
     {/* Auto-Sync */}
     <div className="premium-card premium-card-pad bg-muted/40">
      <div className="h-8 w-8 bg-white flex items-center
-      justify-center mb-3 shadow-sm">
+      justify-center mb-3 ">
       <RefreshCw className="h-4 w-4 text-primary" />
      </div>
      <h3 className="text-sm font-bold text-foreground mb-1.5">Auto-Sync</h3>

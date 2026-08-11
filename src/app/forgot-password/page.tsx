@@ -8,7 +8,7 @@ export const metadata = {
 export default function ForgotPasswordPage() {
  return (
   <div className="min-h-screen flex flex-col items-center justify-center bg-background px-4 py-10">
-   <div className="bg-card shadow-sm border border-border w-full max-w-[460px] overflow-hidden">
+   <div className="bg-card  border border-border w-full max-w-[460px] overflow-hidden">
     <div className="px-6 sm:px-[33px] pt-8 pb-7">
      {/* Brand */}
      <div className="flex flex-col items-center text-center mb-6">

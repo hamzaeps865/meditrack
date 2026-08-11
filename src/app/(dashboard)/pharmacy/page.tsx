@@ -52,21 +52,21 @@ export default async function PharmacyDashboardPage() {
 
     {/* Stats */}
     <div className="grid grid-cols-3 gap-3 mb-6">
-     <div className="bg-white border border-border p-4 shadow-sm">
+     <div className="bg-white border border-border p-4 ">
       <div className="h-9 w-9 bg-amber-50 flex items-center justify-center mb-2">
        <Pill className="h-4 w-4 text-amber-600" />
       </div>
       <p className="text-2xl font-bold text-foreground">{pending.length}</p>
       <p className="text-xs text-muted-foreground mt-0.5">Pending Dispense</p>
      </div>
-     <div className="bg-white border border-border p-4 shadow-sm">
+     <div className="bg-white border border-border p-4 ">
       <div className="h-9 w-9 bg-emerald-50 flex items-center justify-center mb-2">
        <Package className="h-4 w-4 text-emerald-700" />
       </div>
       <p className="text-2xl font-bold text-foreground">{inventory.length}</p>
       <p className="text-xs text-muted-foreground mt-0.5">Stock Batches</p>
      </div>
-     <div className="bg-white border border-border p-4 shadow-sm">
+     <div className="bg-white border border-border p-4 ">
       <div className={`h-9 w-9 flex items-center justify-center mb-2 ${lowStockCount > 0 ? 'bg-rose-50' : 'bg-muted'}`}>
        <AlertTriangle className={`h-4 w-4 ${lowStockCount > 0 ? 'text-rose-600' : 'text-muted-foreground'}`} />
       </div>

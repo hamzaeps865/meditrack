@@ -26,7 +26,7 @@ export default async function PatientDoctorsPage() {
 
     {/* Doctor cards */}
     {doctors.length === 0 ? (
-     <div className="bg-white border border-border p-12 text-center text-muted-foreground shadow-sm">
+     <div className="bg-white border border-border p-12 text-center text-muted-foreground ">
       <Stethoscope className="h-8 w-8 opacity-30 mx-auto mb-3" />
       <p className="text-sm font-medium">No doctors available yet.</p>
       <p className="text-xs mt-1">Please check back later.</p>

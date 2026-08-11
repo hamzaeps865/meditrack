@@ -47,7 +47,7 @@ export function AcceptingBookingsToggle({ initialValue }: AcceptingBookingsToggl
     ${accepting ? 'bg-primary' : 'bg-muted-foreground/30'}`}
   >
    <span
-    className={`absolute top-0.5 h-5 w-5 bg-white shadow-sm
+    className={`absolute top-0.5 h-5 w-5 bg-white 
      transition-transform duration-200
      ${accepting ? 'translate-x-5' : 'translate-x-0.5'}`}
    />

@@ -97,7 +97,7 @@ export default function AlertManager({ alerts: initial }: { alerts: AlertItem[] 
    {/* Create form (modal) */}
    {showForm && (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
-     <div className="bg-white shadow-xl border border-border w-full max-w-lg max-h-[90vh] overflow-y-auto">
+     <div className="bg-white  border border-border w-full max-w-lg max-h-[90vh] overflow-y-auto">
       <div className="flex items-center justify-between px-5 py-4 border-b border-border sticky top-0 bg-white">
        <div className="flex items-center gap-2">
         <Megaphone className="h-4 w-4 text-primary" />
@@ -157,7 +157,7 @@ export default function AlertManager({ alerts: initial }: { alerts: AlertItem[] 
 
    {/* Alert list */}
    {initial.length === 0 ? (
-    <div className="bg-white border border-border p-10 text-center shadow-sm">
+    <div className="bg-white border border-border p-10 text-center ">
      <Megaphone className="h-10 w-10 text-muted-foreground opacity-20 mx-auto mb-3" />
      <p className="text-sm font-medium text-foreground">No health alerts yet</p>
      <p className="text-xs text-muted-foreground mt-1">Create an alert to warn patients about outbreaks in their area.</p>
@@ -167,7 +167,7 @@ export default function AlertManager({ alerts: initial }: { alerts: AlertItem[] 
      {initial.map((alert) => {
       const cfg = severityConfig[alert.severity] ?? severityConfig.medium;
       return (
-       <div key={alert.id} className={`bg-white border p-5 shadow-sm ${alert.expired ? 'opacity-60' : cfg.border}`}>
+       <div key={alert.id} className={`bg-white border p-5  ${alert.expired ? 'opacity-60' : cfg.border}`}>
         <div className="flex items-start justify-between gap-3 mb-2">
          <div className="flex items-center gap-2 flex-wrap">
           <span className={`text-[10px] font-bold uppercase px-2 py-0.5 ${cfg.bg} ${cfg.text}`}>

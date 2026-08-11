@@ -198,7 +198,7 @@ export default function HelpPage() {
        placeholder="Search help articles..."
        className="w-full h-12 pl-12 pr-5 border border-border
         bg-white text-sm text-foreground placeholder:text-muted-foreground
-        shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/20
+         focus:outline-none focus:ring-2 focus:ring-primary/20
         transition-colors"
       />
       {searchQuery && (
@@ -221,7 +221,7 @@ export default function HelpPage() {
           key={topic.title}
           type="button"
           className="bg-white border border-border p-5 text-left
-           shadow-sm hover:shadow-md hover:border-primary/30
+            hover: hover:border-primary/30
            transition-all group"
          >
           <div className="h-9 w-9 bg-muted flex items-center
@@ -251,7 +251,7 @@ export default function HelpPage() {
 
       {filteredFaqs.length === 0 ? (
        <div className="bg-white border border-border p-8
-        text-center text-muted-foreground shadow-sm">
+        text-center text-muted-foreground ">
         <p className="text-sm font-medium">No results for "{searchQuery}"</p>
         <p className="text-xs mt-1">Try a different search term or contact support.</p>
        </div>
@@ -264,7 +264,7 @@ export default function HelpPage() {
            {section.category}
           </p>
           <div className="bg-white border border-border
-           overflow-hidden shadow-sm">
+           overflow-hidden ">
            {section.items.map((item, i) => {
             const key  = `${section.category}-${i}`;
             const isOpen = openFaqs.has(key);
@@ -288,7 +288,7 @@ export default function HelpPage() {
               {isOpen && (
                <div className="px-5 pb-4 pt-0">
                 <p className="text-sm text-muted-foreground leading-relaxed
-                 border-l-2 border-primary/30 pl-3">
+                 pl-3">
                  {item.a}
                 </p>
                </div>
@@ -305,7 +305,7 @@ export default function HelpPage() {
 
      {/* ── Contact / Support form ── */}
      <section>
-      <div className="bg-white border border-border p-5 shadow-sm">
+      <div className="bg-white border border-border p-5 ">
        <h3 className="text-base font-bold text-foreground mb-1">
         Still need help?
        </h3>

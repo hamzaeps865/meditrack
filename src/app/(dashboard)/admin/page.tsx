@@ -137,7 +137,6 @@ export default async function AdminDashboard() {
       icon:         Users,
       iconColor:    'text-[#01411C]',
       iconBg:       'bg-emerald-100/70',
-      borderAccent: 'border-l-4 border-[#01411C]',
       href:         '/admin/patients',
     },
     {
@@ -148,7 +147,6 @@ export default async function AdminDashboard() {
       icon:         Calendar,
       iconColor:    'text-[#01411C]',
       iconBg:       'bg-emerald-100/70',
-      borderAccent: 'border-l-4 border-emerald-600',
       href:         '/admin/appointments',
     },
     {
@@ -159,7 +157,6 @@ export default async function AdminDashboard() {
       icon:         UserCheck,
       iconColor:    'text-amber-700',
       iconBg:       'bg-amber-100/70',
-      borderAccent: 'border-l-4 border-amber-500',
       href:         '/admin/doctors',
     },
     {
@@ -170,7 +167,6 @@ export default async function AdminDashboard() {
       icon:         ShieldAlert,
       iconColor:    'text-[#01411C]',
       iconBg:       'bg-emerald-100/70',
-      borderAccent: 'border-l-4 border-[#01411C]',
       href:         '/admin/users',
     },
   ];
@@ -184,7 +180,7 @@ export default async function AdminDashboard() {
           <input
             type="text"
             placeholder="Search patients, medical records, doctors..."
-            className="w-full h-10 pl-10 pr-4 rounded-xl border border-emerald-200/80 bg-white text-sm text-gray-900 placeholder:text-gray-400 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#01411C]/20 focus:border-[#01411C]"
+            className="w-full h-10 pl-10 pr-4 rounded-none border border-emerald-200/80 bg-white text-sm text-gray-900 placeholder:text-gray-400  focus:outline-none focus:ring-2 focus:ring-[#01411C]/20 focus:border-[#01411C]"
           />
         </div>
 
@@ -193,7 +189,7 @@ export default async function AdminDashboard() {
           <button
             type="button"
             aria-label="Help"
-            className="h-10 w-10 rounded-xl bg-white border border-emerald-200/70 shadow-sm flex items-center justify-center text-emerald-800 hover:bg-emerald-50 transition-colors"
+            className="h-10 w-10 rounded-none bg-white border border-emerald-200/70  flex items-center justify-center text-emerald-800 hover:bg-emerald-50 transition-colors"
           >
             <HelpCircle className="h-4.5 w-4.5" />
           </button>
@@ -207,7 +203,7 @@ export default async function AdminDashboard() {
                 Administrator
               </p>
             </div>
-            <div className="h-10 w-10 rounded-xl bg-[#01411C] text-white flex items-center justify-center text-xs font-black shadow-md border border-emerald-600/30 shrink-0">
+            <div className="h-10 w-10 rounded-none bg-[#01411C] text-white flex items-center justify-center text-xs font-black  border border-emerald-600/30 shrink-0">
               {adminInitials}
             </div>
           </div>
@@ -222,7 +218,7 @@ export default async function AdminDashboard() {
             <Link
               key={card.label}
               href={card.href}
-              className={`bg-white/90 backdrop-blur-md rounded-2xl p-5 shadow-sm border border-emerald-100 ${card.borderAccent} hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 block group`}
+              className={`bg-white/90 backdrop-blur-md rounded-none p-5  border border-emerald-100 hover: hover:-translate-y-0.5 transition-all duration-200 block group`}
             >
               <div className="flex items-start justify-between">
                 <div>
@@ -233,7 +229,7 @@ export default async function AdminDashboard() {
                     {card.value}
                   </p>
                 </div>
-                <div className={`${card.iconBg} ${card.iconColor} p-3 rounded-xl shrink-0 shadow-sm`}>
+                <div className={`${card.iconBg} ${card.iconColor} p-3 rounded-none shrink-0 `}>
                   <Icon className="w-5 h-5" />
                 </div>
               </div>
@@ -247,10 +243,10 @@ export default async function AdminDashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-6 relative z-10">
 
         {/* Today's Schedule Card */}
-        <div className="bg-white rounded-2xl shadow-sm border border-emerald-100 overflow-hidden">
+        <div className="bg-white rounded-none  border border-emerald-100 overflow-hidden">
           <div className="flex items-center justify-between px-6 py-4.5 border-b border-gray-100 bg-emerald-50/40">
             <div className="flex items-center gap-2.5">
-              <div className="h-8 w-8 rounded-lg bg-[#01411C] text-white flex items-center justify-center shadow-sm">
+              <div className="h-8 w-8 rounded-none bg-[#01411C] text-white flex items-center justify-center ">
                 <Calendar className="h-4 w-4 text-emerald-300" />
               </div>
               <div>
@@ -264,7 +260,7 @@ export default async function AdminDashboard() {
             </div>
             <Link
               href="/admin/appointments"
-              className="px-3.5 py-1.5 rounded-xl border border-emerald-200 bg-white text-xs font-bold text-[#01411C] hover:bg-emerald-50 transition-colors shadow-sm"
+              className="px-3.5 py-1.5 rounded-none border border-emerald-200 bg-white text-xs font-bold text-[#01411C] hover:bg-emerald-50 transition-colors "
             >
               View All
             </Link>
@@ -303,7 +299,7 @@ export default async function AdminDashboard() {
                       </td>
                       <td className="px-5 py-4">
                         <div className="flex items-center gap-2.5">
-                          <div className="h-7 w-7 rounded-lg bg-[#01411C]/10 text-[#01411C] flex items-center justify-center text-xs font-extrabold shrink-0">
+                          <div className="h-7 w-7 rounded-none bg-[#01411C]/10 text-[#01411C] flex items-center justify-center text-xs font-extrabold shrink-0">
                             {getInitials(row.patientName)}
                           </div>
                           <span className="text-gray-900 font-bold">
@@ -316,7 +312,7 @@ export default async function AdminDashboard() {
                       </td>
                       <td className="px-5 py-4 text-right">
                         <span
-                          className={`inline-block px-2.5 py-1 text-xs rounded-lg font-bold capitalize ${
+                          className={`inline-block px-2.5 py-1 text-xs rounded-none font-bold capitalize ${
                             statusStyles[row.status]
                           }`}
                         >
@@ -341,9 +337,9 @@ export default async function AdminDashboard() {
         </div>
 
         {/* Recent Audit Activity Card */}
-        <div className="bg-white rounded-2xl shadow-sm border border-emerald-100 flex flex-col overflow-hidden">
+        <div className="bg-white rounded-none  border border-emerald-100 flex flex-col overflow-hidden">
           <div className="px-6 py-4.5 border-b border-gray-100 bg-emerald-50/40 flex items-center gap-2.5">
-            <div className="h-8 w-8 rounded-lg bg-[#01411C] text-white flex items-center justify-center shadow-sm">
+            <div className="h-8 w-8 rounded-none bg-[#01411C] text-white flex items-center justify-center ">
               <Activity className="h-4 w-4 text-emerald-300" />
             </div>
             <div>
@@ -365,7 +361,7 @@ export default async function AdminDashboard() {
                 const Icon = style.icon;
                 return (
                   <div key={log.id} className="flex items-start gap-3 text-xs">
-                    <div className={`h-8 w-8 rounded-xl flex items-center justify-center shrink-0 shadow-xs ${style.bg}`}>
+                    <div className={`h-8 w-8 rounded-none flex items-center justify-center shrink-0  ${style.bg}`}>
                       <Icon className="w-4 h-4" />
                     </div>
                     <div className="min-w-0">
@@ -409,7 +405,7 @@ export default async function AdminDashboard() {
       <Link
         href="/admin/appointments/new"
         aria-label="New appointment"
-        className="fixed bottom-8 right-8 h-12 w-12 rounded-full bg-[#01411C] text-white flex items-center justify-center shadow-2xl hover:bg-[#013517] transition-all hover:scale-105 border border-emerald-400/40 z-50 cursor-pointer"
+        className="fixed bottom-8 right-8 h-12 w-12 rounded-none bg-[#01411C] text-white flex items-center justify-center  hover:bg-[#013517] transition-all hover:scale-105 border border-emerald-400/40 z-50 cursor-pointer"
       >
         <Plus className="w-6 h-6" />
       </Link>

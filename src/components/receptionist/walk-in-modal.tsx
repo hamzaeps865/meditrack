@@ -54,7 +54,7 @@ export default function WalkInModal({ doctors }: { doctors: { id: string; name: 
    <button
     type="button"
     onClick={() => setOpen(true)}
-    className="flex items-center gap-1.5 h-9 px-3.5 bg-white border border-border text-xs font-bold text-foreground hover:bg-muted/40 transition-colors flex items-center gap-1.5 shadow-sm"
+    className="flex items-center gap-1.5 h-9 px-3.5 bg-white border border-border text-xs font-bold text-foreground hover:bg-muted/40 transition-colors flex items-center gap-1.5 "
    >
     <UserPlus className="h-3.5 w-3.5 text-primary" />
     Walk-In Patient
@@ -62,7 +62,7 @@ export default function WalkInModal({ doctors }: { doctors: { id: string; name: 
 
    {open && (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
-     <div className="bg-white shadow-xl border border-border w-full max-w-md max-h-[90vh] overflow-y-auto">
+     <div className="bg-white  border border-border w-full max-w-md max-h-[90vh] overflow-y-auto">
       <div className="flex items-center justify-between px-5 py-4 border-b border-border">
        <h3 className="text-base font-bold text-foreground">Walk-In Patient</h3>
        <button type="button" onClick={() => setOpen(false)} className="h-8 w-8 flex items-center justify-center text-muted-foreground hover:bg-muted">

@@ -226,7 +226,7 @@ export default function AppointmentsTable({
 
      {/* Today / This Week / This Month / Custom */}
      <div className="flex items-center border border-border
-      bg-white overflow-hidden shadow-sm">
+      bg-white overflow-hidden ">
       {([
        { key: 'today', label: 'Today' },
        { key: 'week', label: 'This Week' },
@@ -255,7 +255,7 @@ export default function AppointmentsTable({
       const Icon = c.icon;
       return (
        <div key={c.label}
-        className="bg-white border border-border p-4 shadow-sm">
+        className="bg-white border border-border p-4 ">
         <div className="flex items-start justify-between mb-2">
          <p className="text-xs font-medium text-muted-foreground leading-tight">
           {c.label}
@@ -330,7 +330,7 @@ export default function AppointmentsTable({
     </div>
 
     {/* Table */}
-    <div className="bg-white border border-border overflow-hidden shadow-sm mb-4">
+    <div className="bg-white border border-border overflow-hidden  mb-4">
 
      {/* Header */}
      <div className="grid grid-cols-[130px_1fr_1fr_120px_1fr_120px_50px]
@@ -362,7 +362,7 @@ export default function AppointmentsTable({
          <li key={appt.id}
           className={`grid grid-cols-[130px_1fr_1fr_120px_1fr_120px_50px]
            items-center px-5 py-4 relative transition-colors
-           ${isLive ? 'bg-primary/[0.03] border-l-4 border-l-primary' : ''}
+           ${isLive ? 'bg-primary/[0.03]' : ''}
            ${isCancelled ? 'opacity-60' : 'hover:bg-muted/20'}`}>
 
           {/* Date / Time */}
@@ -439,7 +439,7 @@ export default function AppointmentsTable({
 
            {openMenu === appt.id && (
             <div className="absolute right-0 top-8 z-20 w-44 bg-white
-             border border-border shadow-lg py-1 overflow-hidden">
+             border border-border  py-1 overflow-hidden">
              <Link
               href={`/admin/appointments/${appt.id}`}
               className="block px-4 py-2 text-sm text-foreground hover:bg-muted"

@@ -130,7 +130,7 @@ export default function RegisterPatientModal({ onClose }: Props) {
     bg-black/40 backdrop-blur-sm"
   >
    <div
-    className="relative h-full w-full max-w-[480px] bg-card shadow-2xl
+    className="relative h-full w-full max-w-[480px] bg-card 
      flex flex-col overflow-hidden"
     role="dialog"
     aria-modal="true"

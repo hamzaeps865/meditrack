@@ -119,7 +119,7 @@ export default function UsersTable({ users, currentUserId, adminName }: UsersTab
   return (
     <div className="min-h-full bg-[#f0f7f3]">
       {/* ── Top Bar with Search Engine ── */}
-      <div className="bg-white border-b border-border px-6 py-3 flex items-center justify-between gap-4 sticky top-0 z-30 shadow-sm">
+      <div className="bg-white border-b border-border px-6 py-3 flex items-center justify-between gap-4 sticky top-0 z-30 ">
         <div className="relative flex-1 max-w-md">
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-emerald-800/50" />
           <input
@@ -130,7 +130,7 @@ export default function UsersTable({ users, currentUserId, adminName }: UsersTab
               setPage(1);
             }}
             placeholder="Search users by name, email, or role..."
-            className="w-full h-10 pl-10 pr-9 border border-border bg-emerald-50/30 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-emerald-700/20 focus:bg-white transition-all shadow-inner rounded-none"
+            className="w-full h-10 pl-10 pr-9 border border-border bg-emerald-50/30 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-emerald-700/20 focus:bg-white transition-all  rounded-none"
           />
           {search && (
             <button
@@ -162,7 +162,7 @@ export default function UsersTable({ users, currentUserId, adminName }: UsersTab
                 Super Administrator
               </p>
             </div>
-            <div className="h-9 w-9 bg-emerald-800 text-white flex items-center justify-center text-xs font-bold shrink-0 shadow-sm">
+            <div className="h-9 w-9 bg-emerald-800 text-white flex items-center justify-center text-xs font-bold shrink-0 ">
               {getInitials(adminName)}
             </div>
           </div>
@@ -188,7 +188,7 @@ export default function UsersTable({ users, currentUserId, adminName }: UsersTab
         </div>
 
         {/* Filter Bar & Role Tabs */}
-        <div className="bg-white border border-border p-3 shadow-sm space-y-3">
+        <div className="bg-white border border-border p-3  space-y-3">
           <div className="flex items-center justify-between flex-wrap gap-2 pb-2 border-b border-border/60">
             <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-emerald-900">
               <Filter className="h-3.5 w-3.5" />
@@ -223,13 +223,13 @@ export default function UsersTable({ users, currentUserId, adminName }: UsersTab
                 }}
                 className={`h-8 px-3 text-xs font-semibold transition-all flex items-center gap-1.5 border ${
                   roleFilter === tab.key
-                    ? 'bg-emerald-900 text-white border-emerald-900 shadow-sm'
+                    ? 'bg-emerald-900 text-white border-emerald-900 '
                     : 'bg-muted/30 text-emerald-900/80 border-border hover:bg-muted hover:text-foreground'
                 }`}
               >
                 <span>{tab.label}</span>
                 <span
-                  className={`px-1.5 py-0.2 text-[10px] rounded-full font-bold ${
+                  className={`px-1.5 py-0.2 text-[10px] rounded-none font-bold ${
                     roleFilter === tab.key ? 'bg-emerald-800 text-white' : 'bg-emerald-100 text-emerald-800'
                   }`}
                 >
@@ -241,7 +241,7 @@ export default function UsersTable({ users, currentUserId, adminName }: UsersTab
         </div>
 
         {/* ── Table Container ── */}
-        <div className="bg-white border border-border shadow-sm overflow-hidden">
+        <div className="bg-white border border-border  overflow-hidden">
           {/* Header Row */}
           <div className="grid grid-cols-[1.5fr_2fr_1.2fr_1.8fr_1fr] px-5 py-3 border-b border-border bg-emerald-900/5">
             <p className="text-[10px] font-bold uppercase tracking-widest text-emerald-900">User / Name</p>
@@ -383,7 +383,7 @@ export default function UsersTable({ users, currentUserId, adminName }: UsersTab
 
         {/* Bottom Insight Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
-          <div className="bg-white border border-border p-5 shadow-sm">
+          <div className="bg-white border border-border p-5 ">
             <div className="flex items-center gap-2 mb-2">
               <div className="h-8 w-8 bg-emerald-50 text-emerald-800 flex items-center justify-center">
                 <Users className="h-4 w-4" />
@@ -394,7 +394,7 @@ export default function UsersTable({ users, currentUserId, adminName }: UsersTab
             <p className="text-xs text-emerald-800/60 mt-1 font-medium">Across all system roles</p>
           </div>
 
-          <div className="bg-emerald-950 text-white border border-emerald-900 p-5 shadow-sm">
+          <div className="bg-emerald-950 text-white border border-emerald-900 p-5 ">
             <div className="flex items-center gap-2 mb-2">
               <div className="h-8 w-8 bg-emerald-900 text-emerald-400 flex items-center justify-center">
                 <ShieldCheck className="h-4 w-4" />
@@ -405,7 +405,7 @@ export default function UsersTable({ users, currentUserId, adminName }: UsersTab
             <p className="text-xs text-emerald-300/80 mt-1 font-medium">Admins, Doctors, Nurses & Staff</p>
           </div>
 
-          <div className="bg-white border border-border p-5 shadow-sm">
+          <div className="bg-white border border-border p-5 ">
             <div className="flex items-center gap-2 mb-2">
               <div className="h-8 w-8 bg-amber-50 text-amber-700 flex items-center justify-center">
                 <UserCheck className="h-4 w-4" />

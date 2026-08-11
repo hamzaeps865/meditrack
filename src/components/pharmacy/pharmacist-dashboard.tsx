@@ -117,7 +117,7 @@ export default function PharmacistDashboard({
    <div className="relative">
     <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
     <input
-     className="w-full h-11 pl-9 pr-4 border border-border bg-white text-sm text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-primary/20 shadow-sm"
+     className="w-full h-11 pl-9 pr-4 border border-border bg-white text-sm text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-2 focus:ring-primary/20 "
      placeholder="Search by patient name or medicine..."
      value={search}
      onChange={(e) => setSearch(e.target.value)}
@@ -138,7 +138,7 @@ export default function PharmacistDashboard({
    ) : (
     <div className="space-y-3">
      {filtered.map((item) => (
-      <div key={item.id} className="bg-white border border-border p-4 shadow-sm">
+      <div key={item.id} className="bg-white border border-border p-4 ">
        {/* Patient + medicine info */}
        <div className="flex items-start justify-between gap-3 mb-3">
         <div className="flex items-start gap-3">
@@ -224,7 +224,7 @@ export default function PharmacistDashboard({
    )}
 
    <div className="grid gap-4 md:grid-cols-2">
-    <form onSubmit={handleAddMedicine} className="bg-white border border-border p-4 shadow-sm space-y-3">
+    <form onSubmit={handleAddMedicine} className="bg-white border border-border p-4  space-y-3">
      <h2 className="text-sm font-bold text-foreground">Add Medicine to Catalog</h2>
      <input required value={medicineName} onChange={(e) => setMedicineName(e.target.value)} placeholder="Medicine name" className="w-full h-9 px-3 border border-border text-sm" />
      <div className="grid grid-cols-2 gap-2">
@@ -233,7 +233,7 @@ export default function PharmacistDashboard({
      </div>
      <button disabled={isPending} className="h-9 px-3 bg-primary text-primary-foreground text-sm font-semibold disabled:opacity-60">Add Medicine</button>
     </form>
-    <form onSubmit={handleAddStock} className="bg-white border border-border p-4 shadow-sm space-y-3">
+    <form onSubmit={handleAddStock} className="bg-white border border-border p-4  space-y-3">
      <h2 className="text-sm font-bold text-foreground">Receive Stock</h2>
      <select required value={stockMedicineId} onChange={(e) => setStockMedicineId(e.target.value)} className="w-full h-9 px-3 border border-border text-sm">
       <option value="">Select medicine</option>

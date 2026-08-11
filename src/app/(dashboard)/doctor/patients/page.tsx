@@ -324,7 +324,7 @@ export default async function DoctorPatientsPage({
     </div>
 
     {/* ── Patients table ── */}
-    <div className="bg-white border border-border overflow-hidden shadow-sm mb-4">
+    <div className="bg-white border border-border overflow-hidden  mb-4">
 
      {/* Table header */}
      <div className="grid grid-cols-[130px_1fr_110px_130px_1fr_1fr_100px]
@@ -524,7 +524,7 @@ export default async function DoctorPatientsPage({
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
      {/* Treatment Insights */}
-     <div className="bg-white border border-border p-5 shadow-sm">
+     <div className="bg-white border border-border p-5 ">
       <div className="flex items-center gap-2 mb-3">
        <TrendingUp className="h-4 w-4 text-primary" />
        <h3 className="text-sm font-semibold text-foreground">Treatment Insights</h3>

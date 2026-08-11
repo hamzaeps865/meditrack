@@ -75,7 +75,7 @@ export default function LabQueueClient({ queue }: { queue: QueueItem[] }) {
  return (
   <div>
    {queue.length === 0 ? (
-    <div className="bg-white border border-border p-12 text-center shadow-sm">
+    <div className="bg-white border border-border p-12 text-center ">
      <FlaskConical className="h-10 w-10 text-muted-foreground opacity-20 mx-auto mb-3" />
      <p className="text-sm font-medium text-foreground">Queue is empty</p>
      <p className="text-xs text-muted-foreground mt-1">New lab orders from doctors will appear here.</p>
@@ -87,7 +87,7 @@ export default function LabQueueClient({ queue }: { queue: QueueItem[] }) {
       const sCfg = statusConfig[item.status] ?? statusConfig.ordered;
       const PIcon = pCfg.icon;
       return (
-       <div key={item.id} className="bg-white border border-border p-4 shadow-sm">
+       <div key={item.id} className="bg-white border border-border p-4 ">
         <div className="flex items-start justify-between gap-3 mb-3">
          <div className="flex items-start gap-3">
           <div className={`h-9 w-9 ${pCfg.bg} flex items-center justify-center shrink-0`}>
@@ -137,7 +137,7 @@ export default function LabQueueClient({ queue }: { queue: QueueItem[] }) {
    {/* Result entry modal */}
    {resultModal && (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
-     <div className="bg-white shadow-xl border border-border w-full max-w-lg max-h-[90vh] overflow-y-auto">
+     <div className="bg-white  border border-border w-full max-w-lg max-h-[90vh] overflow-y-auto">
       <div className="flex items-center justify-between px-5 py-4 border-b border-border sticky top-0 bg-white">
        <div>
         <h3 className="text-base font-bold text-foreground">Enter Lab Result</h3>

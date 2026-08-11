@@ -252,7 +252,7 @@ export default async function DoctorPatientDetailPage({
      <div className="space-y-4">
 
       {/* Safety Critical */}
-      <div className="bg-white border border-red-100 p-4 shadow-sm">
+      <div className="bg-white border border-red-100 p-4 ">
        <div className="flex items-center gap-2 mb-3">
         <AlertTriangle className="h-4 w-4 text-red-500" />
         <h3 className="text-[10px] font-bold uppercase tracking-widest text-red-500">
@@ -286,7 +286,7 @@ export default async function DoctorPatientDetailPage({
       </div>
 
       {/* Demographics */}
-      <div className="bg-white border border-border p-4 shadow-sm">
+      <div className="bg-white border border-border p-4 ">
        <div className="flex items-center gap-2 mb-3">
         <User className="h-4 w-4 text-primary" />
         <h3 className="text-xs font-semibold text-foreground">Demographics</h3>
@@ -361,7 +361,7 @@ export default async function DoctorPatientDetailPage({
 
       {/* Latest Visit Record */}
       {latestVisit && (
-       <div className="bg-white border border-border p-5 shadow-sm">
+       <div className="bg-white border border-border p-5 ">
         <div className="flex items-center justify-between mb-4">
          <div className="flex items-center gap-2">
           <Activity className="h-4 w-4 text-primary" />
@@ -427,7 +427,7 @@ export default async function DoctorPatientDetailPage({
       )}
 
       {/* Prescriptions from latest visit */}
-      <div className="bg-white border border-border p-5 shadow-sm">
+      <div className="bg-white border border-border p-5 ">
        <div className="flex items-center gap-2 mb-4">
         <Pill className="h-4 w-4 text-primary" />
         <h2 className="text-sm font-semibold text-foreground">
@@ -476,7 +476,7 @@ export default async function DoctorPatientDetailPage({
 
       {/* Visit history (all my visits) */}
       {myVisits.length > 1 && (
-       <div className="bg-white border border-border overflow-hidden shadow-sm">
+       <div className="bg-white border border-border overflow-hidden ">
         <div className="flex items-center justify-between px-5 py-4 border-b border-border">
          <div className="flex items-center gap-2">
           <FileText className="h-4 w-4 text-primary" />
@@ -509,7 +509,7 @@ export default async function DoctorPatientDetailPage({
       )}
 
       {/* Appointment history */}
-      <div className="bg-white border border-border overflow-hidden shadow-sm">
+      <div className="bg-white border border-border overflow-hidden ">
        <div className="flex items-center justify-between px-5 py-4 border-b border-border">
         <div className="flex items-center gap-2">
          <CalendarClock className="h-4 w-4 text-primary" />

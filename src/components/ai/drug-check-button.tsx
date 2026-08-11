@@ -65,7 +65,7 @@ export default function DrugCheckButton({
      onClick={() => setShowModal(false)}
     >
      <div
-      className="bg-white shadow-xl border border-border w-full max-w-md max-h-[80vh] overflow-y-auto"
+      className="bg-white  border border-border w-full max-w-md max-h-[80vh] overflow-y-auto"
       onClick={(e) => e.stopPropagation()}
      >
       <div className="flex items-center justify-between px-5 py-4 border-b border-border sticky top-0 bg-white">

@@ -181,7 +181,7 @@ export default function PatientBookingForm({
     {/* Success state */}
     {success ? (
      <div className="bg-white border border-emerald-200 p-10
-      shadow-sm flex flex-col items-center gap-4 text-center">
+       flex flex-col items-center gap-4 text-center">
       <div className="h-14 w-14 bg-emerald-50 flex items-center
        justify-center">
        <CheckCircle2 className="h-7 w-7 text-emerald-600" />
@@ -195,7 +195,7 @@ export default function PatientBookingForm({
      </div>
     ) : (
      <form onSubmit={handleSubmit}
-      className="bg-white border border-border p-6 shadow-sm space-y-5">
+      className="bg-white border border-border p-6  space-y-5">
 
       {error && (
        <div className="flex items-start gap-2.5 border border-red-200
@@ -299,7 +299,7 @@ export default function PatientBookingForm({
               ${booked
                ? 'bg-muted text-muted-foreground/40 border-muted cursor-not-allowed line-through'
                : slot === s
-                ? 'bg-primary text-primary-foreground border-primary shadow-sm'
+                ? 'bg-primary text-primary-foreground border-primary '
                 : 'bg-white text-foreground border-border hover:border-primary/40'}`}
             >
              {fmtSlot(s)}

@@ -47,17 +47,17 @@ export default async function AdminAlertsPage() {
 
     {/* Stats */}
     <div className="grid grid-cols-3 gap-3 mb-6">
-     <div className="bg-white border border-border p-4 shadow-sm">
+     <div className="bg-white border border-border p-4 ">
       <p className="text-2xl font-bold text-foreground">{alerts.length}</p>
       <p className="text-xs text-muted-foreground mt-0.5">Total Alerts</p>
      </div>
-     <div className="bg-white border border-border p-4 shadow-sm">
+     <div className="bg-white border border-border p-4 ">
       <p className="text-2xl font-bold text-emerald-600">
        {serialized.filter((a) => !a.expired).length}
       </p>
       <p className="text-xs text-muted-foreground mt-0.5">Active</p>
      </div>
-     <div className="bg-white border border-border p-4 shadow-sm">
+     <div className="bg-white border border-border p-4 ">
       <p className="text-2xl font-bold text-rose-500">
        {serialized.filter((a) => a.severity === 'critical' && !a.expired).length}
       </p>

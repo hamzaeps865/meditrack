@@ -144,7 +144,7 @@ export default async function ReceptionistDashboardPage() {
       <Link
        href="/receptionist/patients/new"
        className="h-9 px-3.5 bg-white border border-border text-xs font-bold text-foreground
-        hover:bg-muted/40 transition-colors flex items-center gap-1.5 shadow-sm"
+        hover:bg-muted/40 transition-colors flex items-center gap-1.5 "
       >
        <UserPlus className="h-3.5 w-3.5 text-primary" />
        Register Patient
@@ -152,7 +152,7 @@ export default async function ReceptionistDashboardPage() {
 
       <Link
        href="/receptionist/appointments"
-       className="h-9 px-4 text-xs font-bold text-white flex items-center gap-1.5 hover:opacity-90 transition-opacity shadow-sm"
+       className="h-9 px-4 text-xs font-bold text-white flex items-center gap-1.5 hover:opacity-90 transition-opacity "
        style={{ backgroundColor: '#01411C' }}
       >
        <CalendarPlus className="h-3.5 w-3.5" />
@@ -209,7 +209,7 @@ export default async function ReceptionistDashboardPage() {
      <div className="lg:col-span-2 space-y-6">
 
       {/* Waiting Room Queue */}
-      <div className="bg-white border border-border shadow-sm overflow-hidden">
+      <div className="bg-white border border-border  overflow-hidden">
        <div className="flex items-center justify-between px-5 py-4 border-b border-border bg-amber-50/40">
         <div className="flex items-center gap-2">
          <div className="h-2.5 w-2.5 bg-amber-500 animate-pulse" />
@@ -258,7 +258,7 @@ export default async function ReceptionistDashboardPage() {
       </div>
 
       {/* Today's Full Schedule */}
-      <div className="bg-white border border-border shadow-sm overflow-hidden">
+      <div className="bg-white border border-border  overflow-hidden">
        <div className="flex items-center justify-between px-5 py-4 border-b border-border">
         <div className="flex items-center gap-2">
          <Calendar className="h-4 w-4 text-primary" />

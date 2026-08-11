@@ -281,7 +281,7 @@ export default function DoctorsTable({ doctors: initialDoctors }: Props) {
              transition-colors
              ${isActive ? 'bg-primary justify-end' : 'bg-muted justify-start'}`}
            >
-            <div className="h-5 w-5 bg-white shadow-sm" />
+            <div className="h-5 w-5 bg-white " />
            </button>
           </div>
 
@@ -298,7 +298,7 @@ export default function DoctorsTable({ doctors: initialDoctors }: Props) {
 
            {openMenu === doc.id && (
             <div className="absolute right-0 top-8 z-20 w-44 bg-white
-             border border-border shadow-lg py-1 overflow-hidden">
+             border border-border  py-1 overflow-hidden">
              <Link
               href={`/admin/doctors/${doc.id}`}
               className="block px-4 py-2 text-sm text-foreground hover:bg-muted"

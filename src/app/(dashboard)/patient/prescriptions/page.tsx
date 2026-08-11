@@ -123,21 +123,21 @@ export default async function PatientPrescriptionsPage() {
     {/* Stats */}
     {enriched.length > 0 && (
      <div className="grid grid-cols-3 gap-3">
-      <div className="bg-white border border-border p-4 shadow-sm">
+      <div className="bg-white border border-border p-4 ">
        <div className="h-9 w-9 bg-emerald-50 flex items-center justify-center mb-3">
         <Pill className="h-4.5 w-4.5 text-emerald-700" style={{ width: '1.125rem', height: '1.125rem' }} />
        </div>
        <p className="text-2xl font-bold text-foreground leading-none">{enriched.length}</p>
        <p className="text-xs text-muted-foreground mt-1 font-medium">Prescriptions</p>
       </div>
-      <div className="bg-white border border-border p-4 shadow-sm">
+      <div className="bg-white border border-border p-4 ">
        <div className="h-9 w-9 bg-emerald-50 flex items-center justify-center mb-3">
         <Activity className="h-4.5 w-4.5 text-emerald-600" style={{ width: '1.125rem', height: '1.125rem' }} />
        </div>
        <p className="text-2xl font-bold text-foreground leading-none">{totalMeds}</p>
        <p className="text-xs text-muted-foreground mt-1 font-medium">Medicines Total</p>
       </div>
-      <div className="bg-white border border-border p-4 shadow-sm">
+      <div className="bg-white border border-border p-4 ">
        <div className="h-9 w-9 bg-emerald-50 flex items-center justify-center mb-3">
         <Stethoscope className="h-4.5 w-4.5 text-emerald-700" style={{ width: '1.125rem', height: '1.125rem' }} />
        </div>
@@ -150,7 +150,7 @@ export default async function PatientPrescriptionsPage() {
     {/* Prescriptions list */}
     {enriched.length === 0 ? (
      <div className="bg-white border border-border p-14
-      flex flex-col items-center gap-3 text-muted-foreground shadow-sm">
+      flex flex-col items-center gap-3 text-muted-foreground ">
       <div className="h-14 w-14 bg-muted flex items-center justify-center">
        <Pill className="h-7 w-7 opacity-30" />
       </div>

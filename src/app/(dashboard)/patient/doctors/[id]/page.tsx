@@ -53,7 +53,7 @@ export default async function PatientDoctorDetailPage({ params }: { params: Prom
     </Link>
 
     {/* Doctor header card */}
-    <div className="bg-white border border-border p-6 shadow-sm mb-5">
+    <div className="bg-white border border-border p-6  mb-5">
      <div className="flex items-start gap-5">
       <div className="h-16 w-16 bg-primary/10 text-primary flex items-center justify-center text-xl font-bold shrink-0">
        {initials}
@@ -80,7 +80,7 @@ export default async function PatientDoctorDetailPage({ params }: { params: Prom
 
     {/* Rating breakdown */}
     {summary.count > 0 && (
-     <div className="bg-white border border-border p-5 shadow-sm mb-5">
+     <div className="bg-white border border-border p-5  mb-5">
       <h2 className="text-sm font-bold text-foreground mb-4">Rating Breakdown</h2>
       <div className="space-y-2">
        {distribution.map((d) => (
@@ -100,7 +100,7 @@ export default async function PatientDoctorDetailPage({ params }: { params: Prom
     )}
 
     {/* Reviews */}
-    <div className="bg-white border border-border p-5 shadow-sm">
+    <div className="bg-white border border-border p-5 ">
      <h2 className="text-sm font-bold text-foreground mb-4">
       Patient Reviews {summary.count > 0 && <span className="text-muted-foreground font-normal">({summary.count})</span>}
      </h2>

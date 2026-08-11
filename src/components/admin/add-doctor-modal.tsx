@@ -108,7 +108,7 @@ export default function AddDoctorModal({ onClose }: Props) {
    {/* Slide-in panel */}
    <div
     className="fixed inset-y-0 right-0 z-50 w-full max-w-sm bg-white
-     shadow-2xl flex flex-col border-l-4"
+      flex flex-col "
     style={{ borderLeftColor: '#6366f1' }}
    >
     {/* Header */}

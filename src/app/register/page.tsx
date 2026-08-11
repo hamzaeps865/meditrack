@@ -97,7 +97,7 @@ export default function RegisterPage() {
 
       {/* Register Card */}
       <div
-        className="shadow-lg border border-gray-200 w-full max-w-[460px] rounded-none overflow-hidden relative z-10"
+        className=" border border-gray-200 w-full max-w-[460px] rounded-none overflow-hidden relative z-10"
         style={{
           backgroundImage: "url('/regsiterBackground.jpg')",
           backgroundSize: 'cover',
@@ -112,7 +112,7 @@ export default function RegisterPage() {
           {/* Brand Header */}
           <div className="flex flex-col items-center text-center mb-5">
             <div className="flex items-center gap-2.5 mb-2">
-              <div className="h-10 w-10 rounded-none bg-[#01411C] text-white flex items-center justify-center shadow-md border border-emerald-600/30">
+              <div className="h-10 w-10 rounded-none bg-[#01411C] text-white flex items-center justify-center  border border-emerald-600/30">
                 <BriefcaseMedical className="h-5.5 w-5.5 text-emerald-300" strokeWidth={2.25} />
               </div>
               <div className="text-left">
@@ -303,7 +303,7 @@ export default function RegisterPage() {
 
             <Button
               type="submit"
-              className="w-full h-[46px] bg-[#01411C] hover:bg-[#013316] text-white font-bold rounded-none shadow-md shadow-[#01411C]/20 mt-1.5 cursor-pointer flex items-center justify-center gap-2 text-sm"
+              className="w-full h-[46px] bg-[#01411C] hover:bg-[#013316] text-white font-bold rounded-none  [#01411C]/20 mt-1.5 cursor-pointer flex items-center justify-center gap-2 text-sm"
               disabled={loading}
             >
               {loading ? (

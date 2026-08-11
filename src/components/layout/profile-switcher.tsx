@@ -82,7 +82,7 @@ export default function ProfileSwitcher({
 
    {open && (
     <div className="absolute left-4 right-4 top-full mt-1 z-50 bg-white 
-     border border-border shadow-lg overflow-hidden">
+     border border-border  overflow-hidden">
      {profiles.map((p) => {
       const isActive = p.id === active?.id;
       return (

@@ -31,7 +31,7 @@ export default async function PatientLabReportPage({ params }: { params: Promise
    </div>
 
    <div className="px-6 py-8 max-w-3xl mx-auto">
-    <div className="bg-white border border-border shadow-sm overflow-hidden">
+    <div className="bg-white border border-border  overflow-hidden">
      <div className="border-b border-border px-6 py-5">
       <div className="flex items-center gap-3">
        <div className="h-10 w-10 bg-primary/10 flex items-center justify-center">

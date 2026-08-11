@@ -86,7 +86,7 @@ export default function TriageSuggestionButton({
 
    {showModal && (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4" onClick={() => setShowModal(false)}>
-     <div className="bg-white shadow-xl border border-border w-full max-w-md max-h-[80vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+     <div className="bg-white  border border-border w-full max-w-md max-h-[80vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
       <div className="flex items-center justify-between px-5 py-4 border-b border-border sticky top-0 bg-white">
        <div className="flex items-center gap-2">
         <div className="h-7 w-7 bg-emerald-100 flex items-center justify-center">

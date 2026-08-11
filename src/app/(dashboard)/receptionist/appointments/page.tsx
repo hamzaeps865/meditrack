@@ -114,7 +114,7 @@ export default async function AppointmentsPage({
         href={v === 'day' ? dayHref : weekHref}
         className={`px-3 py-1 text-xs font-medium capitalize transition-colors
          ${view === v
-          ? 'bg-card text-foreground shadow-sm'
+          ? 'bg-card text-foreground '
           : 'text-muted-foreground hover:text-foreground'}`}
        >
         {v}
@@ -251,7 +251,7 @@ export default async function AppointmentsPage({
                href={`/receptionist/appointments/${appt.id}`}
                className={`absolute inset-1 border-l-[3px]
                 ${s.bg} ${s.border} px-2 py-1
-                hover:shadow-sm hover:brightness-95 transition-all z-[1]
+                hover: hover:brightness-95 transition-all z-[1]
                 overflow-hidden`}
               >
                <div className="flex items-center gap-1.5">

@@ -178,7 +178,7 @@ export default function ReceptionistSettingsForm({
 
     {/* ════ PROFILE INFORMATION ════ */}
     {activeTab === 'profile' && (
-     <div className="bg-white border border-border p-6 shadow-sm">
+     <div className="bg-white border border-border p-6 ">
       <div className="flex items-center gap-3 mb-5 pb-4 border-b border-border">
        <div className="h-9 w-9 bg-primary/10 flex items-center justify-center">
         <User className="h-4.5 w-4.5 text-primary" style={{ width: '1.125rem', height: '1.125rem' }} />
@@ -261,7 +261,7 @@ export default function ReceptionistSettingsForm({
 
     {/* ════ DESK & WORKSTATION PREFERENCES ════ */}
     {activeTab === 'desk' && (
-     <div className="bg-white border border-border p-6 shadow-sm">
+     <div className="bg-white border border-border p-6 ">
       <div className="flex items-center gap-3 mb-5 pb-4 border-b border-border">
        <div className="h-9 w-9 bg-amber-50 flex items-center justify-center">
         <Monitor className="h-4.5 w-4.5 text-amber-600" style={{ width: '1.125rem', height: '1.125rem' }} />
@@ -321,7 +321,7 @@ export default function ReceptionistSettingsForm({
            ${soundAlerts ? 'justify-end' : 'justify-start bg-muted'}`}
           style={soundAlerts ? { backgroundColor: '#01411C' } : undefined}
          >
-          <div className="h-5 w-5 bg-white shadow-sm" />
+          <div className="h-5 w-5 bg-white " />
          </button>
         </div>
 
@@ -339,7 +339,7 @@ export default function ReceptionistSettingsForm({
            ${autoConfirmCheckin ? 'justify-end' : 'justify-start bg-muted'}`}
           style={autoConfirmCheckin ? { backgroundColor: '#01411C' } : undefined}
          >
-          <div className="h-5 w-5 bg-white shadow-sm" />
+          <div className="h-5 w-5 bg-white " />
          </button>
         </div>
        </div>
@@ -367,7 +367,7 @@ export default function ReceptionistSettingsForm({
 
     {/* ════ SECURITY & PASSWORD ════ */}
     {activeTab === 'security' && (
-     <div className="bg-white border border-border p-6 shadow-sm">
+     <div className="bg-white border border-border p-6 ">
       <div className="flex items-center gap-3 mb-5 pb-4 border-b border-border">
        <div className="h-9 w-9 bg-emerald-50 flex items-center justify-center">
         <Lock className="h-4.5 w-4.5 text-emerald-700" style={{ width: '1.125rem', height: '1.125rem' }} />
@@ -463,7 +463,7 @@ export default function ReceptionistSettingsForm({
 
     {/* ════ NOTIFICATIONS ════ */}
     {activeTab === 'notifications' && (
-     <div className="bg-white border border-border p-6 shadow-sm">
+     <div className="bg-white border border-border p-6 ">
       <div className="flex items-center gap-3 mb-5 pb-4 border-b border-border">
        <div className="h-9 w-9 bg-emerald-50 flex items-center justify-center">
         <Bell className="h-4.5 w-4.5 text-emerald-700" style={{ width: '1.125rem', height: '1.125rem' }} />
@@ -509,7 +509,7 @@ export default function ReceptionistSettingsForm({
            ${item.val ? 'justify-end' : 'justify-start bg-muted'}`}
           style={item.val ? { backgroundColor: '#01411C' } : undefined}
          >
-          <div className="h-5 w-5 bg-white shadow-sm" />
+          <div className="h-5 w-5 bg-white " />
          </button>
         </div>
        ))}
@@ -536,7 +536,7 @@ export default function ReceptionistSettingsForm({
     )}
 
     {/* ── Sign Out Card ── */}
-    <div className="bg-white border border-red-100 overflow-hidden shadow-sm p-5 flex items-center justify-between gap-4">
+    <div className="bg-white border border-red-100 overflow-hidden  p-5 flex items-center justify-between gap-4">
      <div>
       <p className="text-sm font-semibold text-foreground">Sign out of Session</p>
       <p className="text-xs text-muted-foreground mt-0.5">

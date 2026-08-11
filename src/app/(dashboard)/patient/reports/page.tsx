@@ -25,7 +25,7 @@ export default async function PatientReportsPage() {
  if (!patientId) {
   return (
    <div className="min-h-full bg-[#f0f7f3] flex items-center justify-center px-6">
-    <div className="bg-white border border-border p-8 text-center max-w-sm shadow-sm">
+    <div className="bg-white border border-border p-8 text-center max-w-sm ">
      <User className="h-8 w-8 text-muted-foreground opacity-30 mx-auto mb-3" />
      <p className="text-sm font-medium text-foreground">No patient profile found</p>
      <p className="text-xs text-muted-foreground mt-1">
@@ -59,7 +59,7 @@ export default async function PatientReportsPage() {
       <Link
        href="/patient-reports-print"
        target="_blank"
-       className="h-10 px-4 text-sm font-bold text-white flex items-center gap-2 hover:opacity-90 transition-opacity shadow-sm"
+       className="h-10 px-4 text-sm font-bold text-white flex items-center gap-2 hover:opacity-90 transition-opacity "
        style={{ backgroundColor: '#01411C' }}
       >
        <FileDown className="h-4 w-4" />
@@ -86,7 +86,7 @@ export default async function PatientReportsPage() {
     )}
 
     {!reportData ? (
-     <div className="bg-white border border-border p-8 text-center text-muted-foreground shadow-sm">
+     <div className="bg-white border border-border p-8 text-center text-muted-foreground ">
       <Activity className="h-8 w-8 opacity-30 mx-auto mb-3" />
       <p className="text-sm font-medium">No health data available yet.</p>
       <p className="text-xs mt-1">Your visits and prescriptions will appear here.</p>
@@ -124,7 +124,7 @@ export default async function PatientReportsPage() {
        <Section icon={Stethoscope} title="Visit History">
         <div className="space-y-3">
          {reportData.visits.slice(0, 10).map((visit) => (
-          <div key={visit.id} className="border-l-2 border-primary/30 pl-4">
+          <div key={visit.id} className="pl-4">
            <div className="flex items-center justify-between">
             <p className="text-sm font-medium text-foreground">
              {visit.chiefComplaint ?? 'Consultation'}
@@ -188,7 +188,7 @@ export default async function PatientReportsPage() {
 
 function StatTile({ icon: Icon, label, value, color, bg }: { icon: typeof Calendar; label: string; value: number; color: string; bg: string }) {
  return (
-  <div className="bg-white border border-border p-4 shadow-sm">
+  <div className="bg-white border border-border p-4 ">
    <div className={`h-9 w-9 ${bg} flex items-center justify-center mb-2`}>
     <Icon className={`h-4 w-4 ${color}`} />
    </div>

@@ -55,8 +55,8 @@ export default function PrescriptionAccordion({ prescriptions }: Props) {
     return (
      <div
       key={rx.id}
-      className="bg-white border border-border shadow-sm overflow-hidden
-       transition-shadow hover:shadow-md"
+      className="bg-white border border-border  overflow-hidden
+       transition-shadow hover:"
      >
       {/* Header row */}
       <button
