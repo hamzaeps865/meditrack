@@ -94,16 +94,16 @@ export default function RegisterPage() {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-[url('/azadi_register_bg.png')] bg-cover bg-center bg-no-repeat px-4 py-8 relative overflow-hidden">
-      {/* Lighter Emerald Backdrop Overlay for High Image Visibility */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#002811]/60 via-[#01411C]/50 to-[#001c0b]/65 backdrop-blur-[1px] pointer-events-none" />
+      {/* Dark Cinematic Backdrop Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-br from-[#00180a]/85 via-[#012d13]/80 to-[#001207]/90 backdrop-blur-[1px] pointer-events-none" />
 
       {/* Radiant Glowing Elements */}
       <div className="absolute -top-24 -left-24 w-96 h-96 bg-emerald-400/30 rounded-full blur-3xl pointer-events-none animate-pulse" />
       <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-white/20 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-emerald-500/20 rounded-full blur-3xl pointer-events-none" />
 
-      {/* Main Centered Glassmorphic Register Card */}
-      <div className="bg-white/95 backdrop-blur-2xl shadow-[0_0_50px_-10px_rgba(1,65,28,0.5)] border-2 border-emerald-500/30 w-full max-w-[460px] overflow-hidden rounded-2xl relative z-10">
+      {/* Main Centered Flat Register Card */}
+      <div className="bg-white/95 backdrop-blur-2xl shadow-[0_0_50px_-10px_rgba(1,65,28,0.5)] border-2 border-emerald-500/30 w-full max-w-[460px] overflow-hidden rounded-none relative z-10">
         {/* Pakistani Flag Top Stripe */}
         <div className="h-1.5 w-full bg-gradient-to-r from-[#01411C] via-white to-[#01411C]" />
 
@@ -111,7 +111,7 @@ export default function RegisterPage() {
           {/* Brand Header */}
           <div className="flex flex-col items-center text-center mb-5">
             <div className="flex items-center gap-2.5 mb-2">
-              <div className="h-10 w-10 rounded-xl bg-[#01411C] text-white flex items-center justify-center shadow-md border border-emerald-600/30">
+              <div className="h-10 w-10 rounded-none bg-[#01411C] text-white flex items-center justify-center shadow-md border border-emerald-600/30">
                 <BriefcaseMedical className="h-5.5 w-5.5 text-emerald-300" strokeWidth={2.25} />
               </div>
               <div className="text-left">
@@ -145,7 +145,7 @@ export default function RegisterPage() {
                   placeholder="Muhammad Ali"
                   required
                   minLength={2}
-                  className="mt-1 w-full h-[44px] rounded-xl border-gray-300 focus:border-[#01411C] focus:ring-2 focus:ring-[#01411C]/20 bg-white text-xs sm:text-sm"
+                  className="mt-1 w-full h-[44px] rounded-none border-gray-300 focus:border-[#01411C] focus:ring-2 focus:ring-[#01411C]/20 bg-white text-xs sm:text-sm"
                 />
               </div>
               <div>
@@ -158,7 +158,7 @@ export default function RegisterPage() {
                   type="email"
                   placeholder="ali@example.com"
                   required
-                  className="mt-1 w-full h-[44px] rounded-xl border-gray-300 focus:border-[#01411C] focus:ring-2 focus:ring-[#01411C]/20 bg-white text-xs sm:text-sm"
+                  className="mt-1 w-full h-[44px] rounded-none border-gray-300 focus:border-[#01411C] focus:ring-2 focus:ring-[#01411C]/20 bg-white text-xs sm:text-sm"
                 />
               </div>
             </div>
@@ -177,7 +177,7 @@ export default function RegisterPage() {
                   required
                   minLength={11}
                   maxLength={11}
-                  className="mt-1 w-full h-[44px] rounded-xl border-gray-300 focus:border-[#01411C] focus:ring-2 focus:ring-[#01411C]/20 bg-white text-xs"
+                  className="mt-1 w-full h-[44px] rounded-none border-gray-300 focus:border-[#01411C] focus:ring-2 focus:ring-[#01411C]/20 bg-white text-xs"
                 />
               </div>
               <div>
@@ -189,7 +189,7 @@ export default function RegisterPage() {
                   name="dob"
                   type="date"
                   required
-                  className="mt-1 w-full h-[44px] rounded-xl border-gray-300 focus:border-[#01411C] focus:ring-2 focus:ring-[#01411C]/20 bg-white text-xs px-2"
+                  className="mt-1 w-full h-[44px] rounded-none border-gray-300 focus:border-[#01411C] focus:ring-2 focus:ring-[#01411C]/20 bg-white text-xs px-2"
                 />
               </div>
               <div>
@@ -201,7 +201,7 @@ export default function RegisterPage() {
                   name="gender"
                   required
                   defaultValue=""
-                  className="mt-1 w-full h-[44px] px-2.5 rounded-xl border border-gray-300 bg-white text-xs text-gray-800 focus:outline-none focus:border-[#01411C] focus:ring-2 focus:ring-[#01411C]/20"
+                  className="mt-1 w-full h-[44px] px-2.5 rounded-none border border-gray-300 bg-white text-xs text-gray-800 focus:outline-none focus:border-[#01411C] focus:ring-2 focus:ring-[#01411C]/20"
                 >
                   <option value="" disabled>Select</option>
                   <option value="male">Male</option>
@@ -241,10 +241,10 @@ export default function RegisterPage() {
                   minLength={8}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="mt-1 w-full h-[44px] rounded-xl border-gray-300 focus:border-[#01411C] focus:ring-2 focus:ring-[#01411C]/20 bg-white text-xs sm:text-sm"
+                  className="mt-1 w-full h-[44px] rounded-none border-gray-300 focus:border-[#01411C] focus:ring-2 focus:ring-[#01411C]/20 bg-white text-xs sm:text-sm"
                 />
                 {password && (
-                  <div className="mt-1.5 h-1.5 w-full bg-gray-200 rounded-full overflow-hidden">
+                  <div className="mt-1.5 h-1.5 w-full bg-gray-200 rounded-none overflow-hidden">
                     <div
                       className={`h-full transition-all duration-300 ${strength.color}`}
                       style={{ width: `${(strength.score / 3) * 100}%` }}
@@ -265,7 +265,7 @@ export default function RegisterPage() {
                   required
                   value={confirm}
                   onChange={(e) => setConfirm(e.target.value)}
-                  className={`mt-1 w-full h-[44px] rounded-xl border-gray-300 focus:border-[#01411C] focus:ring-2 focus:ring-[#01411C]/20 bg-white text-xs sm:text-sm ${
+                  className={`mt-1 w-full h-[44px] rounded-none border-gray-300 focus:border-[#01411C] focus:ring-2 focus:ring-[#01411C]/20 bg-white text-xs sm:text-sm ${
                     confirmTouched && !passwordsMatch
                       ? 'border-red-400 focus-visible:ring-red-400 bg-red-50/40'
                       : ''
@@ -302,7 +302,7 @@ export default function RegisterPage() {
 
             <Button
               type="submit"
-              className="w-full h-[46px] bg-[#01411C] hover:bg-[#013316] text-white font-bold rounded-xl shadow-md shadow-[#01411C]/20 mt-1.5 cursor-pointer flex items-center justify-center gap-2 text-sm"
+              className="w-full h-[46px] bg-[#01411C] hover:bg-[#013316] text-white font-bold rounded-none shadow-md shadow-[#01411C]/20 mt-1.5 cursor-pointer flex items-center justify-center gap-2 text-sm"
               disabled={loading}
             >
               {loading ? (

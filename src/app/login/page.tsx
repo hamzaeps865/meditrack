@@ -102,8 +102,8 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-[url('/azadi_bg.png')] bg-cover bg-center bg-no-repeat px-4 py-10 relative overflow-hidden">
-      {/* Lighter Emerald Backdrop Overlay for High Image Visibility */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#002811]/60 via-[#01411C]/50 to-[#001c0b]/65 backdrop-blur-[1px] pointer-events-none" />
+      {/* Dark Cinematic Backdrop Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-br from-[#00180a]/85 via-[#012d13]/80 to-[#001207]/90 backdrop-blur-[1px] pointer-events-none" />
 
       {/* Vibrant Ambient Glow Rings */}
       <div className="absolute -top-24 -left-24 w-96 h-96 bg-emerald-400/30 rounded-full blur-3xl pointer-events-none animate-pulse" />
@@ -112,8 +112,8 @@ export default function LoginPage() {
 
 
 
-      {/* Main Glassmorphic Card (Compact width for maximum background image visibility) */}
-      <div className="bg-white/95 backdrop-blur-2xl shadow-[0_0_50px_-10px_rgba(1,65,28,0.5)] border-2 border-emerald-500/30 w-full max-w-[380px] overflow-hidden rounded-2xl relative z-10">
+      {/* Main Glassmorphic Card (Flat rectangular layout without rounded corners) */}
+      <div className="bg-white/95 backdrop-blur-2xl shadow-[0_0_50px_-10px_rgba(1,65,28,0.5)] border-2 border-emerald-500/30 w-full max-w-[380px] overflow-hidden rounded-none relative z-10">
         {/* Pakistani Flag Top Stripe */}
         <div className="h-1.5 w-full bg-gradient-to-r from-[#01411C] via-white to-[#01411C]" />
 
@@ -121,7 +121,7 @@ export default function LoginPage() {
           {/* Brand & Emblem */}
           <div className="flex flex-col items-center text-center mb-6">
             <div className="flex items-center gap-2.5 mb-3">
-              <div className="h-11 w-11 rounded-xl bg-[#01411C] text-white flex items-center justify-center shadow-md border border-emerald-600/30">
+              <div className="h-11 w-11 rounded-none bg-[#01411C] text-white flex items-center justify-center shadow-md border border-emerald-600/30">
                 <BriefcaseMedical className="h-6 w-6 text-emerald-300" strokeWidth={2.25} />
               </div>
               <div className="text-left">
@@ -143,11 +143,11 @@ export default function LoginPage() {
           </div>
 
           {/* Mode Toggle */}
-          <div className="flex items-center gap-1.5 mb-5 bg-gray-100 p-1 rounded-xl border border-gray-200/80">
+          <div className="flex items-center gap-1.5 mb-5 bg-gray-100 p-1 rounded-none border border-gray-200/80">
             <button
               type="button"
               onClick={() => setMode('email')}
-              className={`flex-1 flex items-center justify-center gap-1.5 h-9 text-xs font-bold rounded-lg transition-all ${
+              className={`flex-1 flex items-center justify-center gap-1.5 h-9 text-xs font-bold rounded-none transition-all ${
                 mode === 'email'
                   ? 'bg-[#01411C] text-white shadow-md'
                   : 'text-gray-600 hover:text-gray-900'
@@ -159,7 +159,7 @@ export default function LoginPage() {
             <button
               type="button"
               onClick={() => setMode('phone')}
-              className={`flex-1 flex items-center justify-center gap-1.5 h-9 text-xs font-bold rounded-lg transition-all ${
+              className={`flex-1 flex items-center justify-center gap-1.5 h-9 text-xs font-bold rounded-none transition-all ${
                 mode === 'phone'
                   ? 'bg-[#01411C] text-white shadow-md'
                   : 'text-gray-600 hover:text-gray-900'
@@ -183,7 +183,7 @@ export default function LoginPage() {
                   type="email"
                   placeholder="doctor@clinic.com"
                   required
-                  className="mt-1.5 w-full h-[44px] rounded-xl border-gray-300 focus:border-[#01411C] focus:ring-2 focus:ring-[#01411C]/20 bg-white"
+                  className="mt-1.5 w-full h-[44px] rounded-none border-gray-300 focus:border-[#01411C] focus:ring-2 focus:ring-[#01411C]/20 bg-white"
                 />
               </div>
 
@@ -198,7 +198,7 @@ export default function LoginPage() {
                     name="password"
                     type={showPassword ? 'text' : 'password'}
                     required
-                    className="w-full h-[44px] pr-10 rounded-xl border-gray-300 focus:border-[#01411C] focus:ring-2 focus:ring-[#01411C]/20 bg-white"
+                    className="w-full h-[44px] pr-10 rounded-none border-gray-300 focus:border-[#01411C] focus:ring-2 focus:ring-[#01411C]/20 bg-white"
                   />
                   <button
                     type="button"
@@ -221,7 +221,7 @@ export default function LoginPage() {
 
               <Button
                 type="submit"
-                className="w-full h-[48px] bg-[#01411C] hover:bg-[#013316] text-white font-bold rounded-xl shadow-lg shadow-[#01411C]/20 mt-2 transition-all cursor-pointer flex items-center justify-center gap-2"
+                className="w-full h-[48px] bg-[#01411C] hover:bg-[#013316] text-white font-bold rounded-none shadow-lg shadow-[#01411C]/20 mt-2 transition-all cursor-pointer flex items-center justify-center gap-2"
                 disabled={loading}
               >
                 {loading ? (
@@ -253,7 +253,7 @@ export default function LoginPage() {
                       onChange={(e) => setPhone(e.target.value)}
                       required
                       maxLength={11}
-                      className="mt-1.5 w-full h-[44px] rounded-xl border-gray-300 focus:border-[#01411C] focus:ring-2 focus:ring-[#01411C]/20 bg-white"
+                      className="mt-1.5 w-full h-[44px] rounded-none border-gray-300 focus:border-[#01411C] focus:ring-2 focus:ring-[#01411C]/20 bg-white"
                     />
                     <p className="text-[11px] text-gray-500 mt-1">
                       Must start with 0 (e.g. 03001234567)
@@ -263,7 +263,7 @@ export default function LoginPage() {
                     type="button"
                     onClick={handleSendOtp}
                     disabled={sendingOtp}
-                    className="w-full h-[48px] bg-[#01411C] hover:bg-[#013316] text-white font-bold rounded-xl shadow-lg shadow-[#01411C]/20 cursor-pointer flex items-center justify-center gap-2"
+                    className="w-full h-[48px] bg-[#01411C] hover:bg-[#013316] text-white font-bold rounded-none shadow-lg shadow-[#01411C]/20 cursor-pointer flex items-center justify-center gap-2"
                   >
                     {sendingOtp ? (
                       <>
@@ -276,7 +276,7 @@ export default function LoginPage() {
                 </>
               ) : (
                 <>
-                  <div className="bg-emerald-50 border border-emerald-200 px-3.5 py-2.5 rounded-xl text-xs text-emerald-800 flex items-center gap-2">
+                  <div className="bg-emerald-50 border border-emerald-200 px-3.5 py-2.5 rounded-none text-xs text-emerald-800 flex items-center gap-2">
                     <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
                     <span>
                       Code sent to <strong>{phone}</strong>
@@ -294,14 +294,14 @@ export default function LoginPage() {
                       placeholder="1234"
                       value={otpCode}
                       onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, ''))}
-                      className="mt-1.5 w-full h-[48px] text-center text-2xl tracking-[0.5em] font-bold rounded-xl border-gray-300 focus:border-[#01411C] focus:ring-2 focus:ring-[#01411C]/20 bg-white"
+                      className="mt-1.5 w-full h-[48px] text-center text-2xl tracking-[0.5em] font-bold rounded-none border-gray-300 focus:border-[#01411C] focus:ring-2 focus:ring-[#01411C]/20 bg-white"
                     />
                   </div>
                   <Button
                     type="button"
                     onClick={handleVerifyOtp}
                     disabled={loading || otpCode.length !== 4}
-                    className="w-full h-[48px] bg-[#01411C] hover:bg-[#013316] text-white font-bold rounded-xl shadow-lg shadow-[#01411C]/20 cursor-pointer flex items-center justify-center gap-2"
+                    className="w-full h-[48px] bg-[#01411C] hover:bg-[#013316] text-white font-bold rounded-none shadow-lg shadow-[#01411C]/20 cursor-pointer flex items-center justify-center gap-2"
                   >
                     {loading ? (
                       <>
@@ -329,7 +329,7 @@ export default function LoginPage() {
           {/* Divider */}
           <div className="flex items-center gap-3 mt-6">
             <span className="h-px flex-1 bg-gray-200" />
-            <span className="text-[11px] font-semibold text-emerald-800 uppercase tracking-wider bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200/60">
+            <span className="text-[11px] font-semibold text-emerald-800 uppercase tracking-wider bg-emerald-50 px-2.5 py-0.5 rounded-none border border-emerald-200/60">
               Secure Medical Access
             </span>
             <span className="h-px flex-1 bg-gray-200" />
@@ -346,7 +346,7 @@ export default function LoginPage() {
         {/* Patriotic Footer Strip */}
         <div className="flex items-center justify-between border-t border-gray-100 bg-emerald-50/50 px-6 sm:px-[33px] py-3 text-[11px] text-gray-600">
           <span className="flex items-center gap-1.5 font-medium">
-            <span className="h-2 w-2 rounded-full bg-emerald-600 animate-ping" />
+            <span className="h-2 w-2 rounded-none bg-emerald-600 animate-ping" />
             MediTrack Systems Online
           </span>
           <div className="flex items-center gap-3 font-semibold text-[#01411C]">
