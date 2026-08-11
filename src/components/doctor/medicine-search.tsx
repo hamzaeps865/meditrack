@@ -36,6 +36,7 @@ export default function MedicineSearch({
  const [loading, setLoading] = useState(false);
  const [showDropdown, setShowDropdown] = useState(false);
  const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0, width: 0 });
+ const [isDropdownClicked, setIsDropdownClicked] = useState(false);
  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
  const containerRef = useRef<HTMLDivElement>(null);
  const inputRef = useRef<HTMLInputElement>(null);
@@ -76,19 +77,47 @@ export default function MedicineSearch({
  // Close dropdown on outside click
  useEffect(() => {
   function handler(e: MouseEvent) {
-   if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
-    setShowDropdown(false);
+   const target = e.target as Node;
+   // Check if click is outside the container
+   if (containerRef.current && !containerRef.current.contains(target)) {
+    // Small delay to allow item click to process first
+    setTimeout(() => {
+     if (!isDropdownClicked) {
+      setShowDropdown(false);
+     }
+    }, 150);
    }
   }
   document.addEventListener('mousedown', handler);
   return () => document.removeEventListener('mousedown', handler);
- }, []);
+ }, [isDropdownClicked]);
 
- function handleSelect(result: MedicineResult) {
+ function handleSelect(result: MedicineResult, event?: React.MouseEvent) {
+  // Prevent default to stop input from losing focus
+  if (event) {
+   event.preventDefault();
+  }
   const display = result.strength ? `${result.name} ${result.strength}` : result.name;
-  onChange(display);
   setShowDropdown(false);
+  setIsDropdownClicked(true);
+  // Call onChange to update the input value
+  onChange(display);
+  // Call onSelect to update medicineId and medicineName in parent
   onSelect?.(result.id, display);
+  // Reset flag after a short delay
+  setTimeout(() => setIsDropdownClicked(false), 100);
+ }
+
+ function handleBlur() {
+  // Don't close if user clicked on a dropdown item
+  if (!isDropdownClicked) {
+   setShowDropdown(false);
+  }
+ }
+
+ function handleMouseDown(e: React.MouseEvent) {
+  // Prevent input from losing focus when clicking on dropdown items
+  e.preventDefault();
  }
 
  // Update dropdown position on scroll or resize
@@ -124,9 +153,9 @@ export default function MedicineSearch({
     value={value}
     onChange={(e) => onChange(e.target.value)}
     onFocus={() => {
-     if (results.length > 0) {
+     if (results.length > 0 && inputRef.current) {
       setShowDropdown(true);
-      const rect = e.currentTarget.getBoundingClientRect();
+      const rect = inputRef.current.getBoundingClientRect();
       setDropdownPosition({
        top: rect.bottom + window.scrollY + 4,
        left: rect.left + window.scrollX,
@@ -134,6 +163,7 @@ export default function MedicineSearch({
       });
      }
     }}
+    onBlur={handleBlur}
     placeholder={placeholder}
     disabled={disabled}
     className="w-full h-8 px-2.5 border border-border bg-muted/30 text-sm text-foreground
@@ -158,7 +188,10 @@ export default function MedicineSearch({
        <button
         key={r.id}
         type="button"
-        onClick={() => handleSelect(r)}
+        onMouseDown={(e) => {
+         handleMouseDown(e);
+         handleSelect(r, e);
+        }}
         className="w-full text-left px-3 py-2.5 hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-b-0"
        >
        <div className="flex items-center justify-between gap-2">

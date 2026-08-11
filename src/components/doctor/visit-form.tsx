@@ -148,7 +148,7 @@ export default function VisitForm({
 
  function updateRxRow(id: string, field: keyof PrescriptionRow, value: string) {
   setRxRows((prev) => prev.map((r) => r.id === id
-   ? { ...r, [field]: value, ...(field === 'medicineName' ? { medicineId: undefined } : {}) }
+   ? { ...r, [field]: value }
    : r));
  }
 
