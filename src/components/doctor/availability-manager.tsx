@@ -105,7 +105,7 @@ function AddBlockForm({
  }
 
  return (
-  <div className="mt-2 ml-[88px] flex flex-wrap items-end gap-2 pb-1">
+  <div className="mt-2 ml-0 sm:ml-[170px] flex flex-wrap items-end gap-2 pb-1">
    <div>
     <label className="text-[10px] text-muted-foreground block mb-1">Start</label>
     <input type="time" value={start}
@@ -235,7 +235,7 @@ export default function AvailabilityManager({ doctorId, initialWindows }: Props)
   <div className="premium-card overflow-hidden">
 
     {/* Table header */}
-    <div className="grid grid-cols-[88px_1fr_110px] px-5 py-3
+    <div className="grid grid-cols-[170px_1fr_110px] px-5 py-3
      border-b border-border bg-muted/20">
      <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
       Day
@@ -259,7 +259,7 @@ export default function AvailabilityManager({ doctorId, initialWindows }: Props)
      return (
       <div key={day}
        className={`${!isLast ? 'border-b border-border' : ''}`}>
-       <div className="grid grid-cols-[88px_1fr_110px] items-center px-5 py-4">
+       <div className="grid grid-cols-[170px_1fr_110px] items-center px-5 py-4">
 
         {/* Toggle + day name */}
         <div className="flex items-center gap-2.5">

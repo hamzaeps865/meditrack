@@ -153,6 +153,23 @@ export default function AdminSettings({ adminName, adminEmail }: Props) {
  const [contactEmail, setContactEmail] = useState('admin@meditrack-central.com');
  const [phone,     setPhone]     = useState('+1 (555) 902-3401');
  const [address,    setAddress]    = useState('102 Medical Plaza, Suite 400, Austin, TX 78701');
+ const [clinicLogo,  setClinicLogo]  = useState<string | null>(null);
+
+ function handleLogoFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+  const file = e.target.files?.[0];
+  if (!file) return;
+  if (file.size > 2 * 1024 * 1024) {
+   toast.error('File size must be under 2MB');
+   return;
+  }
+  const reader = new FileReader();
+  reader.onload = (event) => {
+   const base64 = event.target?.result as string;
+   setClinicLogo(base64);
+   toast.success('Logo uploaded! Click "Save Changes" to apply.');
+  };
+  reader.readAsDataURL(file);
+ }
 
  const [hours, setHours] = useState([
   { day: 'Monday – Friday', open: true, start: '08:00', end: '18:00' },
@@ -197,6 +214,7 @@ export default function AdminSettings({ adminName, adminEmail }: Props) {
     const s = await getSystemSettings();
     if (cancelled) return;
     if (s.clinic_name)  setClinicName(s.clinic_name);
+    if (s.clinic_logo)  setClinicLogo(s.clinic_logo);
     if (s.consultation_fee) setConsultationFee(s.consultation_fee);
     if (s.contact_email) setContactEmail(s.contact_email);
     if (s.phone)     setPhone(s.phone);
@@ -231,6 +249,7 @@ export default function AdminSettings({ adminName, adminEmail }: Props) {
    try {
     await setSystemSettings({
      clinic_name: clinicName,
+     clinic_logo: clinicLogo ?? '',
      consultation_fee: String(Number(consultationFee) * 100), // store in paisa/cents
      contact_email: contactEmail,
      phone,
@@ -414,12 +433,38 @@ export default function AdminSettings({ adminName, adminEmail }: Props) {
           {/* Logo upload */}
           <div>
            <label className={labelCls}>Clinic Logo</label>
-           <div className="h-44 border-2 border-dashed border-border
-            flex flex-col items-center justify-center gap-2">
-            <FileImage className="h-7 w-7 text-muted-foreground/40" />
-            <p className="text-xs font-medium text-muted-foreground text-center px-2">
-             Logo upload coming soon
-            </p>
+           <div className="border-2 border-dashed border-emerald-300 rounded-xl p-4 bg-emerald-50/20 flex flex-col items-center justify-center gap-3 relative group">
+            {clinicLogo ? (
+             <div className="flex flex-col items-center gap-3">
+              <div className="h-24 w-24 rounded-2xl bg-white border-2 border-emerald-500/30 p-2 shadow-md flex items-center justify-center overflow-hidden">
+               <img src={clinicLogo} alt="Clinic Logo" className="h-full w-full object-contain" />
+              </div>
+              <div className="flex items-center gap-2">
+               <label className="cursor-pointer px-3 py-1.5 rounded-lg bg-[#01411C] text-white text-xs font-bold hover:bg-[#013316] transition-colors shadow-sm">
+                Change Logo
+                <input type="file" accept="image/*" className="hidden" onChange={handleLogoFileChange} />
+               </label>
+               <button
+                type="button"
+                onClick={() => setClinicLogo(null)}
+                className="px-3 py-1.5 rounded-lg bg-red-50 text-red-600 border border-red-200 text-xs font-bold hover:bg-red-100 transition-colors"
+               >
+                Remove
+               </button>
+              </div>
+             </div>
+            ) : (
+             <label className="cursor-pointer flex flex-col items-center justify-center w-full h-36 gap-2">
+              <div className="h-12 w-12 rounded-xl bg-emerald-100/70 text-[#01411C] flex items-center justify-center">
+               <FileImage className="h-6 w-6" />
+              </div>
+              <div className="text-center">
+               <p className="text-xs font-extrabold text-[#01411C]">Click to Upload Logo</p>
+               <p className="text-[10px] text-gray-500 mt-0.5">PNG, JPG, SVG or WEBP (Max 2MB)</p>
+              </div>
+              <input type="file" accept="image/*" className="hidden" onChange={handleLogoFileChange} />
+             </label>
+            )}
            </div>
           </div>
          </div>

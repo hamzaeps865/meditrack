@@ -215,7 +215,7 @@ export default function RegisterPatientModal({ onClose }: Props) {
           type="tel"
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
-          placeholder="+1 (555) 000-0000"
+          placeholder="03001234567"
           required
           className={inputCls}
          />

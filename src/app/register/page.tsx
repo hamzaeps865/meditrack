@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
-import { ShieldCheck, ArrowRight, AlertCircle } from 'lucide-react';
+import { BriefcaseMedical, ArrowRight, AlertCircle, Sparkles, CheckCircle2, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -17,304 +17,327 @@ import { isValidPakistaniPhone, pakistaniPhoneMessage } from '@/lib/validators/p
 type Strength = { label: string; score: number; color: string };
 
 function getPasswordStrength(password: string): Strength {
- if (!password) return { label: '', score: 0, color: 'bg-muted' };
+  if (!password) return { label: '', score: 0, color: 'bg-gray-200' };
 
- let score = 0;
- if (password.length >= 8) score++;
- if (password.length >= 12) score++;
- if (/[A-Z]/.test(password)) score++;
- if (/[0-9]/.test(password)) score++;
- if (/[^A-Za-z0-9]/.test(password)) score++;
+  let score = 0;
+  if (password.length >= 8) score++;
+  if (password.length >= 12) score++;
+  if (/[A-Z]/.test(password)) score++;
+  if (/[0-9]/.test(password)) score++;
+  if (/[^A-Za-z0-9]/.test(password)) score++;
 
- if (score <= 1) return { label: 'Weak', score: 1, color: 'bg-red-500' };
- if (score <= 3) return { label: 'Medium', score: 2, color: 'bg-amber-500' };
- return { label: 'Strong', score: 3, color: 'bg-emerald-600' };
+  if (score <= 1) return { label: 'Weak', score: 1, color: 'bg-red-500' };
+  if (score <= 3) return { label: 'Medium', score: 2, color: 'bg-amber-500' };
+  return { label: 'Strong', score: 3, color: 'bg-emerald-600' };
 }
 
 export default function RegisterPage() {
- const router = useRouter();
- const [loading, setLoading] = useState(false);
- const [password, setPassword] = useState('');
- const [confirm, setConfirm] = useState('');
- const [agreed, setAgreed] = useState(false);
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const [password, setPassword] = useState('');
+  const [confirm, setConfirm] = useState('');
+  const [agreed, setAgreed] = useState(false);
 
- const strength = useMemo(() => getPasswordStrength(password), [password]);
- const confirmTouched = confirm.length > 0;
- const passwordsMatch = password === confirm;
+  const strength = useMemo(() => getPasswordStrength(password), [password]);
+  const confirmTouched = confirm.length > 0;
+  const passwordsMatch = password === confirm;
 
- async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-  e.preventDefault();
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
 
-  const form = new FormData(e.currentTarget);
-  const name = form.get('name') as string;
-  const email = form.get('email') as string;
-  const dob = form.get('dob') as string;
-  const gender = form.get('gender') as string;
-  const phone = form.get('phone') as string;
+    const form = new FormData(e.currentTarget);
+    const name = form.get('name') as string;
+    const email = form.get('email') as string;
+    const dob = form.get('dob') as string;
+    const gender = form.get('gender') as string;
+    const phone = form.get('phone') as string;
 
-  if (!isValidPakistaniPhone(phone)) {
-   toast.error(pakistaniPhoneMessage);
-   return;
+    if (!isValidPakistaniPhone(phone)) {
+      toast.error(pakistaniPhoneMessage);
+      return;
+    }
+
+    if (password !== confirm) {
+      toast.error('Passwords do not match');
+      return;
+    }
+
+    if (!agreed) {
+      toast.error('Please agree to the Terms of Service and Privacy Policy');
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      await registerUser({ name, email, password, dob, gender, phone });
+
+      const result = await signIn('credentials', {
+        email,
+        password,
+        redirect: false,
+      });
+
+      if (result?.error) {
+        toast.error('Account created but sign-in failed. Please log in manually.');
+        router.push('/login');
+        return;
+      }
+
+      toast.success('Account created successfully!');
+      router.push('/');
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Registration failed');
+      setLoading(false);
+    }
   }
 
-  if (password !== confirm) {
-   toast.error('Passwords do not match');
-   return;
-  }
+  return (
+    <div className="min-h-screen flex flex-col items-center justify-center bg-[url('/azadi_register_bg.png')] bg-cover bg-center bg-no-repeat px-4 py-8 relative overflow-hidden">
+      {/* Dark Cinematic Backdrop Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-br from-[#00180a]/85 via-[#012d13]/80 to-[#001207]/90 backdrop-blur-[1px] pointer-events-none" />
 
-  if (!agreed) {
-   toast.error('Please agree to the Terms of Service and Privacy Policy');
-   return;
-  }
+      {/* Radiant Glowing Elements */}
+      <div className="absolute -top-24 -left-24 w-96 h-96 bg-emerald-400/30 rounded-full blur-3xl pointer-events-none animate-pulse" />
+      <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-white/20 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-emerald-500/20 rounded-full blur-3xl pointer-events-none" />
 
-  setLoading(true);
+      {/* Main Centered Flat Register Card */}
+      <div className="bg-white/95 backdrop-blur-2xl shadow-[0_0_50px_-10px_rgba(1,65,28,0.5)] border-2 border-emerald-500/30 w-full max-w-[460px] overflow-hidden rounded-none relative z-10">
+        {/* Pakistani Flag Top Stripe */}
+        <div className="h-1.5 w-full bg-gradient-to-r from-[#01411C] via-white to-[#01411C]" />
 
-  try {
-   await registerUser({ name, email, password, dob, gender, phone });
+        <div className="px-6 sm:px-8 pt-6 pb-6">
+          {/* Brand Header */}
+          <div className="flex flex-col items-center text-center mb-5">
+            <div className="flex items-center gap-2.5 mb-2">
+              <div className="h-10 w-10 rounded-none bg-[#01411C] text-white flex items-center justify-center shadow-md border border-emerald-600/30">
+                <BriefcaseMedical className="h-5.5 w-5.5 text-emerald-300" strokeWidth={2.25} />
+              </div>
+              <div className="text-left">
+                <span className="text-2xl font-black tracking-tight text-[#01411C] block leading-none">
+                  MediTrack
+                </span>
+                <span className="text-[10px] font-semibold tracking-wider text-emerald-700 uppercase">
+                  Patient Registration
+                </span>
+              </div>
+            </div>
+            <h1 className="text-xl font-bold text-gray-900 leading-tight">
+              Create your Account
+            </h1>
+            <p className="text-gray-500 text-xs mt-0.5">
+              Book appointments &amp; manage your health record
+            </p>
+          </div>
 
-   // Auto sign-in after registration
-   const result = await signIn('credentials', {
-    email,
-    password,
-    redirect: false,
-   });
+          <form onSubmit={handleSubmit} className="space-y-3.5">
+            {/* Full Name & Email Row */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+              <div>
+                <Label htmlFor="name" className="text-xs font-bold text-gray-700">
+                  Full Name *
+                </Label>
+                <Input
+                  id="name"
+                  name="name"
+                  type="text"
+                  placeholder="Muhammad Ali"
+                  required
+                  minLength={2}
+                  className="mt-1 w-full h-[44px] rounded-none border-gray-300 focus:border-[#01411C] focus:ring-2 focus:ring-[#01411C]/20 bg-white text-xs sm:text-sm"
+                />
+              </div>
+              <div>
+                <Label htmlFor="email" className="text-xs font-bold text-gray-700">
+                  Email Address *
+                </Label>
+                <Input
+                  id="email"
+                  name="email"
+                  type="email"
+                  placeholder="ali@example.com"
+                  required
+                  className="mt-1 w-full h-[44px] rounded-none border-gray-300 focus:border-[#01411C] focus:ring-2 focus:ring-[#01411C]/20 bg-white text-xs sm:text-sm"
+                />
+              </div>
+            </div>
 
-   if (result?.error) {
-    toast.error('Account created but sign-in failed. Please log in manually.');
-    router.push('/login');
-    return;
-   }
+            {/* Phone & DOB & Gender Row */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div>
+                <Label htmlFor="phone" className="text-xs font-bold text-gray-700">
+                  Phone (11 digits) *
+                </Label>
+                <Input
+                  id="phone"
+                  name="phone"
+                  type="tel"
+                  placeholder="03001234567"
+                  required
+                  minLength={11}
+                  maxLength={11}
+                  className="mt-1 w-full h-[44px] rounded-none border-gray-300 focus:border-[#01411C] focus:ring-2 focus:ring-[#01411C]/20 bg-white text-xs"
+                />
+              </div>
+              <div>
+                <Label htmlFor="dob" className="text-xs font-bold text-gray-700">
+                  Date of Birth *
+                </Label>
+                <Input
+                  id="dob"
+                  name="dob"
+                  type="date"
+                  required
+                  className="mt-1 w-full h-[44px] rounded-none border-gray-300 focus:border-[#01411C] focus:ring-2 focus:ring-[#01411C]/20 bg-white text-xs px-2"
+                />
+              </div>
+              <div>
+                <Label htmlFor="gender" className="text-xs font-bold text-gray-700">
+                  Gender *
+                </Label>
+                <select
+                  id="gender"
+                  name="gender"
+                  required
+                  defaultValue=""
+                  className="mt-1 w-full h-[44px] px-2.5 rounded-none border border-gray-300 bg-white text-xs text-gray-800 focus:outline-none focus:border-[#01411C] focus:ring-2 focus:ring-[#01411C]/20"
+                >
+                  <option value="" disabled>Select</option>
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+            </div>
 
-   toast.success('Account created successfully!');
-   router.push('/');
-  } catch (err) {
-   toast.error(err instanceof Error ? err.message : 'Registration failed');
-   setLoading(false);
-  }
- }
+            {/* Password & Confirm Password Row */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+              <div>
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="password" className="text-xs font-bold text-gray-700">
+                    Password *
+                  </Label>
+                  {strength.label && (
+                    <span
+                      className={`text-[10px] font-bold uppercase ${
+                        strength.score === 1
+                          ? 'text-red-500'
+                          : strength.score === 2
+                          ? 'text-amber-500'
+                          : 'text-emerald-600'
+                      }`}
+                    >
+                      {strength.label}
+                    </span>
+                  )}
+                </div>
+                <Input
+                  id="password"
+                  name="password"
+                  type="password"
+                  placeholder="Min. 8 chars"
+                  required
+                  minLength={8}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="mt-1 w-full h-[44px] rounded-none border-gray-300 focus:border-[#01411C] focus:ring-2 focus:ring-[#01411C]/20 bg-white text-xs sm:text-sm"
+                />
+                {password && (
+                  <div className="mt-1.5 h-1.5 w-full bg-gray-200 rounded-none overflow-hidden">
+                    <div
+                      className={`h-full transition-all duration-300 ${strength.color}`}
+                      style={{ width: `${(strength.score / 3) * 100}%` }}
+                    />
+                  </div>
+                )}
+              </div>
 
- return (
-  <div className="min-h-screen flex flex-col items-center justify-center bg-background px-4 py-10 sm:py-10">
-   {/* Brand */}
-   <div className="mb-6 flex items-center gap-2">
-    <ShieldCheck className="h-6 w-6 text-primary" strokeWidth={2.25} />
-    <span className="text-xl font-bold text-primary">MediTrack</span>
-   </div>
+              <div>
+                <Label htmlFor="confirm" className="text-xs font-bold text-gray-700">
+                  Confirm Password *
+                </Label>
+                <Input
+                  id="confirm"
+                  name="confirm"
+                  type="password"
+                  placeholder="Repeat password"
+                  required
+                  value={confirm}
+                  onChange={(e) => setConfirm(e.target.value)}
+                  className={`mt-1 w-full h-[44px] rounded-none border-gray-300 focus:border-[#01411C] focus:ring-2 focus:ring-[#01411C]/20 bg-white text-xs sm:text-sm ${
+                    confirmTouched && !passwordsMatch
+                      ? 'border-red-400 focus-visible:ring-red-400 bg-red-50/40'
+                      : ''
+                  }`}
+                />
+                {confirmTouched && !passwordsMatch && (
+                  <p className="mt-1 flex items-center gap-1 text-[11px] text-red-500 font-medium">
+                    <AlertCircle className="h-3.5 w-3.5" />
+                    Passwords do not match
+                  </p>
+                )}
+              </div>
+            </div>
 
-   <div className="bg-card shadow-sm border border-border w-full max-w-[480px] px-6 sm:px-[33px] py-8">
-    {/* Header */}
-    <div className="mb-6">
-     <h1 className="text-2xl font-bold text-foreground leading-tight">
-      Create your account
-     </h1>
-     <p className="text-muted-foreground text-sm mt-1">
-      Register as a patient to book appointments and manage your health.
-     </p>
+            {/* Terms Agreement */}
+            <div className="flex items-center gap-2 pt-1.5">
+              <Checkbox
+                id="terms"
+                checked={agreed}
+                onCheckedChange={(checked) => setAgreed(checked === true)}
+                className="shrink-0 accent-[#01411C]"
+              />
+              <label htmlFor="terms" className="text-xs text-gray-600 font-normal leading-tight">
+                I agree to the{' '}
+                <Link href="/terms" className="text-[#01411C] font-bold hover:underline">
+                  Terms of Service
+                </Link>{' '}
+                and{' '}
+                <Link href="/privacy" className="text-[#01411C] font-bold hover:underline">
+                  Privacy Policy
+                </Link>
+              </label>
+            </div>
+
+            <Button
+              type="submit"
+              className="w-full h-[46px] bg-[#01411C] hover:bg-[#013316] text-white font-bold rounded-none shadow-md shadow-[#01411C]/20 mt-1.5 cursor-pointer flex items-center justify-center gap-2 text-sm"
+              disabled={loading}
+            >
+              {loading ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" /> Creating Account...
+                </>
+              ) : (
+                <>
+                  Create Account <ArrowRight className="h-4 w-4" />
+                </>
+              )}
+            </Button>
+          </form>
+
+          <div className="mt-4 pt-3 border-t border-gray-100 text-center">
+            <p className="text-xs text-gray-600">
+              Already have an account?{' '}
+              <Link href="/login" className="text-[#01411C] font-bold hover:underline">
+                Sign In
+              </Link>
+            </p>
+          </div>
+        </div>
+
+        {/* Patriotic Footer Strip */}
+        <div className="flex items-center justify-between border-t border-gray-100 bg-emerald-50/50 px-6 sm:px-8 py-3 text-[11px] text-gray-600">
+          <span className="flex items-center gap-1.5 font-medium">
+            <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" />
+            256-Bit SSL Encrypted
+          </span>
+          <span className="font-bold text-[#01411C]">
+            Azadi Mubarak 🇵🇰
+          </span>
+        </div>
+      </div>
     </div>
-
-    <form onSubmit={handleSubmit} className="space-y-4">
-     {/* Name */}
-     <div>
-      <Label htmlFor="name" className="text-sm font-medium text-foreground">
-       Full Name
-      </Label>
-      <Input
-       id="name"
-       name="name"
-       type="text"
-       placeholder="Dr. Jane Smith"
-       required
-       minLength={2}
-       className="mt-1 w-full h-[44px]"
-      />
-     </div>
-
-     {/* Email */}
-     <div>
-      <Label htmlFor="email" className="text-sm font-medium text-foreground">
-       Email Address
-      </Label>
-      <Input
-       id="email"
-       name="email"
-       type="email"
-       placeholder="jane.smith@example.com"
-       required
-       className="mt-1 w-full h-[44px]"
-      />
-     </div>
-
-     {/* Phone */}
-     <div>
-      <Label htmlFor="phone" className="text-sm font-medium text-foreground">
-       Phone Number
-      </Label>
-      <Input
-       id="phone"
-       name="phone"
-       type="tel"
-       placeholder="+92 300 1234567"
-       required
-       minLength={7}
-       maxLength={20}
-       className="mt-1 w-full h-[44px]"
-      />
-     </div>
-
-     {/* DOB + Gender row */}
-     <div className="grid grid-cols-2 gap-3">
-      <div>
-       <Label htmlFor="dob" className="text-sm font-medium text-foreground">
-        Date of Birth
-       </Label>
-       <Input
-        id="dob"
-        name="dob"
-        type="date"
-        required
-        className="mt-1 w-full h-[44px]"
-       />
-      </div>
-      <div>
-       <Label htmlFor="gender" className="text-sm font-medium text-foreground">
-        Gender
-       </Label>
-       <select
-        id="gender"
-        name="gender"
-        required
-        defaultValue=""
-        className="mt-1 w-full h-[44px] px-3 border border-input bg-background text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20"
-       >
-        <option value="" disabled>Select</option>
-        <option value="male">Male</option>
-        <option value="female">Female</option>
-        <option value="other">Other</option>
-       </select>
-      </div>
-     </div>
-
-     {/* Password */}
-     <div>
-      <div className="flex items-center justify-between">
-       <Label htmlFor="password" className="text-sm font-medium text-foreground">
-        Password
-       </Label>
-       {strength.label && (
-        <span
-         className={`text-xs font-semibold uppercase tracking-wide ${
-          strength.score === 1
-           ? 'text-red-500'
-           : strength.score === 2
-           ? 'text-amber-500'
-           : 'text-emerald-600'
-         }`}
-        >
-         {strength.label}
-        </span>
-       )}
-      </div>
-      <Input
-       id="password"
-       name="password"
-       type="password"
-       placeholder="Min. 8 characters"
-       required
-       minLength={8}
-       value={password}
-       onChange={(e) => setPassword(e.target.value)}
-       className="mt-1 w-full h-[44px]"
-      />
-      {password && (
-       <div className="mt-2 h-1.5 w-full bg-muted overflow-hidden">
-        <div
-         className={`h-full transition-all duration-300 ${strength.color}`}
-         style={{ width: `${(strength.score / 3) * 100}%` }}
-        />
-       </div>
-      )}
-     </div>
-
-     {/* Confirm password */}
-     <div>
-      <Label htmlFor="confirm" className="text-sm font-medium text-foreground">
-       Confirm Password
-      </Label>
-      <Input
-       id="confirm"
-       name="confirm"
-       type="password"
-       placeholder="Repeat your password"
-       required
-       value={confirm}
-       onChange={(e) => setConfirm(e.target.value)}
-       className={`mt-1 w-full h-[44px] ${
-        confirmTouched && !passwordsMatch
-         ? 'border-red-400 focus-visible:ring-red-400 bg-red-50/40'
-         : ''
-       }`}
-      />
-      {confirmTouched && !passwordsMatch && (
-       <p className="mt-1.5 flex items-center gap-1 text-xs text-red-500">
-        <AlertCircle className="h-3.5 w-3.5" />
-        Passwords don&apos;t match
-       </p>
-      )}
-     </div>
-
-     {/* Terms agreement */}
-     <div className="flex items-start gap-2 pt-1 w-full">
-      <Checkbox
-       id="terms"
-       checked={agreed}
-       onCheckedChange={(checked) => setAgreed(checked === true)}
-       className="mt-0.5 shrink-0"
-      />
-      <label htmlFor="terms" className="text-sm text-muted-foreground font-normal leading-snug">
-       I agree to the{' '}
-       <Link href="/terms" className="text-primary font-semibold hover:underline">
-        Terms of Service
-       </Link>{' '}
-       and{' '}
-       <Link href="/privacy" className="text-primary font-semibold hover:underline">
-        Privacy Policy
-       </Link>
-      </label>
-     </div>
-
-     <Button
-      type="submit"
-      className="w-full h-[48px] bg-primary hover:bg-primary/90 text-primary-foreground mt-2 gap-2"
-      disabled={loading}
-     >
-      {loading ? 'Creating account...' : 'Create Account'}
-      {!loading && <ArrowRight className="h-4 w-4" />}
-     </Button>
-    </form>
-
-    <hr className="mt-[48px] border-border" />
-
-    <p className="mt-[24px] text-center text-sm text-muted-foreground">
-     Already have an account?{' '}
-     <Link href="/login" className="text-primary font-semibold hover:underline">
-      Sign In
-     </Link>
-    </p>
-   </div>
-
-   {/* Footer */}
-   <div className="mt-8 text-center px-4">
-    <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-xs text-muted-foreground/60">
-     <Link href="/support" className="hover:underline">Support</Link>
-     <span>•</span>
-     <Link href="/docs" className="hover:underline">Documentation</Link>
-     <span>•</span>
-     <Link href="/status" className="hover:underline">System Status</Link>
-    </div>
-    <p className="mt-2 text-[11px] uppercase tracking-wide text-muted-foreground/40">
-     © 2024 MediTrack SaaS. All rights reserved.
-    </p>
-   </div>
-  </div>
- );
+  );
 }

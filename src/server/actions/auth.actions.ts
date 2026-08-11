@@ -6,6 +6,8 @@ import { eq } from 'drizzle-orm';
 import bcrypt from 'bcryptjs';
 import { z } from 'zod';
 
+import { isValidPakistaniPhone, pakistaniPhoneMessage } from '@/lib/validators/phone';
+
 const registerSchema = z.object({
   name: z
     .string({ message: 'Name is required' })
@@ -31,9 +33,10 @@ const registerSchema = z.object({
   }),
   phone: z
     .string({ message: 'Phone number is required' })
-    .min(7, 'Phone number is too short')
-    .max(20, 'Phone number must be at most 20 characters')
-    .trim(),
+    .trim()
+    .refine((val) => isValidPakistaniPhone(val), {
+      message: pakistaniPhoneMessage,
+    }),
 });
 
 export type RegisterInput = z.infer<typeof registerSchema>;

@@ -1,9 +1,12 @@
 'use server';
 
 import { db } from '@/server/db';
-import { doctors, users, doctorAvailability, appointments, patients } from '@/server/db/schema';
+import {
+  doctors, users, doctorAvailability, appointments, patients,
+  doctorReviews, labOrders, invoices, visits, prescriptions, prescriptionItems,
+} from '@/server/db/schema';
 import { requireRole } from '@/server/auth/rbac';
-import { eq, count, isNull, sql } from 'drizzle-orm';
+import { eq, count, isNull, sql, and } from 'drizzle-orm';
 import { z } from 'zod';
 import bcrypt from 'bcryptjs';
 
@@ -22,7 +25,8 @@ export async function getAllDoctors() {
       name:           users.name,
     })
     .from(doctors)
-    .leftJoin(users, eq(doctors.userId, users.id))
+    .innerJoin(users, eq(doctors.userId, users.id))
+    .where(eq(users.role, 'doctor'))
     .orderBy(users.name);
 }
 
@@ -33,7 +37,7 @@ export async function getAllDoctors() {
 export async function getAllDoctorsAdmin() {
   await requireRole(['admin']);
 
-  // Base doctor + user join
+  // Base doctor + user join (only active doctors whose role is 'doctor')
   const rows = await db
     .select({
       id:             doctors.id,
@@ -44,7 +48,8 @@ export async function getAllDoctorsAdmin() {
       email:          users.email,
     })
     .from(doctors)
-    .leftJoin(users, eq(doctors.userId, users.id))
+    .innerJoin(users, eq(doctors.userId, users.id))
+    .where(eq(users.role, 'doctor'))
     .orderBy(users.name);
 
   // Availability counts per doctor
@@ -234,11 +239,25 @@ export async function deleteDoctor(doctorId: string) {
   const [doctor] = await db.select().from(doctors).where(eq(doctors.id, doctorId));
   if (!doctor) throw new Error('Doctor not found.');
 
-  // Delete the doctor profile (cascade removes availability)
-  await db.delete(doctors).where(eq(doctors.id, doctorId));
+  // 1. Delete availability windows so doctor is no longer available for booking
+  await db.delete(doctorAvailability).where(eq(doctorAvailability.doctorId, doctorId));
 
-  // Demote the user account to patient role so they can no longer access doctor routes
+  // 2. Cancel any pending scheduled appointments for this doctor
+  await db
+    .update(appointments)
+    .set({ status: 'cancelled' })
+    .where(and(eq(appointments.doctorId, doctorId), eq(appointments.status, 'scheduled')));
+
+  // 3. Demote user account to patient role so they can no longer access doctor portal or lists
   await db.update(users).set({ role: 'patient' }).where(eq(users.id, doctor.userId));
+
+  // 4. Try hard-deleting doctor profile (if no historical patient medical records exist)
+  try {
+    await db.delete(doctors).where(eq(doctors.id, doctorId));
+  } catch {
+    // If historic visits/prescriptions exist, patient medical history is safely preserved
+    // while doctor access & visibility have been completely revoked.
+  }
 
   return { success: true };
 }
